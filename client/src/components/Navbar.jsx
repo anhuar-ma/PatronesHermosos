@@ -44,13 +44,11 @@ const NavContainer = styled.nav`
   justify-content: space-between;
   position: relative;
 
-  
-
   .logo-container {
     display: flex;
     align-items: center;
     gap: 15px;
-    z-index: 10;
+    z-index: 5;
   }
 
   img {
@@ -116,16 +114,17 @@ const NavContainer = styled.nav`
     cursor: pointer;
     z-index: 20;
 
-    @media (min-width: 1024px) {
+    @media (min-width: 1025px) {
       display: none;
     }
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 1025px) {
     .links {
       margin-left: 2rem;
     }
-  }    
-  @media (max-width: 768px) {
+  }
+ 
+  @media (max-width: 1024px) {
     .links {
       position: fixed;
       top: 0;
@@ -141,11 +140,12 @@ const NavContainer = styled.nav`
       opacity: 0;
       pointer-events: none;
       transition: transform 0.3s ease, opacity 0.3s ease;
-      z-index: 30;
+      z-index: 5;
       padding-top: 4rem;           
       gap: 2rem; 
       padding-left: 3rem;
     }
+     
 
     .links.active {
       transform: translateY(0);
@@ -154,7 +154,7 @@ const NavContainer = styled.nav`
     }
     h1 {
       color: white;
-      font-size: 1rem;
+      font-size: 1.8rem;
       font-weight: 400;
       white-space: nowrap;
       font-weight: bold;
@@ -164,7 +164,7 @@ const NavContainer = styled.nav`
       display: block;
       font-weight: bold;
       margin-left: 30px;
-      font-size: 1rem;
+      font-size: 1.8rem;
     }
     img {
       width: 70px;
@@ -178,6 +178,22 @@ const NavContainer = styled.nav`
     to {
       opacity: 1;
       transform: translateX(0);
+    }
+  }
+  @media (max-width: 767px) {
+    h1 {
+      color: white;
+      font-size: 1rem;
+      font-weight: 400;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+    span {
+      color: white;
+      display: block;
+      font-weight: bold;
+      margin-left: 30px;
+      font-size: 1rem;
     }
   }
     .link {

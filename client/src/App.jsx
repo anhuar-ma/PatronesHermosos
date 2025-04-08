@@ -14,13 +14,13 @@ function App() {
   return (
     <>
       <Navbar></Navbar>
-      <Routes>
-        <Route path='/' element={<Home></Home>}> </Route>
-        <Route path='/participante' element={<RegistroParticipantes></RegistroParticipantes>}> </Route>
-        <Route path='/colaborador' element={<RegistroColaboradores></RegistroColaboradores>}> </Route>
-        <Route path='/sede' element = {<RegistroSedes></RegistroSedes>}></Route>
-        <Route path='/sesion' element = {<IniciarSesion></IniciarSesion>}></Route>
-      </Routes>
+        <Routes>
+          <Route path='/' element={<Home></Home>}> </Route>
+          <Route path='/participante' element={<RegistroParticipantes></RegistroParticipantes>}> </Route>
+          <Route path='/colaborador' element={<RegistroColaboradores></RegistroColaboradores>}> </Route>
+          <Route path='/sede' element = {<RegistroSedes></RegistroSedes>}></Route>
+          <Route path='/sesion' element = {<IniciarSesion></IniciarSesion>}></Route>
+        </Routes>
     </>
   )
 }
