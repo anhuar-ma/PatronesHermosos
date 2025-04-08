@@ -50,6 +50,7 @@ const NavContainer = styled.nav`
     display: flex;
     align-items: center;
     gap: 15px;
+    z-index: 10;
   }
 
   img {
@@ -86,6 +87,7 @@ const NavContainer = styled.nav`
       background-color: rgba(162, 102, 158, 0.5); 
       width: 100%;
       border-radius: 10px;
+      z-index: 10;
   }
   .link {
     color: white;
@@ -139,7 +141,7 @@ const NavContainer = styled.nav`
       opacity: 0;
       pointer-events: none;
       transition: transform 0.3s ease, opacity 0.3s ease;
-      z-index: 10;
+      z-index: 30;
       padding-top: 4rem;           
       gap: 2rem; 
       padding-left: 3rem;

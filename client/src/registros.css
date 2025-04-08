@@ -1,0 +1,132 @@
+.fondo {
+    width: 100vw;
+    height: 50vh;
+    background-color: #9E629A;
+    position: absolute; 
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    width: 100%;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    overflow-y: auto; 
+}
+
+
+
+.card {
+    width: 50%;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 40px 60px;
+    margin: 20px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin-top: 5rem;
+}
+
+
+.titulo{
+    text-align: center;
+    text-transform:uppercase;
+    color: #9E629A;
+}
+
+.instructions{
+    font-weight: normal;
+    font-size: 1rem;
+    color: #9E629A;
+}
+
+.mandatory{
+    color: #DF0404;
+}
+
+h4{
+    font-size: 1.5rem;
+}
+
+.form label {
+    display: block;
+    margin-bottom: 30px;
+    font-size: 1.2rem;
+}
+
+.form {
+    justify-content: center;
+    padding-left: 20px;
+    margin-top: 20px;
+}
+
+.input-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+  
+
+.input-row label {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+}
+input {
+    border: none;
+    border-bottom: 1px solid #E2E4E5;
+    padding: 8px 4px;
+    font-size: 12px;
+    width: 300px;
+}
+
+select {
+    border: none;
+    border-bottom: 1px solid #E2E4E5;
+    padding: 8px 4px;
+    font-size: 12px;
+    width: 300px; 
+}
+
+.input-row select {
+    border: none;
+    border-bottom: 1px solid #E2E4E5;
+    padding: 8px 4px;
+    font-size: 12px;
+    width: 100%; 
+}
+
+.form label {
+    display: block;
+}
+
+.gray-button{
+    border-radius: 500px;
+    width: 200px;
+    background-color: #7B787A;
+    color: #FFFFFF;
+}
+
+.submit{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;             
+    margin-top: 20px;   
+}
+
+.purple-button{
+    border-radius: 5px;
+    width: 150px;
+    height: 35px;
+    border: none;
+    background-color: #9E629A;
+    color: #FFFFFF;    
+}
