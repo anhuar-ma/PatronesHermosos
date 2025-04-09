@@ -20,8 +20,14 @@ export const pool = new Pool({
   password: "",
 });
 
+// Add to server.js
+app.get("/test", (req, res) => {
+  res.send("Server is working");
+});
+
 // Routes
 app.use("/api/colaboradores", colaboradoresRoutes);
+// app.use("/api/participantes", participantesRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
