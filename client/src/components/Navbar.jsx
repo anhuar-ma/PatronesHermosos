@@ -14,10 +14,12 @@ function Navbar() {
     return (
         <NavContainer>
             <div className="logo-container">
-                <img src="./src/assets/logo_patrones.png" alt="Logo patrones hermosos" />
-                <h2>
+              <Link to="/"><img src="./src/assets/logo_patrones.png" alt="Logo patrones hermosos" className='logo' /></Link>
+              <Link to="/" className='link-title'>
+                <h1>
                     PATRONES <span>HERMOSOS</span>
-                </h2>
+                </h1>
+              </Link> 
             </div>
             <div className={`links ${menuOpen ? 'active' : ''}`}>
                 <Link to="/participante" className='link'>Registro participantes</Link>
@@ -42,21 +44,29 @@ const NavContainer = styled.nav`
   justify-content: space-between;
   position: relative;
 
+  
+
   .logo-container {
     display: flex;
     align-items: center;
     gap: 15px;
+    z-index: 10;
   }
 
   img {
-    width: 80px;
+    width: 120px;
     height: auto;
   }
 
-  h2 {
+  h1 {
     color: white;
+    font-size: 2.0rem;
     font-weight: 400;
     white-space: nowrap;
+    font-weight: bold;
+  }
+  .link-title {
+    text-decoration: none;
   }
 
   span {
@@ -64,49 +74,25 @@ const NavContainer = styled.nav`
     display: block;
     font-weight: bold;
     margin-left: 30px;
-    font-size: 1.3rem;
+    font-size: 2rem;
   }
 
   .links {
-    position: absolute;
-    top: -500px;
-    left: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    border-radius: 50px;
-    background-color: rgba(162, 102, 158, 1); 
-    padding: 1rem 0;
-    opacity: 0;
-    transition: opacity 0.5s ease, top 0.5s ease;
-    z-index: 10;
-
-    @media (min-width: 1024px) {
-      padding: 1.4rem 2rem;
+      padding: 2rem 2rem;
       position: initial;
       display: flex;
       flex-direction: row;
-      gap: 1rem;
       align-items: center;
-      justify-content: center;
-      background-color: rgba(162, 102, 158, 1); 
-      width: auto;
-      opacity: 1;
-      top: initial;
-    }
+      justify-content: space-evenly;
+      background-color: rgba(162, 102, 158, 0.5); 
+      width: 100%;
+      border-radius: 10px;
+      z-index: 10;
   }
-
-  .links.active {
-    top: 60px;
-    opacity: 1;
-    display: flex;
-  }
-
   .link {
     color: white;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: bold;
     text-align: center;
     transition: color 0.3s ease, transform 0.3s ease;
@@ -117,6 +103,14 @@ const NavContainer = styled.nav`
     }
   }
 
+  .links.active {
+    top: 0px;
+    opacity: 1;
+    display: flex;
+  }
+
+  
+
   .burguer {
     display: block;
     cursor: pointer;
@@ -126,4 +120,92 @@ const NavContainer = styled.nav`
       display: none;
     }
   }
+  @media (min-width: 1024px) {
+    .links {
+      margin-left: 2rem;
+    }
+  }    
+  @media (max-width: 768px) {
+    .links {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      background-color: rgba(162, 102, 158, 1);
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      z-index: 30;
+      padding-top: 4rem;           
+      gap: 2rem; 
+      padding-left: 3rem;
+    }
+
+    .links.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+    h1 {
+      color: white;
+      font-size: 1rem;
+      font-weight: 400;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+    span {
+      color: white;
+      display: block;
+      font-weight: bold;
+      margin-left: 30px;
+      font-size: 1rem;
+    }
+    img {
+      width: 70px;
+      height: auto;
+    }
+      @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+    .link {
+      color: white;
+      text-decoration: none;
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-align: center;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: color 0.3s ease, transform 0.3s ease;
+      animation: fadeInSlide 0.5s ease forwards;
+    }
+
+    /* Agrega esto solo cuando el menú está activo */
+    .links.active .link:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+    .links.active .link:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .links.active .link:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+    .links.active .link:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+    
+  }
+  
 `
