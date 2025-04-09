@@ -47,41 +47,38 @@ export default function RegistroParticipantes() {
                 <input name="edad" type="number" />
               </label>
 
-              <div className="input-row">
-                <label>
-                  Escuela <span className="mandatory">*</span>
-                  <br />
-                  <select name="escuela">
-                    <option>ITESM Puebla</option>
-                    <option>ITESM Monterrey</option>
-                  </select>
-                </label>
+              <label>
+                Escuela <span className="mandatory">*</span>
+                <br />
+                <input name="escuela" />
+              </label>
+              <label>
+                Sede deseada para registro <span className="mandatory">*</span>
+                <br />
+                <select
+                  name="sede_deseada"
+                  className="select-personalizado"
+                  id="sede_deseada"
+                >
+                  <option>ITESM Puebla</option>
+                  <option>ITESM Monterrey</option>
+                </select>
+              </label>
 
+              <div className="input-row">
                 <label>
                   Escolaridad <span className="mandatory">*</span>
                   <br />
-                  <select name="escolaridad">
+                  <select name="escolaridad" className="select-personalizado">
                     <option>Secundaria</option>
                     <option>Preparatoria</option>
-                  </select>
-                </label>
-              </div>
-
-              <div className="input-row">
-                <label>
-                  Sede deseada para registro{" "}
-                  <span className="mandatory">*</span>
-                  <br />
-                  <select name="sede_deseada">
-                    <option>ITESM Puebla</option>
-                    <option>ITESM Monterrey</option>
                   </select>
                 </label>
 
                 <label>
                   Idioma de preferencia <span className="mandatory">*</span>
                   <br />
-                  <select name="idioma">
+                  <select name="idioma" className="select-personalizado">
                     <option>Español</option>
                     <option>Inglés</option>
                   </select>
@@ -124,7 +121,7 @@ export default function RegistroParticipantes() {
               <label>
                 Telefono del tutor <span className="mandatory">*</span>
                 <br />
-                <input name="edad" type="number" />
+                <input name="edad" type="tel" />
               </label>
               <label>
                 Subir archivo del tutor <span className="mandatory">*</span>
