@@ -7,7 +7,7 @@ export default function RegistroColaboradores(){
             <div className="fondo">
                 <div className='register-container'>
                     <div className='card'>
-                        <h2 className='titulo'>Registro para staff/ instructoras/facilitadoras</h2>
+                        <h1 className='titulo'>Registro para staff/ instructoras/facilitadoras</h1>
                         <h4>Información personal
                             <br/>
                             <span className='instructions'>Llenar con datos como aparecen en un documento oficial.</span>
@@ -46,7 +46,7 @@ export default function RegistroColaboradores(){
 
                             <label>
                                 Sede en la que se desea participar <span className="mandatory">*</span><br />
-                                <select name="sede_participar">
+                                <select name="sede_participar" className='select-personalizado'>
                                     <option>ITESM Puebla</option>
                                     <option>ITESM Monterrey</option>
                                 </select>
@@ -56,14 +56,14 @@ export default function RegistroColaboradores(){
                             <div className="input-row">
                                 <label>
                                     Idioma de preferencia <span className="mandatory">*</span><br />
-                                    <select name="idioma_preferencia">
+                                    <select name="idioma_preferencia" className='select-personalizado'>
                                         <option>Español</option>
                                         <option>Inglés</option>
                                     </select>
                                 </label>
                                 <label>
                                     Nivel de dominio <span className="mandatory">*</span><br />
-                                    <select name="nivel_dominio">
+                                    <select name="nivel_dominio" className='select-personalizado'>
                                         <option>Basico</option>
                                         <option>Avanzado</option>
                                     </select>
@@ -78,7 +78,7 @@ export default function RegistroColaboradores(){
                             
                             <label>
                                     Rol <span className="mandatory">*</span><br />
-                                    <select name="rol">
+                                    <select name="rol" className='select-personalizado'>
                                         <option>Instructora</option>
                                         <option>Facilitadora</option>
                                         <option>Staff</option>
