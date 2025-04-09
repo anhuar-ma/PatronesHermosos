@@ -1,20 +1,23 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import "./styles/App.css";
 import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router-dom";
-import RegistroParticipantes from "./RegistroParticipantes";
-import RegistroColaboradores from "./RegistroColaboradores";
-import RegistroSedes from "./RegistroSedes";
-import IniciarSesion from "./IniciarSesion";
-import Home from "./Home";
+import RegistroParticipantes from "./pages/RegistroParticipantes";
+import RegistroColaboradores from "./pages/RegistroColaboradores";
+import RegistroSedes from "./pages/RegistroSedes";
+import IniciarSesion from "./pages/IniciarSesion";
+import Home from "./pages/Home";
 import ListadoColaboradores from "./ListadoColaboradores";
+import AdminNavbar from "./components/AdminNavBar";
+import { useLocation } from "react-router-dom";
+
 
 function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
   return (
     <>
-      <Navbar></Navbar>
+      {isAdminRoute ? <AdminNavbar /> : <Navbar />}
       <Routes>
         <Route path="/" element={<Home></Home>}>
           {" "}
@@ -33,10 +36,17 @@ function App() {
         </Route>
         <Route path="/sede" element={<RegistroSedes></RegistroSedes>}></Route>
         <Route path="/sesion" element={<IniciarSesion></IniciarSesion>}></Route>
+
         <Route
           path="/viewColaboradores"
           element={<ListadoColaboradores></ListadoColaboradores>}
         ></Route>
+
+        {/* Admin routes */}
+        <Route 
+          path="/admin" 
+          element={<h1>Admin Dashboard</h1>} />
+        <Route path="/admin/add-person" element={<RegistroSedes></RegistroSedes>} />
       </Routes>
     </>
   );

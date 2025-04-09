@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "./registros.css"; // Assuming you want to use the same styles
+import "./styles/registro.css"; // Assuming you want to use the same styles
 
 export default function ListadoColaboradores() {
   const [colaboradores, setColaboradores] = useState([]);
