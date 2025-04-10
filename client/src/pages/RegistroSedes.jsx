@@ -1,18 +1,15 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import '../styles/registros.css'
-
+import '../styles/registros.css';
 
 export default function RegistroSedes() {
     const [fileName, setFileName] = useState('');
-    const [fileError, setFileError] = useState('');
     const [error, setError] = useState('');
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-        getValues
     } = useForm();
 
     const onSubmit = (data) => {
@@ -21,23 +18,9 @@ export default function RegistroSedes() {
             return;
         }
 
-        if (!fileName) {
-            setFileError('No hay archivo seleccionado');
-            return;
-        }
-
         setError('');
-        setFileError('');
         alert('Formulario enviado correctamente ✅');
         console.log(data);
-    };
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFileName(file.name);
-            setFileError('');
-        }
     };
 
     return (
@@ -58,7 +41,7 @@ export default function RegistroSedes() {
                             Nombre(s) de la coordinadora <span className='mandatory'>*</span>
                             <br />
                             <input 
-                                className={errors.apellido_paterno_coordinadora ? 'input-error' : ''}
+                                className={errors.nombre_coordinadora ? 'input-error' : ''}
                                 {...register("nombre_coordinadora", { required: true })}
                                 type="text" 
                             />
@@ -80,7 +63,7 @@ export default function RegistroSedes() {
                             Apellido materno de la coordinadora
                             <br />
                             <input 
-                                {...register("apellido_materno_coordinadora", { required: false })} 
+                                {...register("apellido_materno_coordinadora")} 
                                 type="text" 
                             />
                         </label>
@@ -88,25 +71,19 @@ export default function RegistroSedes() {
                         <label>
                             Correo <span className='mandatory'>*</span>
                             <br />
-                            {/* <input 
-                                className={errors.correo_coordinadora ? 'input-error' : ''}
-                                {...register("correo_coordinadora", { required: true })} 
-                                type="email" 
-                            />
-                            {errors.correo_coordinadora && <p className="error">Correo inválido o vacío</p>} */}
                             <input
                                 {...register("correo_coordinadora", {
                                     required: "Este campo es obligatorio.",
                                     pattern: {
-                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                    message: "Ingresa un correo electrónico válido."
+                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                        message: "Ingresa un correo electrónico válido."
                                     }
                                 })}
                                 type="email"
                                 className={errors.correo_coordinadora ? 'input-error' : ''}
                             />
                             {errors.correo_coordinadora && (
-                            <p className="error">{errors.correo_coordinadora.message}</p>
+                                <p className="error">{errors.correo_coordinadora.message}</p>
                             )}
                         </label>
 
@@ -115,7 +92,7 @@ export default function RegistroSedes() {
                                 Contraseña <span className='mandatory'>*</span>
                                 <br />
                                 <input
-                                    className={errors.verificar_contraseña ? 'input-error' : ''}
+                                    className={errors.contraseña ? 'input-error' : ''}
                                     {...register("contraseña", { required: true })}
                                     type="password"
                                     autoComplete="new-password"
@@ -172,10 +149,23 @@ export default function RegistroSedes() {
                             <br />
                             <input
                                 type="file"
-                                name="archivo_convocatoria"
+                                accept="application/pdf"
                                 id="archivo_tutor"
                                 style={{ display: 'none' }}
-                                onChange={handleFileChange}
+                                {...register("archivo_convocatoria", {
+                                    required: "Este campo es obligatorio.",
+                                    validate: {
+                                        isPdf: (files) => {
+                                            const file = files[0];
+                                            if (!file) return "No hay archivo seleccionado";
+                                            return file.type === "application/pdf" || "Solo se permiten archivos PDF";
+                                        }
+                                    }
+                                })}
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (file) setFileName(file.name);
+                                }}
                             />
                             <button
                                 type="button"
@@ -185,7 +175,9 @@ export default function RegistroSedes() {
                                 Subir archivo
                             </button>
                             {fileName && <p className="archivo-nombre">{fileName}</p>}
-                            {fileError && <p className="error">{fileError}</p>}
+                            {errors.archivo_convocatoria && (
+                                <p className="error">{errors.archivo_convocatoria.message}</p>
+                            )}
                         </label>
 
                         <label>
@@ -201,11 +193,10 @@ export default function RegistroSedes() {
                             </select>
                             {errors.fecha_inicio && <p className="error">Este campo es obligatorio</p>}
                         </label>
-
                     </div>
 
                     <div className='submit'>
-                        <button type="submit" className='purple-button'>Enviar Registro</button>
+                        <input type="submit" className='purple-button' value="Enviar Registro" />
                     </div>
                 </form>
             </div>

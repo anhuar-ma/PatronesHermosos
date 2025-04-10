@@ -25,14 +25,6 @@ export default function RegistroParticipantes() {
         console.log(data);
     };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFileName(file.name);
-            setFileError('');
-        }
-    };
-
     return (
         <div className="fondo">
             <div className='register-container'>
@@ -238,13 +230,27 @@ export default function RegistroParticipantes() {
                         </label>
 
                         <label>
-                            Subir archivo del tutor <span className='mandatory'>*</span><br />
+                            Subir archivo del tutor <span className='mandatory'>*</span>
+                            <br />
                             <input
                                 type="file"
-                                name="archivo_tutor"
+                                accept="application/pdf"
                                 id="archivo_tutor"
-                                onChange={handleFileChange}
                                 style={{ display: 'none' }}
+                                {...register("archivo_tutor", {
+                                    required: "Este campo es obligatorio.",
+                                    validate: {
+                                        isPdf: (files) => {
+                                            const file = files[0];
+                                            if (!file) return "No hay archivo seleccionado";
+                                            return file.type === "application/pdf" || "Solo se permiten archivos PDF";
+                                        }
+                                    }
+                                })}
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (file) setFileName(file.name);
+                                }}
                             />
                             <button
                                 type="button"
@@ -253,8 +259,10 @@ export default function RegistroParticipantes() {
                             >
                                 Subir archivo
                             </button>
-                            {fileName && <span className="archivo-subido">{fileName}</span>}
-                            {fileError && <p className="error">{fileError}</p>}
+                            {fileName && <p className="archivo-nombre">{fileName}</p>}
+                            {errors.archivo_tutor && (
+                                <p className="error">{errors.archivo_tutor.message}</p>
+                            )}
                         </label>
 
                         <div className='submit'>
