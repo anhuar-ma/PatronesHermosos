@@ -14,6 +14,11 @@ export default function RegistroParticipantes() {
     } = useForm();
 
     const onSubmit = (data) => {
+        if (data.contraseña !== data.verificar_contraseña) {
+            setError('Las contraseñas no coinciden');
+            return;
+        }
+
         if (!fileName) {
             setFileError('No hay archivo seleccionado');
             return;
@@ -23,6 +28,19 @@ export default function RegistroParticipantes() {
         setFileError('');
         alert('Formulario enviado correctamente ✅');
         console.log(data);
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.type !== "application/pdf") {
+                setFileError('Solo se permiten archivos PDF');
+                setFileName('');
+                return;
+            }
+            setFileName(file.name);
+            setFileError('');
+        }
     };
 
     return (
@@ -230,27 +248,15 @@ export default function RegistroParticipantes() {
                         </label>
 
                         <label>
-                            Subir archivo del tutor <span className='mandatory'>*</span>
+                            Convocatoria de la sede <span className='mandatory'>*</span>
                             <br />
                             <input
                                 type="file"
-                                accept="application/pdf"
+                                name="archivo_tutor"
                                 id="archivo_tutor"
+                                accept="application/pdf"
                                 style={{ display: 'none' }}
-                                {...register("archivo_tutor", {
-                                    required: "Este campo es obligatorio.",
-                                    validate: {
-                                        isPdf: (files) => {
-                                            const file = files[0];
-                                            if (!file) return "No hay archivo seleccionado";
-                                            return file.type === "application/pdf" || "Solo se permiten archivos PDF";
-                                        }
-                                    }
-                                })}
-                                onChange={(e) => {
-                                    const file = e.target.files[0];
-                                    if (file) setFileName(file.name);
-                                }}
+                                onChange={handleFileChange}
                             />
                             <button
                                 type="button"
@@ -260,9 +266,7 @@ export default function RegistroParticipantes() {
                                 Subir archivo
                             </button>
                             {fileName && <p className="archivo-nombre">{fileName}</p>}
-                            {errors.archivo_tutor && (
-                                <p className="error">{errors.archivo_tutor.message}</p>
-                            )}
+                            {fileError && <p className="error">{fileError}</p>}
                         </label>
 
                         <div className='submit'>
