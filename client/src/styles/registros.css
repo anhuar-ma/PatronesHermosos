@@ -85,13 +85,23 @@ select {
     display: block;
 }
 
-.gray-button{
+.gray-button {
     border-radius: 8px;
     width: 60%;
     height: 2rem;
-    background-color: #7B787A;
+    background-color: #7B787A; /* Gris original */
     color: #FFFFFF;
     margin-top: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: scale(1);
+}
+
+.gray-button:hover {
+    background-color: #5a5859; /* Gris un poco más oscuro */
+    transform: scale(1.03); /* Sutil aumento de tamaño */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave para profundidad */
 }
 
 
@@ -105,11 +115,30 @@ select {
 
 .purple-button{
     border-radius: 5px;
-    width: 150px;
-    height: 35px;
+    /* width: 150px; */
+    /* height: 35px; */
     border: none;
     background-color: #9E629A;
     color: #FFFFFF;    
+    padding: 0.5rem 1rem;
+}
+
+.purple-button:hover{
+    border-radius: 5px;
+    border: none;
+    background-color: green;
+    color: #FFFFFF;    
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Suaviza todos los cambios */
+    transform: scale(1);       /* Estado inicial */
+}
+
+.purple-button:hover {
+    background-color: green;
+    color: #FFFFFF;
+    transform: scale(1.05); /* Hace el botón un poco más grande */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Agrega una sombra para resaltar */
 }
 .select-personalizado {
     background-color: #fff;
@@ -160,6 +189,9 @@ select {
     .select-personalizado{
         font-size: 1rem;
     }
+    .purple-button{
+        font-size: 1.1rem;
+    }
    
 }
 
@@ -188,6 +220,10 @@ select {
     select{
         width: 70%;
     }
+    .purple-button{
+        font-size: 1rem;
+        padding: 0.8rem 4rem;
+    }
 }
 
 /* bigger mobiles */
@@ -213,8 +249,13 @@ select {
     .select-personalizado{
         font-size: 1rem;
     }
-      
+    .purple-button{
+        font-size: 1rem;
+        padding: 0.5rem 3rem;
+    }
 }
+      
+
 
 /* little mobiles */
 @media (max-width: 409px) {
@@ -250,6 +291,10 @@ select {
     }
     .gray-button{
         margin-top: 0.5rem;
+    }
+    .purple-button{
+        font-size: 0.9rem;
+        padding: 0.5rem 3rem;
     }
     
 }

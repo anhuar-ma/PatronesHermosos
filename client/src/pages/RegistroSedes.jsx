@@ -120,18 +120,79 @@ export default function RegistroSedes() {
                 )}
               </label>
 
-              <label>
-                Verificar contraseña <span className="mandatory">*</span>
-                <br />
-                <input
-                  type="password"
-                  autoComplete="new-password"
-                  {...register("verificar_contraseña", { required: true })}
-                />
-                {errors.verificar_contraseña && (
-                  <p className="error">Este campo es obligatorio</p>
-                )}
-              </label>
+                            <label>
+                                Verificar contraseña <span className='mandatory'>*</span>
+                                <br />
+                                <input
+                                    type="password"
+                                    autoComplete="new-password"
+                                    {...register("verificar_contraseña", { required: true })}
+                                />
+                                {errors.verificar_contraseña && <p className="error">Este campo es obligatorio</p>}
+                            </label>
+                        </div>
+
+                        {error && <p className="error">{error}</p>}
+
+                        <label>
+                            Carrera <span className='mandatory'>*</span>
+                            <br />
+                            <input {...register("carrera", { required: true })} type="text" />
+                            {errors.carrera && <p className="error">Este campo es obligatorio</p>}
+                        </label>
+                    </div>
+
+                    <h4>Información de la sede
+                        <br />
+                        <span className='instructions'>Llenar con datos de la sede.</span>
+                    </h4>
+
+                    <div className='form'>
+                        <label>
+                            Nombre de Sede (Con este nombre los alumnos seleccionarán la sede) <span className='mandatory'>*</span>
+                            <br />
+                            <input {...register("nombre_sede", { required: true })} type="text" />
+                            {errors.nombre_sede && <p className="error">Este campo es obligatorio</p>}
+                        </label>
+
+                        <label>
+                            Convocatoria de la sede <span className='mandatory'>*</span>
+                            <br />
+                            <input
+                                type="file"
+                                name="archivo_convocatoria"
+                                id="archivo_tutor"
+                                accept="application/pdf"
+                                style={{ display: 'none' }}
+                                onChange={handleFileChange}
+                            />
+                            <button
+                                type="button"
+                                className="gray-button"
+                                onClick={() => document.getElementById('archivo_tutor').click()}
+                            >
+                                Subir archivo
+                            </button>
+                            {fileName && <p className="archivo-nombre">{fileName}</p>}
+                            {fileError && <p className="error">{fileError}</p>}
+                        </label>
+
+                        <label>
+                            Fecha de inicio <span className="mandatory">*</span>
+                            <br />
+                            <select {...register("fecha_inicio", { required: true })} className='select-personalizado'>
+                                <option value="">Seleccione una fecha</option>
+                                <option value="7/11/22">7/11/22</option>
+                                <option value="8/12/22">8/12/22</option>
+                            </select>
+                            {errors.fecha_inicio && <p className="error">Este campo es obligatorio</p>}
+                        </label>
+                    </div>
+
+                    <div className='submit'>
+                        <button type="submit" className='purple-button'>Enviar Registro</button>
+                    </div>
+                </form>
             </div>
 
             {error && <p className="error">{error}</p>}
