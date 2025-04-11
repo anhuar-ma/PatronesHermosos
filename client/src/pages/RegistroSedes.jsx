@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import '../styles/registros.css'
-
+import '../styles/registros.css/';
 
 export default function RegistroSedes() {
     const [fileName, setFileName] = useState('');
@@ -11,8 +10,7 @@ export default function RegistroSedes() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
-        getValues
+        formState: { errors }
     } = useForm();
 
     const onSubmit = (data) => {
@@ -35,6 +33,11 @@ export default function RegistroSedes() {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            if (file.type !== "application/pdf") {
+                setFileError('Solo se permiten archivos PDF');
+                setFileName('');
+                return;
+            }
             setFileName(file.name);
             setFileError('');
         }
@@ -57,57 +60,28 @@ export default function RegistroSedes() {
                         <label>
                             Nombre(s) de la coordinadora <span className='mandatory'>*</span>
                             <br />
-                            <input 
-                                className={errors.apellido_paterno_coordinadora ? 'input-error' : ''}
-                                {...register("nombre_coordinadora", { required: true })}
-                                type="text" 
-                            />
+                            <input {...register("nombre_coordinadora", { required: true })} type="text" />
                             {errors.nombre_coordinadora && <p className="error">Este campo es obligatorio</p>}
                         </label>
 
                         <label>
                             Apellido paterno de la coordinadora <span className='mandatory'>*</span>
                             <br />
-                            <input
-                                className={errors.apellido_paterno_coordinadora ? 'input-error' : ''} 
-                                {...register("apellido_paterno_coordinadora", { required: true })} 
-                                type="text" 
-                            />
+                            <input {...register("apellido_paterno_coordinadora", { required: true })} type="text" />
                             {errors.apellido_paterno_coordinadora && <p className="error">Este campo es obligatorio</p>}
                         </label>
 
                         <label>
                             Apellido materno de la coordinadora
                             <br />
-                            <input 
-                                {...register("apellido_materno_coordinadora", { required: false })} 
-                                type="text" 
-                            />
+                            <input {...register("apellido_materno_coordinadora")} type="text" />
                         </label>
 
                         <label>
                             Correo <span className='mandatory'>*</span>
                             <br />
-                            {/* <input 
-                                className={errors.correo_coordinadora ? 'input-error' : ''}
-                                {...register("correo_coordinadora", { required: true })} 
-                                type="email" 
-                            />
-                            {errors.correo_coordinadora && <p className="error">Correo inválido o vacío</p>} */}
-                            <input
-                                {...register("correo_coordinadora", {
-                                    required: "Este campo es obligatorio.",
-                                    pattern: {
-                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                    message: "Ingresa un correo electrónico válido."
-                                    }
-                                })}
-                                type="email"
-                                className={errors.correo_coordinadora ? 'input-error' : ''}
-                            />
-                            {errors.correo_coordinadora && (
-                            <p className="error">{errors.correo_coordinadora.message}</p>
-                            )}
+                            <input {...register("correo_coordinadora", { required: true })} type="email" />
+                            {errors.correo_coordinadora && <p className="error">Correo inválido o vacío</p>}
                         </label>
 
                         <div className="input-row">
@@ -115,10 +89,9 @@ export default function RegistroSedes() {
                                 Contraseña <span className='mandatory'>*</span>
                                 <br />
                                 <input
-                                    className={errors.verificar_contraseña ? 'input-error' : ''}
-                                    {...register("contraseña", { required: true })}
                                     type="password"
                                     autoComplete="new-password"
+                                    {...register("contraseña", { required: true })}
                                 />
                                 {errors.contraseña && <p className="error">Este campo es obligatorio</p>}
                             </label>
@@ -127,10 +100,9 @@ export default function RegistroSedes() {
                                 Verificar contraseña <span className='mandatory'>*</span>
                                 <br />
                                 <input
-                                    className={errors.verificar_contraseña ? 'input-error' : ''}
-                                    {...register("verificar_contraseña", { required: true })}
                                     type="password"
-                                    autoComplete="new-password"     
+                                    autoComplete="new-password"
+                                    {...register("verificar_contraseña", { required: true })}
                                 />
                                 {errors.verificar_contraseña && <p className="error">Este campo es obligatorio</p>}
                             </label>
@@ -141,11 +113,7 @@ export default function RegistroSedes() {
                         <label>
                             Carrera <span className='mandatory'>*</span>
                             <br />
-                            <input 
-                                className={errors.carrera ? 'input-error' : ''}
-                                {...register("carrera", { required: true })} 
-                                type="text" 
-                            />
+                            <input {...register("carrera", { required: true })} type="text" />
                             {errors.carrera && <p className="error">Este campo es obligatorio</p>}
                         </label>
                     </div>
@@ -159,11 +127,7 @@ export default function RegistroSedes() {
                         <label>
                             Nombre de Sede (Con este nombre los alumnos seleccionarán la sede) <span className='mandatory'>*</span>
                             <br />
-                            <input
-                                className={errors.nombre_sede ? 'input-error' : ''}
-                                {...register("nombre_sede", { required: true })} 
-                                type="text" 
-                            />
+                            <input {...register("nombre_sede", { required: true })} type="text" />
                             {errors.nombre_sede && <p className="error">Este campo es obligatorio</p>}
                         </label>
 
@@ -174,6 +138,7 @@ export default function RegistroSedes() {
                                 type="file"
                                 name="archivo_convocatoria"
                                 id="archivo_tutor"
+                                accept="application/pdf"
                                 style={{ display: 'none' }}
                                 onChange={handleFileChange}
                             />
@@ -191,21 +156,17 @@ export default function RegistroSedes() {
                         <label>
                             Fecha de inicio <span className="mandatory">*</span>
                             <br />
-                            <select 
-                                className={`select-personalizado ${errors.fecha_inicio ? 'select-error' : ''}`}
-                                {...register("fecha_inicio", { required: true })} 
-                            >
+                            <select {...register("fecha_inicio", { required: true })} className='select-personalizado'>
                                 <option value="">Seleccione una fecha</option>
                                 <option value="7/11/22">7/11/22</option>
                                 <option value="8/12/22">8/12/22</option>
                             </select>
                             {errors.fecha_inicio && <p className="error">Este campo es obligatorio</p>}
                         </label>
-
                     </div>
 
                     <div className='submit'>
-                        <button type="submit" className='purple-button'>Enviar Registro</button>
+                        <input type="submit" className='purple-button' value="Enviar Registro" />
                     </div>
                 </form>
             </div>

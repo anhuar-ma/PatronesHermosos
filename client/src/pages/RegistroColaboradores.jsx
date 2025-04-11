@@ -72,49 +72,51 @@ export default function RegistroColaboradores() {
                   Nombre(s) del colaborador <span className="mandatory">*</span>
                   <br />
                   <input
+                    className={errors.nombre_colaborador ? 'input-error' : ''}    
                     {...register("nombre_colaborador", {
                       required: "Este campo es obligatorio",
                     })}
                     type="text"
                   />
                   {errors.nombre_colaborador && (
-                    <span className="error">
+                    <p className="error">
                       {errors.nombre_colaborador.message}
-                    </span>
+                    </p>
                   )}
                 </label>
 
                 <label>
-                  Apellido paterno del colaborador{" "}
+                  Apellido paterno del colaborador
                   <span className="mandatory">*</span>
                   <br />
                   <input
+                    className={errors.apellido_paterno_colaborador ? 'input-error' : ''}
                     {...register("apellido_paterno_colaborador", {
                       required: "Este campo es obligatorio",
                     })}
                     type="text"
                   />
                   {errors.apellido_paterno_colaborador && (
-                    <span className="error">
+                    <p className="error">
                       {errors.apellido_paterno_colaborador.message}
-                    </span>
+                    </p>
                   )}
                 </label>
 
                 <label>
-                  Apellido materno del colaborador{" "}
-                  <span className="mandatory">*</span>
+                  Apellido materno del colaborador
                   <br />
                   <input
+                    className={errors.apellido_materno_colaborador ? 'input-error' : ''}
                     {...register("apellido_materno_colaborador", {
-                      required: "Este campo es obligatorio",
+                      required: false,
                     })}
                     type="text"
                   />
                   {errors.apellido_materno_colaborador && (
-                    <span className="error">
+                    <p className="error">
                       {errors.apellido_materno_colaborador.message}
-                    </span>
+                    </p>
                   )}
                 </label>
 
@@ -122,6 +124,7 @@ export default function RegistroColaboradores() {
                   Correo <span className="mandatory">*</span>
                   <br />
                   <input
+                    className={errors.correo_colaborador ? 'input-error' : ''}
                     {...register("correo_colaborador", {
                       required: "Este campo es obligatorio",
                       pattern: {
@@ -132,9 +135,9 @@ export default function RegistroColaboradores() {
                     type="email"
                   />
                   {errors.correo_colaborador && (
-                    <span className="error">
+                    <p className="error">
                       {errors.correo_colaborador.message}
-                    </span>
+                    </p>
                   )}
                 </label>
 
@@ -142,21 +145,23 @@ export default function RegistroColaboradores() {
                   Universidad <span className="mandatory">*</span>
                   <br />
                   <input
+                    className={errors.universidad ? 'input-error' : ''}
                     {...register("universidad", {
                       required: "Este campo es obligatorio",
                     })}
                     type="text"
                   />
                   {errors.universidad && (
-                    <span className="error">{errors.universidad.message}</span>
+                    <p className="error">{errors.universidad.message}</p>
                   )}
                 </label>
 
                 <label>
-                  Sede en la que se desea participar{" "}
+                  Sede en la que se desea participar
                   <span className="mandatory">*</span>
                   <br />
                   <select
+                    className={`select-personalizado ${errors.sede_participar ? 'select-error' : ''}`} 
                     {...register("sede_participar", {
                       required: "Este campo es obligatorio",
                     })}
@@ -166,9 +171,9 @@ export default function RegistroColaboradores() {
                     <option value="ITESM Monterrey">ITESM Monterrey</option>
                   </select>
                   {errors.sede_participar && (
-                    <span className="error">
+                    <p className="error">
                       {errors.sede_participar.message}
-                    </span>
+                    </p>
                   )}
                 </label>
 
@@ -177,6 +182,7 @@ export default function RegistroColaboradores() {
                     Idioma de preferencia <span className="mandatory">*</span>
                     <br />
                     <select
+                      className={`select-personalizado ${errors.idioma_preferencia ? 'select-error' : ''}`} 
                       {...register("idioma_preferencia", {
                         required: "Este campo es obligatorio",
                       })}
@@ -186,9 +192,9 @@ export default function RegistroColaboradores() {
                       <option value="Inglés">Inglés</option>
                     </select>
                     {errors.idioma_preferencia && (
-                      <span className="error">
+                      <p className="error">
                         {errors.idioma_preferencia.message}
-                      </span>
+                      </p>
                     )}
                   </label>
 
@@ -196,6 +202,7 @@ export default function RegistroColaboradores() {
                     Nivel de dominio <span className="mandatory">*</span>
                     <br />
                     <select
+                      className={`select-personalizado ${errors.nivel_dominio ? 'select-error' : ''}`} 
                       {...register("nivel_dominio", {
                         required: "Este campo es obligatorio",
                       })}
@@ -205,9 +212,9 @@ export default function RegistroColaboradores() {
                       <option value="Avanzado">Avanzado</option>
                     </select>
                     {errors.nivel_dominio && (
-                      <span className="error">
+                      <p className="error">
                         {errors.nivel_dominio.message}
-                      </span>
+                      </p>
                     )}
                   </label>
                 </div>
@@ -216,13 +223,14 @@ export default function RegistroColaboradores() {
                   Carrera <span className="mandatory">*</span>
                   <br />
                   <input
+                    className={errors.carrera ? 'input-error' : ''}
                     {...register("carrera", {
                       required: "Este campo es obligatorio",
                     })}
                     type="text"
                   />
                   {errors.carrera && (
-                    <span className="error">{errors.carrera.message}</span>
+                    <p className="error">{errors.carrera.message}</p>
                   )}
                 </label>
 
@@ -230,6 +238,7 @@ export default function RegistroColaboradores() {
                   Rol <span className="mandatory">*</span>
                   <br />
                   <select
+                    className={`select-personalizado ${errors.rol ? 'select-error' : ''}`}
                     {...register("rol", {
                       required: "Este campo es obligatorio",
                     })}
@@ -240,7 +249,7 @@ export default function RegistroColaboradores() {
                     <option value="Staff">Staff</option>
                   </select>
                   {errors.rol && (
-                    <span className="error">{errors.rol.message}</span>
+                    <p className="error">{errors.rol.message}</p>
                   )}
                 </label>
 

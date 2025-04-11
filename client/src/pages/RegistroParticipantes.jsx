@@ -14,6 +14,11 @@ export default function RegistroParticipantes() {
     } = useForm();
 
     const onSubmit = (data) => {
+        if (data.contraseña !== data.verificar_contraseña) {
+            setError('Las contraseñas no coinciden');
+            return;
+        }
+
         if (!fileName) {
             setFileError('No hay archivo seleccionado');
             return;
@@ -28,6 +33,11 @@ export default function RegistroParticipantes() {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            if (file.type !== "application/pdf") {
+                setFileError('Solo se permiten archivos PDF');
+                setFileName('');
+                return;
+            }
             setFileName(file.name);
             setFileError('');
         }
@@ -238,13 +248,15 @@ export default function RegistroParticipantes() {
                         </label>
 
                         <label>
-                            Subir archivo del tutor <span className='mandatory'>*</span><br />
+                            Convocatoria de la sede <span className='mandatory'>*</span>
+                            <br />
                             <input
                                 type="file"
                                 name="archivo_tutor"
                                 id="archivo_tutor"
-                                onChange={handleFileChange}
+                                accept="application/pdf"
                                 style={{ display: 'none' }}
+                                onChange={handleFileChange}
                             />
                             <button
                                 type="button"
@@ -253,7 +265,7 @@ export default function RegistroParticipantes() {
                             >
                                 Subir archivo
                             </button>
-                            {fileName && <span className="archivo-subido">{fileName}</span>}
+                            {fileName && <p className="archivo-nombre">{fileName}</p>}
                             {fileError && <p className="error">{fileError}</p>}
                         </label>
 
