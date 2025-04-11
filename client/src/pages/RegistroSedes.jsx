@@ -166,7 +166,7 @@ export default function RegistroSedes() {
                     </div>
 
                     <div className='submit'>
-                        <input type="submit" className='purple-button' value="Enviar Registro" />
+                        <button type="submit" className='purple-button'>Enviar Registro</button>
                     </div>
                 </form>
             </div>
