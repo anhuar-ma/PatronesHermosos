@@ -1,4 +1,4 @@
-import '../styles/registros.css'
+import "../styles/registros.css";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
@@ -31,19 +31,30 @@ export default function RegistroColaboradores() {
         id_grupo: null, // Optional value
       };
 
+      // const API_URL =
+      //   window.location.hostname === "localhost"
+      //     ? "http://localhost:5000"
+      //     : "http://10.50.126.14:5000";
+
+      const API_URL = "http://10.50.126.14:5000";
+
+      window.alert("Formulario enviado correctamente ✅");
+      // Then update the axios call to use this variable
       const response = await axios.post(
-        "http://localhost:5000/api/colaboradores",
+        `${API_URL}/api/colaboradores`,
         colaboradorData,
       );
+
       setSubmitResult({
         success: true,
-        message: "Registro exitoso",
+        // message: "Registro exitoso",
       });
       console.log(response.data);
     } catch (error) {
+      window.alert("Error en el registro");
       setSubmitResult({
         success: false,
-        message: error.response?.data?.message || "Error al enviar el registro",
+        // message: error.response?.data?.message || "Error al enviar el registro",
       });
       console.error("Error:", error);
     } finally {
@@ -72,16 +83,14 @@ export default function RegistroColaboradores() {
                   Nombre(s) del colaborador <span className="mandatory">*</span>
                   <br />
                   <input
-                    className={errors.nombre_colaborador ? 'input-error' : ''}    
+                    className={errors.nombre_colaborador ? "input-error" : ""}
                     {...register("nombre_colaborador", {
                       required: "Este campo es obligatorio",
                     })}
                     type="text"
                   />
                   {errors.nombre_colaborador && (
-                    <p className="error">
-                      {errors.nombre_colaborador.message}
-                    </p>
+                    <p className="error">{errors.nombre_colaborador.message}</p>
                   )}
                 </label>
 
@@ -90,7 +99,9 @@ export default function RegistroColaboradores() {
                   <span className="mandatory">*</span>
                   <br />
                   <input
-                    className={errors.apellido_paterno_colaborador ? 'input-error' : ''}
+                    className={
+                      errors.apellido_paterno_colaborador ? "input-error" : ""
+                    }
                     {...register("apellido_paterno_colaborador", {
                       required: "Este campo es obligatorio",
                     })}
@@ -107,7 +118,9 @@ export default function RegistroColaboradores() {
                   Apellido materno del colaborador
                   <br />
                   <input
-                    className={errors.apellido_materno_colaborador ? 'input-error' : ''}
+                    className={
+                      errors.apellido_materno_colaborador ? "input-error" : ""
+                    }
                     {...register("apellido_materno_colaborador", {
                       required: false,
                     })}
@@ -124,7 +137,7 @@ export default function RegistroColaboradores() {
                   Correo <span className="mandatory">*</span>
                   <br />
                   <input
-                    className={errors.correo_colaborador ? 'input-error' : ''}
+                    className={errors.correo_colaborador ? "input-error" : ""}
                     {...register("correo_colaborador", {
                       required: "Este campo es obligatorio",
                       pattern: {
@@ -135,9 +148,7 @@ export default function RegistroColaboradores() {
                     type="email"
                   />
                   {errors.correo_colaborador && (
-                    <p className="error">
-                      {errors.correo_colaborador.message}
-                    </p>
+                    <p className="error">{errors.correo_colaborador.message}</p>
                   )}
                 </label>
 
@@ -145,7 +156,7 @@ export default function RegistroColaboradores() {
                   Universidad <span className="mandatory">*</span>
                   <br />
                   <input
-                    className={errors.universidad ? 'input-error' : ''}
+                    className={errors.universidad ? "input-error" : ""}
                     {...register("universidad", {
                       required: "Este campo es obligatorio",
                     })}
@@ -161,7 +172,7 @@ export default function RegistroColaboradores() {
                   <span className="mandatory">*</span>
                   <br />
                   <select
-                    className={`select-personalizado ${errors.sede_participar ? 'select-error' : ''}`} 
+                    className={`select-personalizado ${errors.sede_participar ? "select-error" : ""}`}
                     {...register("sede_participar", {
                       required: "Este campo es obligatorio",
                     })}
@@ -171,9 +182,7 @@ export default function RegistroColaboradores() {
                     <option value="ITESM Monterrey">ITESM Monterrey</option>
                   </select>
                   {errors.sede_participar && (
-                    <p className="error">
-                      {errors.sede_participar.message}
-                    </p>
+                    <p className="error">{errors.sede_participar.message}</p>
                   )}
                 </label>
 
@@ -182,7 +191,7 @@ export default function RegistroColaboradores() {
                     Idioma de preferencia <span className="mandatory">*</span>
                     <br />
                     <select
-                      className={`select-personalizado ${errors.idioma_preferencia ? 'select-error' : ''}`} 
+                      className={`select-personalizado ${errors.idioma_preferencia ? "select-error" : ""}`}
                       {...register("idioma_preferencia", {
                         required: "Este campo es obligatorio",
                       })}
@@ -202,7 +211,7 @@ export default function RegistroColaboradores() {
                     Nivel de dominio <span className="mandatory">*</span>
                     <br />
                     <select
-                      className={`select-personalizado ${errors.nivel_dominio ? 'select-error' : ''}`} 
+                      className={`select-personalizado ${errors.nivel_dominio ? "select-error" : ""}`}
                       {...register("nivel_dominio", {
                         required: "Este campo es obligatorio",
                       })}
@@ -212,9 +221,7 @@ export default function RegistroColaboradores() {
                       <option value="Avanzado">Avanzado</option>
                     </select>
                     {errors.nivel_dominio && (
-                      <p className="error">
-                        {errors.nivel_dominio.message}
-                      </p>
+                      <p className="error">{errors.nivel_dominio.message}</p>
                     )}
                   </label>
                 </div>
@@ -223,7 +230,7 @@ export default function RegistroColaboradores() {
                   Carrera <span className="mandatory">*</span>
                   <br />
                   <input
-                    className={errors.carrera ? 'input-error' : ''}
+                    className={errors.carrera ? "input-error" : ""}
                     {...register("carrera", {
                       required: "Este campo es obligatorio",
                     })}
@@ -238,7 +245,7 @@ export default function RegistroColaboradores() {
                   Rol <span className="mandatory">*</span>
                   <br />
                   <select
-                    className={`select-personalizado ${errors.rol ? 'select-error' : ''}`}
+                    className={`select-personalizado ${errors.rol ? "select-error" : ""}`}
                     {...register("rol", {
                       required: "Este campo es obligatorio",
                     })}
@@ -248,9 +255,7 @@ export default function RegistroColaboradores() {
                     <option value="Facilitadora">Facilitadora</option>
                     <option value="Staff">Staff</option>
                   </select>
-                  {errors.rol && (
-                    <p className="error">{errors.rol.message}</p>
-                  )}
+                  {errors.rol && <p className="error">{errors.rol.message}</p>}
                 </label>
 
                 <div className="submit">
@@ -280,4 +285,3 @@ export default function RegistroColaboradores() {
     </>
   );
 }
-
