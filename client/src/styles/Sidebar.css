@@ -1,27 +1,37 @@
 .sidebar {
-    height: 100vh;
-    width: 240px;
-    background-color: #1e1e2f;
-    color: white;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  position: fixed; /* Esto la fija en la pantalla */
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 20%;
+  background-color: white;
+  color: #9197B3;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  /* border: #2c2c3e 1px solid; */
+    /* box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); */
   }
   
   .sidebar-title {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 1.2rem;
+    font-weight: condensed;
     margin-bottom: 30px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    color: black;
+    height: 4.5rem;
   }
   
   .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 1.1rem;
   }
   
   .sidebar-button {
+    text-decoration: none;
     background: none;
     border: none;
     color: inherit;
@@ -36,10 +46,15 @@
   }
   
   .sidebar-button:hover {
-    background-color: #2c2c3e;
+    background-color: #f3bfef;
   }
   
   .sidebar-button.active {
-    background-color: #2c2c3e;
+    background-color: #9E629A;
+    color: white;
   }
-  
+  .img-logo-nav{
+    width: auto;
+    height: 100%;
+    border-radius: 50%;
+  }

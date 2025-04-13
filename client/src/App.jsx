@@ -9,6 +9,7 @@ import IniciarSesion from "./pages/IniciarSesion";
 import Home from "./pages/Home";
 import ListadoColaboradores from "./ListadoColaboradores";
 import AdminNavbar from "./components/AdminNavBar";
+import AdminDashboard from "./pages/admin/adminHome";
 import { useLocation } from "react-router-dom";
 
 
@@ -45,7 +46,7 @@ function App() {
         {/* Admin routes */}
         <Route 
           path="/admin" 
-          element={<h1>Admin Dashboard</h1>} />
+          element={<AdminDashboard></AdminDashboard>} />
         <Route path="/admin/add-person" element={<RegistroSedes></RegistroSedes>} />
       </Routes>
     </>
