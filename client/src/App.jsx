@@ -39,7 +39,7 @@ function App() {
         <Route path="/sesion" element={<IniciarSesion></IniciarSesion>}></Route>
 
         <Route
-          path="/viewColaboradores"
+          path="/admin/viewColaboradores"
           element={<ListadoColaboradores></ListadoColaboradores>}
         ></Route>
 
@@ -47,6 +47,7 @@ function App() {
         <Route 
           path="/admin" 
           element={<AdminDashboard></AdminDashboard>} />
+
         <Route path="/admin/add-person" element={<RegistroSedes></RegistroSedes>} />
       </Routes>
     </>
