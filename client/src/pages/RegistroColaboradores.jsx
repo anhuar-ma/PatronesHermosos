@@ -42,6 +42,9 @@ export default function RegistroColaboradores() {
         success: true,
         // message: "Registro exitoso",
       });
+
+      window.alert("Registro exitoso!");
+
       console.log(response.data);
     } catch (error) {
       window.alert("Error en el registro");
