@@ -11,6 +11,7 @@ import ListadoColaboradores from "./ListadoColaboradores";
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
 import { useLocation } from "react-router-dom";
+import Prueba from "./pages/admin/PruebaTabla";
 
 
 function App() {
@@ -47,6 +48,9 @@ function App() {
         <Route 
           path="/admin" 
           element={<AdminDashboard></AdminDashboard>} />
+           <Route 
+          path="/admin-prueba" 
+          element={<Prueba></Prueba>} />
 
         <Route path="/admin/add-person" element={<RegistroSedes></RegistroSedes>} />
       </Routes>

@@ -8,9 +8,9 @@ export default function AdminNavbar() {
   const [active, setActive] = useState("/");
 
   const navItems = [
-    { name: "Sedes", icon: <MapPinHouse  size={20} />, path: "/" },
+    { name: "Sedes", icon: <MapPinHouse  size={20} />, path: "/admin" },
     { name: "Participantes", icon: <User size={20} />, path: "/perfil" },
-    { name: "Colaboradores", icon: <Settings size={20} />, path: "/colaboradores" },
+    { name: "Colaboradores", icon: <Settings size={20} />, path: "/admin-prueba" },
     { name: "Diplomas", icon: <BookMarked size={20} />, path: "/configuracion" },
   ];
 
@@ -19,12 +19,9 @@ export default function AdminNavbar() {
       <div className="sidebar-title">
         <img src="./src/assets/logo_patrones.png" alt="hola" className="img-logo-nav"/><p>Patrones Hermosos</p></div>
       <nav className="sidebar-nav">
-         <Link to="/admin/viewColaboradores" className='link'>Registro participantes</Link>
-          <Link to="/colaborador" className='link'>Registro colaboradores</Link>
-          <Link to="/sede" className='link'>Registro sedes</Link>
-          <Link to="/sesion" className='link'>Iniciar Sesión</Link>
         {navItems.map((item) => (
           <Link
+            to={item.path}
             key={item.path}
             onClick={() => setActive(item.path)}
             className={`sidebar-button ${active === item.path ? "active" : ""}`}

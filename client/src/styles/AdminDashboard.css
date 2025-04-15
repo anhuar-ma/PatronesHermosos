@@ -1,6 +1,6 @@
 /* Contenedor principal del contenido (sin incluir la sidebar) */
 .admin-dashboard-content {
-    margin-left: 20%; /* Igual al width de la sidebar */
+    margin-left: 18%; /* Igual al width de la sidebar */
     padding: 40px;
     background-color: #9E629A;
     height: 100vh;
