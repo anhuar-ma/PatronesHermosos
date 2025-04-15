@@ -11,7 +11,7 @@ const port = 5000;
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://10.50.126.14:5173"],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
@@ -21,9 +21,9 @@ app.use(bodyParser.json());
 // PostgreSQL connection
 export const pool = new Pool({
   user: "postgres",
-  host: "177.242.39.31",
+  host: "localhost",
   database: "patroneshermosos",
-  port: "15432",
+  port: "5000",
   password: "/BX]#CN!s^xX+]'~*v>^3_K",
   ssl: {
     rejectUnauthorized: false, // Only use in development
