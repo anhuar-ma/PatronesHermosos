@@ -23,7 +23,7 @@ export const pool = new Pool({
   user: "postgres",
   host: "localhost",
   database: "patroneshermosos",
-  port: "15432",
+  port: "5432",
   password: "/BX]#CN!s^xX+]'~*v>^3_K",
   ssl: {
     rejectUnauthorized: false, // Only use in development
