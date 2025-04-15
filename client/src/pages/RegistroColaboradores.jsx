@@ -36,7 +36,7 @@ export default function RegistroColaboradores() {
       //     ? "http://localhost:5000"
       //     : "http://10.50.126.14:5000";
 
-      const API_URL = "http://10.50.126.14:5000";
+      const API_URL = "http://localhost:5000";
 
       window.alert("Formulario enviado correctamente ✅");
       // Then update the axios call to use this variable
