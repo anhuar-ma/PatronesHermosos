@@ -75,7 +75,6 @@ export default function ListadoColaboradores() {
   }
 
   return (
-    <div className="fondo">
       <div className="register-container">
         <div className="card">
 
@@ -129,6 +128,5 @@ export default function ListadoColaboradores() {
           )}
         </div>
       </div>
-    </div>
   );
 }
