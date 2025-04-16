@@ -7,6 +7,9 @@ export default function ListadoColaboradores() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
   useEffect(() => {
     const fetchColaboradores = async () => {
       try {
@@ -38,6 +41,13 @@ export default function ListadoColaboradores() {
     };
     return sedes[id_sede] || `Sede ${id_sede}`;
   };
+
+
+  const totalPages = Math.ceil(colaboradores.length / itemsPerPage);
+  const paginatedColaboradores = colaboradores.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   if (loading) {
     return (
@@ -73,6 +83,7 @@ export default function ListadoColaboradores() {
           {colaboradores.length === 0 ? (
             <p>No hay colaboradores registrados.</p>
           ) : (
+            <>
             <div className="table-container">
               <table className="colaboradores-table">
                 <thead>
@@ -101,6 +112,21 @@ export default function ListadoColaboradores() {
                 </tbody>
               </table>
             </div>
+
+            <div className="paginacion">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`pagina-btn ${
+                    currentPage === index + 1 ? "activa" : ""
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+            </>
           )}
         </div>
       </div>

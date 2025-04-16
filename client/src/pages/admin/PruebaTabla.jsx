@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "../../styles/Tabla.css"; // Asegúrate de tener los estilos agregados
+import tablaColaboradores from '../../ListadoColaboradores.jsx';
 
 export default function ListadoColaboradores() {
   const [colaboradores, setColaboradores] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const itemsPerPage = 8;
 
   useEffect(() => {
     const datosEjemplo = [
@@ -154,18 +155,20 @@ export default function ListadoColaboradores() {
     return sedes[id_sede] || `Sede ${id_sede}`;
   };
 
-  const totalPages = Math.ceil(colaboradores.length / itemsPerPage);
-  const paginatedColaboradores = colaboradores.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  // const totalPages = Math.ceil(colaboradores.length / itemsPerPage);
+  // const paginatedColaboradores = colaboradores.slice(
+  //   (currentPage - 1) * itemsPerPage,
+  //   currentPage * itemsPerPage
+  // );
 
   return (
     <div className="fondo_tablas_admin">
       <div className="container">
         <h2 className="titulo_tabla">Listado de Colaboradores</h2>
 
-        {colaboradores.length === 0 ? (
+        <tablaColaboradores />
+
+        {/* {colaboradores.length === 0 ? (
           <p>No hay colaboradores registrados.</p>
         ) : (
           <>
@@ -204,10 +207,10 @@ export default function ListadoColaboradores() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </div> */}
 
             {/* Paginación */}
-            <div className="paginacion">
+            {/* <div className="paginacion">
               {Array.from({ length: totalPages }, (_, index) => (
                 <button
                   key={index + 1}
@@ -219,9 +222,9 @@ export default function ListadoColaboradores() {
                   {index + 1}
                 </button>
               ))}
-            </div>
-          </>
-        )}
+            </div> */}
+          {/* </> */}
+        {/* )} */}
       </div>
     </div>
   );
