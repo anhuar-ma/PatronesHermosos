@@ -7,7 +7,7 @@ import RegistroColaboradores from "./pages/RegistroColaboradores";
 import RegistroSedes from "./pages/RegistroSedes";
 import IniciarSesion from "./pages/IniciarSesion";
 import Home from "./pages/Home";
-import ListadoColaboradores from "./ListadoColaboradores";
+import ListadoColaboradores from "./components/ListadoColaboradores";
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
 import { useLocation } from "react-router-dom";
