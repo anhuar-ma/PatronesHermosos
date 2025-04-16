@@ -78,7 +78,6 @@ export default function ListadoColaboradores() {
     <div className="fondo">
       <div className="register-container">
         <div className="card">
-          <h2 className="titulo">Listado de Colaboradores</h2>
 
           {colaboradores.length === 0 ? (
             <p>No hay colaboradores registrados.</p>

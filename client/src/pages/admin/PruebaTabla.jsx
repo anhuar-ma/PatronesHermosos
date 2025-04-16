@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "../../styles/Tabla.css"; // Asegúrate de tener los estilos agregados
-import tablaColaboradores from '../../components/ListadoColaboradores.jsx';
+import TablaColaboradores from '../../components/ListadoColaboradores.jsx';
 
 export default function ListadoColaboradores() {
   const [colaboradores, setColaboradores] = useState([]);
@@ -166,7 +166,7 @@ export default function ListadoColaboradores() {
       <div className="container">
         <h2 className="titulo_tabla">Listado de Colaboradores</h2>
 
-        <tablaColaboradores />
+        <TablaColaboradores />
 
         {/* {colaboradores.length === 0 ? (
           <p>No hay colaboradores registrados.</p>
