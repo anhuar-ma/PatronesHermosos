@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "../../styles/Tabla.css"; // Asegúrate de tener los estilos agregados
-import tablaColaboradores from '../../ListadoColaboradores.jsx';
+import tablaColaboradores from '../../components/ListadoColaboradores.jsx';
 
 export default function ListadoColaboradores() {
   const [colaboradores, setColaboradores] = useState([]);
