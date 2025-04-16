@@ -36,19 +36,15 @@ export default function RegistroColaboradores() {
       //     ? "http://localhost:5000"
       //     : "http://10.50.126.14:5000";
 
-      const API_URL = "http://10.50.126.14:5000";
-
-      window.alert("Formulario enviado correctamente ✅");
-      // Then update the axios call to use this variable
-      const response = await axios.post(
-        `${API_URL}/api/colaboradores`,
-        colaboradorData,
-      );
+      const response = await axios.post(`/api/colaboradores`, colaboradorData);
 
       setSubmitResult({
         success: true,
         // message: "Registro exitoso",
       });
+
+      window.alert("Registro exitoso!");
+
       console.log(response.data);
     } catch (error) {
       window.alert("Error en el registro");

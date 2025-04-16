@@ -11,9 +11,9 @@ export default function ListadoColaboradores() {
     const fetchColaboradores = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          "http://localhost:5000/api/colaboradores",
-        );
+
+        const response = await axios.get(`/api/colaboradores`);
+
         setColaboradores(response.data.data);
         setError(null);
       } catch (err) {
