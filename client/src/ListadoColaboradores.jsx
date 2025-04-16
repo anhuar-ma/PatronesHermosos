@@ -12,7 +12,7 @@ export default function ListadoColaboradores() {
       try {
         setLoading(true);
 
-        const response = await axios.post(`/api/colaboradores`);
+        const response = await axios.get(`/api/colaboradores`);
 
         setColaboradores(response.data.data);
         setError(null);
