@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import "../styles/registro.css";
+import "../styles/registro.css"; // Assuming you want to use the same styles
 
 export default function ListadoColaboradores() {
   const [colaboradores, setColaboradores] = useState([]);
@@ -8,21 +8,21 @@ export default function ListadoColaboradores() {
   const [error, setError] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(8); // Se ajustará dinámicamente
-
-  const containerRef = useRef(null);
+  const itemsPerPage = 8;
 
   useEffect(() => {
     const fetchColaboradores = async () => {
       try {
         setLoading(true);
+
         const response = await axios.get(`/api/colaboradores`);
+
         setColaboradores(response.data.data);
         setError(null);
       } catch (err) {
         setError(
           "Error al cargar los colaboradores: " +
-            (err.response?.data?.message || err.message)
+            (err.response?.data?.message || err.message),
         );
         console.error("Error fetching colaboradores:", err);
       } finally {
@@ -33,35 +33,7 @@ export default function ListadoColaboradores() {
     fetchColaboradores();
   }, []);
 
-  // Detectar alto del contenedor y ajustar filas por página
-  useEffect(() => {
-    const calculateItemsPerPage = () => {
-      if (containerRef.current) {
-        const containerHeight = containerRef.current.getBoundingClientRect().height;
-        const rowHeight = 60; // Puedes ajustar esto a tu diseño
-        const headerOffset = 1.5; // Dejar espacio para encabezado y padding
-        const availableRows = Math.floor(containerHeight / rowHeight - headerOffset);
-        setItemsPerPage(Math.max(1, availableRows));
-      }
-    };
-
-    calculateItemsPerPage(); // Inicial
-
-    const observer = new ResizeObserver(() => {
-      calculateItemsPerPage();
-    });
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
-      }
-    };
-  }, []);
-
+  // Helper function to convert sede ID to name
   const getSedeNombre = (id_sede) => {
     const sedes = {
       1: "ITESM Puebla",
@@ -69,6 +41,7 @@ export default function ListadoColaboradores() {
     };
     return sedes[id_sede] || `Sede ${id_sede}`;
   };
+
 
   const totalPages = Math.ceil(colaboradores.length / itemsPerPage);
   const paginatedColaboradores = colaboradores.slice(
@@ -101,50 +74,50 @@ export default function ListadoColaboradores() {
     );
   }
 
-  return (
-    <>
-      <div className="table-container" ref={containerRef}>
-        <table className="colaboradores-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Apellidos</th>
-              <th>Correo</th>
-              <th>Universidad</th>
-              <th>Rol</th>
-              <th>Sede</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedColaboradores.map((colaborador) => (
-              <tr key={colaborador.id_colaborador}>
-                <td>{colaborador.nombre}</td>
-                <td>{`${colaborador.apellido_paterno} ${colaborador.apellido_materno}`}</td>
-                <td>{colaborador.correo}</td>
-                <td>{colaborador.universidad}</td>
-                <td>{colaborador.rol}</td>
-                <td>{getSedeNombre(colaborador.id_sede)}</td>
-                <td>{colaborador.estado}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  return (     
+            <>
+            <div className="table-container">
+              <table className="colaboradores-table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Correo</th>
+                    <th>Universidad</th>
+                    <th>Rol</th>
+                    <th>Sede</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedColaboradores.map((colaborador) => (
+                    <tr key={colaborador.id_colaborador}>
+                      <td>{colaborador.nombre}</td>
+                      <td>{`${colaborador.apellido_paterno} ${colaborador.apellido_materno}`}</td>
+                      <td>{colaborador.correo}</td>
+                      <td>{colaborador.universidad}</td>
+                      <td>{colaborador.rol}</td>
+                      <td>{getSedeNombre(colaborador.id_sede)}</td>
+                      <td>{colaborador.estado}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-      <div className="paginacion">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => setCurrentPage(index + 1)}
-            className={`pagina-btn ${
-              currentPage === index + 1 ? "activa" : ""
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
-    </>
+            <div className="paginacion">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`pagina-btn ${
+                    currentPage === index + 1 ? "activa" : ""
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+            </>
   );
 }
