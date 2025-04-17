@@ -74,12 +74,7 @@ export default function ListadoColaboradores() {
     );
   }
 
-  return (
-      <div className="register-container">
-
-          {colaboradores.length === 0 ? (
-            <p>No hay colaboradores registrados.</p>
-          ) : (
+  return (     
             <>
             <div className="table-container">
               <table className="colaboradores-table">
@@ -124,7 +119,5 @@ export default function ListadoColaboradores() {
               ))}
             </div>
             </>
-          )}
-      </div>
   );
 }
