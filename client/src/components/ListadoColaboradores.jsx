@@ -76,7 +76,6 @@ export default function ListadoColaboradores() {
 
   return (
       <div className="register-container">
-        <div className="card">
 
           {colaboradores.length === 0 ? (
             <p>No hay colaboradores registrados.</p>
@@ -126,7 +125,6 @@ export default function ListadoColaboradores() {
             </div>
             </>
           )}
-        </div>
       </div>
   );
 }
