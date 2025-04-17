@@ -47,6 +47,7 @@ export default function RegistroParticipantes() {
         <div className="fondo">
             <div className='register-container'>
                 <div className='card'>
+    
                     <h2 className='titulo'>Registro para participantes</h2>
                     <form className='form' onSubmit={handleSubmit(onSubmit)} noValidate>
                     <h4>Información personal

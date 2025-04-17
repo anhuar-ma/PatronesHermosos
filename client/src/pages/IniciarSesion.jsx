@@ -5,18 +5,38 @@ export default function IniciarSesion() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setSuccess("");
+        setEmailError("");
+        setPasswordError("");
         setLoading(true);
 
-        const email = e.target.email.value;
+        const email = e.target.email.value.trim();
         const password = e.target.password.value;
 
-        if (!email || !password) {
-            setError("Por favor, completa todos los campos.");
+        let hasError = false;
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!email) {
+            setEmailError("El email es requerido.");
+            hasError = true;
+        } else if (!emailRegex.test(email)) {
+            setEmailError("El email no tiene un formato válido.");
+            hasError = true;
+        }
+
+        if (!password) {
+            setPasswordError("La contraseña es requerida.");
+            hasError = true;
+        }
+
+        if (hasError) {
             setLoading(false);
             return;
         }
@@ -53,17 +73,30 @@ export default function IniciarSesion() {
 
             <div className={styles.formulario_contenedor}>
                 <form className={styles.formulario} onSubmit={handleSubmit}>
+                    <div className={styles.instructions}>
+                        <h4 className={styles.login}>Login</h4>
+                        <p className={styles.instr}>
+                            Bienvenida de nuevo! por favor ingresa tu cuenta.
+                        </p>
+                    </div>
+
                     <label className={styles.letter_email}>
                         Email
                         <input type="text" name="email" className={styles.box} />
+                        {emailError && <p className={styles.error}>{emailError}</p>}
                     </label>
+
                     <label className={styles.letter_email}>
                         Contraseña
                         <input type="password" name="password" className={styles.box} />
+                        {passwordError && <p className={styles.error}>{passwordError}</p>}
                     </label>
-                    <button type="submit" className={styles.box} disabled={loading}>
-                        {loading ? "Cargando..." : "Iniciar sesión"}
-                    </button>
+
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <button type="submit" className={styles.boton} disabled={loading}>
+                            {loading ? "Cargando..." : "Iniciar sesión"}
+                        </button>
+                    </div>
 
                     {error && <p className={styles.error}>{error}</p>}
                     {success && <p className={styles.success}>{success}</p>}
