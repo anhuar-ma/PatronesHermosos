@@ -90,7 +90,7 @@ export default function ListadoColaboradores() {
                   </tr>
                 </thead>
                 <tbody>
-                  {colaboradores.map((colaborador) => (
+                  {paginatedColaboradores.map((colaborador) => (
                     <tr key={colaborador.id_colaborador}>
                       <td>{colaborador.nombre}</td>
                       <td>{`${colaborador.apellido_paterno} ${colaborador.apellido_materno}`}</td>
