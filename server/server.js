@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import colaboradoresRoutes from "./routes/colaboradores.js";
 
 const app = express();
-const port = 5000;
+const port = 8000;
 
 // Middleware
 app.use(
@@ -49,6 +49,6 @@ app.use("/api/colaboradores", colaboradoresRoutes);
 // app.use("/api/participantes", participantesRoutes);
 
 // Listen on all interfaces
-app.listen(process.env.PORT || 5000, "0.0.0.0", () => {
-  console.log(`Server running on port ${process.env.PORT || 5000}`);
+app.listen(process.env.PORT || 8000, "0.0.0.0", () => {
+  console.log(`Server running on port ${process.env.PORT || 8000}`);
 });
