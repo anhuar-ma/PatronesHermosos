@@ -19,14 +19,23 @@ app.use(
 app.use(bodyParser.json());
 
 // PostgreSQL connection
+
+// export const pool = new Pool({
+//   user: process.env.DB_USER || "postgres",
+//   host: process.env.DB_HOST || "localhost",
+//   database: process.env.DB_NAME || "patroneshermosos",
+//   password: process.env.DB_PASSWORD || "/BX]#CN!s^xX+]'~*v>^3_K",
+//   ssl: process.env.DB_SSL === "true" ? true : false,
+// });
+//
 export const pool = new Pool({
   user: "postgres",
-  host: "localhost",
+  host: "177.242.39.31",
   database: "patroneshermosos",
-  port: "5432",
   password: "/BX]#CN!s^xX+]'~*v>^3_K",
+  port: "15432",
   ssl: {
-    rejectUnauthorized: false, // Only use in development
+    rejectUnauthorized: false, // This allows self-signed certificates
   },
 });
 
@@ -39,6 +48,7 @@ app.get("/test", (req, res) => {
 app.use("/api/colaboradores", colaboradoresRoutes);
 // app.use("/api/participantes", participantesRoutes);
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Listen on all interfaces
+app.listen(process.env.PORT || 5000, "0.0.0.0", () => {
+  console.log(`Server running on port ${process.env.PORT || 5000}`);
 });
