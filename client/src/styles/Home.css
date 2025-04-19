@@ -1,4 +1,4 @@
-.perfil{
+.fondo_home{
     background-image: url(../assets/ImgInicio.png);
     background-repeat: no-repeat;      
     background-size: cover;             
@@ -11,8 +11,7 @@
     z-index: -1;
 }
 @media (max-width: 768px) {
-    .perfil{
+    .fondo_home{
         background-position: 15% center;
     }
-
 }

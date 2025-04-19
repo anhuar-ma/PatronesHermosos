@@ -3,8 +3,7 @@ export default function Home(){
     
     return(
         <>
-            <div className="perfil container">
-            
+            <div className="fondo_home"> 
             </div>
         </>
     )
