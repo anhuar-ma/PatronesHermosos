@@ -12,24 +12,35 @@
 .container{
     width: 100%;
     background-color: white;
-    height: 100%;
-    border-radius: 15px;
+    /* height: 100%; */
+    /* border-radius: 15px; */
     padding: 2rem;
 
 }
+.container_tablas{
+    border-radius: 20px;
+}
 .titulo_tabla{
     margin-top: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 0rem;
 }
 
 .table_container {
-
+    width: 100%;
+    height: 100%;
     overflow-x: auto;
     margin: 20px 0;
     border-radius: 8px;
     /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   }
   
+  .titulo-busqueda-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+  }
   .colaboradores-table {
     width: 100%;
     border-collapse: collapse;
@@ -49,7 +60,7 @@
   }
   
   .colaboradores-table th {
-    color: #333;
+    color: #9E629A;
     font-weight: 600;
     font-size: 14px;
     text-transform: uppercase;
@@ -145,3 +156,14 @@
     color: white;
   }
   
+
+  .busqueda-container {
+    margin: 0rem 0;
+    text-align: right;
+  }
+  .input-busqueda {
+    padding: 0.5rem;
+    width: 250px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }

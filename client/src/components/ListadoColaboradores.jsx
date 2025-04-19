@@ -8,7 +8,7 @@ export default function ListadoColaboradores() {
   const [error, setError] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 12;
 
   useEffect(() => {
     const fetchColaboradores = async () => {

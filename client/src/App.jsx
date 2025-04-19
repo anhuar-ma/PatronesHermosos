@@ -7,11 +7,10 @@ import RegistroColaboradores from "./pages/RegistroColaboradores";
 import RegistroSedes from "./pages/RegistroSedes";
 import IniciarSesion from "./pages/IniciarSesion";
 import Home from "./pages/Home";
-import ListadoColaboradores from "./components/ListadoColaboradores";
+import ListadoColaboradores from "./pages/admin/ViewColaboradores";
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
 import { useLocation } from "react-router-dom";
-import Prueba from "./pages/admin/PruebaTabla";
 
 
 function App() {
@@ -39,18 +38,16 @@ function App() {
         <Route path="/sede" element={<RegistroSedes></RegistroSedes>}></Route>
         <Route path="/sesion" element={<IniciarSesion></IniciarSesion>}></Route>
 
-        <Route
-          path="/admin/viewColaboradores"
-          element={<ListadoColaboradores></ListadoColaboradores>}
-        ></Route>
+       
 
         {/* Admin routes */}
         <Route 
-          path="/admin" 
+          path="/admin/inicio" 
           element={<AdminDashboard></AdminDashboard>} />
-           <Route 
-          path="/admin-prueba" 
-          element={<Prueba></Prueba>} />
+        <Route
+          path="/admin/colaboradores"
+          element={<ListadoColaboradores></ListadoColaboradores>}
+        ></Route>
 
         <Route path="/admin/add-person" element={<RegistroSedes></RegistroSedes>} />
       </Routes>
