@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
-import {House, MapPinHouse, Settings, User, BookMarked, ChevronRight,Contact} from "lucide-react";
+import {House, MapPinHouse, Settings, User, BookMarked, ChevronRight,Contact, LogOut} from "lucide-react";
 import "../styles/Sidebar.css"; // Asegúrate de importar los estilos
 
 export default function AdminNavbar() {
@@ -35,6 +35,12 @@ export default function AdminNavbar() {
           </Link>
         ))}
       </nav>
+      <div className="sidebar-footer">
+        <Link to="/" className="sidebar-button-logout">
+          <LogOut size={20} />
+          <span>Cerrar sesión</span>
+        </Link>
+      </div>
     </aside>
   );
 }
