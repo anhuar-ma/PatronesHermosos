@@ -39,10 +39,15 @@
     text-align: left;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
     cursor: pointer;
     border-radius: 8px;
     transition: background 0.2s;
+  }
+  .sidebar-icon-name{
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
   
   .sidebar-button:hover {

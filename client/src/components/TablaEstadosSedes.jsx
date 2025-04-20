@@ -23,7 +23,7 @@ const TablaEstadoSedes = () => {
 
   return (
     <div className="table-section">
-      <h2>📌 Estado de Sedes</h2>
+      <h2>Estado de Sedes</h2>
       <table className="comparison-table">
         <thead>
           <tr>

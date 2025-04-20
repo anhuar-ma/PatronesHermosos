@@ -34,7 +34,7 @@ const DistribucionPoblacion = () => {
   return (
     <div className="chart-section">
       <div className="chart-box">
-        <h2>👩‍🎓 Distribución de Alumnas</h2>
+        <h2>Distribución de Alumnas</h2>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -55,7 +55,7 @@ const DistribucionPoblacion = () => {
       </div>
 
       <div className="chart-box">
-        <h2>👥 Distribución de Staff</h2>
+        <h2>Distribución de Staff</h2>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie

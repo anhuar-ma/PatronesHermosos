@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
-import {House, MapPinHouse, Settings, User, BookMarked, ChevronRight} from "lucide-react";
+import {House, MapPinHouse, Settings, User, BookMarked, ChevronRight,Contact} from "lucide-react";
 import "../styles/Sidebar.css"; // Asegúrate de importar los estilos
 
 export default function AdminNavbar() {
@@ -11,7 +11,7 @@ export default function AdminNavbar() {
     { name: "Inicio", icon: <House size={20} />, path: "/admin/inicio" },
     { name: "Sedes", icon: <MapPinHouse  size={20} />, path: "/admin/sedes" },
     { name: "Participantes", icon: <User size={20} />, path: "/admin/participantes" },
-    { name: "Colaboradores", icon: <Settings size={20} />, path: "/admin/colaboradores" },
+    { name: "Colaboradores", icon: <Contact size={20} />, path: "/admin/colaboradores" },
     { name: "Diplomas", icon: <BookMarked size={20} />, path: "/admin/diplomas" },
   ];
 
@@ -27,8 +27,10 @@ export default function AdminNavbar() {
             onClick={() => setActive(item.path)}
             className={`sidebar-button ${active === item.path ? "active" : ""}`}
           >
+            <div className="sidebar-icon-name">
             {item.icon}
             <span>{item.name}</span>
+            </div>
             <ChevronRight size={20} />
           </Link>
         ))}
