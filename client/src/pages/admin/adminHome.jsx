@@ -13,7 +13,7 @@ import TablaEstadoSedes from "../../components/TablaEstadosSedes.jsx";
 const AdminDashboard = () => {
   return (
     <div className="admin-dashboard-content">
-      <h1>📊 Dashboard Nacional</h1>
+      <h1>Bienvenida de nuevo, Rosa</h1>
       <p>Visión general del estado de las sedes, cursos y alumnas.</p>
 
       <KPICards />
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
       <TablaComparativa />
 
       <div className="chart-box">
-        <h2>📅 Inicio de Actividades por Sede</h2>
+        <h2>Inicio de Actividades por Sede</h2>
         <TablaEstadoSedes />
       </div>
 
