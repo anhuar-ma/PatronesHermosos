@@ -1,27 +1,25 @@
 body{
-    font-family: "Commissioner", sans-serif;
+  font-family: "Commissioner", sans-serif;
 }
-.fondo {
-    width: 100vw;
-    height: 50vh;
-    background-color: #9E629A;
-    position: absolute; 
-    top: 0;
-    left: 0;
-    z-index: 0;
+.registro__fondoMorado {
+  width: 100vw;
+  height: 50vh;
+  background-color: var(--color-primario);
+  position: absolute; 
+  top: 0;
+  left: 0;
+  z-index: 0;
 }
-
-
 
 .register-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    width: 100%;
-    padding-top: 100px;
-    padding-bottom: 100px;
-    overflow-y: auto; 
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  width: 100%;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  overflow-y: auto; 
 }
 
 
@@ -39,7 +37,7 @@ body{
 
 
 
-.titulo{
+.registro__titulo{
     text-align: center;
     text-transform:uppercase;
     color: #9E629A;
@@ -77,14 +75,14 @@ h4{
 }
 
 
-input {
+.registro__input {
     border: none;
     border-bottom: 1px solid #c0c0c0;
     padding: 8px 4px;
     width: 300px;
 }
 
-select {
+.formualrio__select {
     width: 100%;
 }
 

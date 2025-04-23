@@ -44,11 +44,11 @@ export default function RegistroParticipantes() {
     };
 
     return (
-        <div className="fondo">
+        <div className="registro__fondoMorado">
             <div className='register-container'>
                 <div className='card'>
     
-                    <h2 className='titulo'>Registro para participantes</h2>
+                    <h2 className='registro__titulo'>Registro para participantes</h2>
                     <form className='form' onSubmit={handleSubmit(onSubmit)} noValidate>
                     <h4>Información personal
                         <br />
@@ -92,7 +92,7 @@ export default function RegistroParticipantes() {
                             {/* <input type="email" {...register("correo_alumna", { required: true })} />
                             {errors.correo_alumna && <p className="error">Este campo es obligatorio</p>} */}
                             <input
-                                className={errors.correo_alumna ? 'input-error' : ''}
+                                className={`registro__input ${errors.correo_tutor ? 'input-error' : ''}`}
                                 type="email"
                                 {...register("correo_alumna", {
                                     required: "Este campo es obligatorio.",
