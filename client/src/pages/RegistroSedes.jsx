@@ -44,10 +44,10 @@ export default function RegistroSedes() {
   };
 
   return (
-    <div className="fondo">
+    <div className="registro__fondoMorado">
       <div className="register-container">
         <form className="card" onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="titulo">Registro para sedes</h2>
+          <h2 className="registro__titulo">Registro para sedes</h2>
 
           <h4>
             Información personal
@@ -59,9 +59,10 @@ export default function RegistroSedes() {
 
           <div className="form">
             <label>
-              Nombre(s) de la coordinadora <span className="mandatory">*</span>
+              Nombre(s) de la alumna&nbsp;<span className="mandatory">*</span>
               <br />
               <input
+                 className={`registro__input ${errors.nombre_coordinadora ? 'input-error' : ''}`}
                 {...register("nombre_coordinadora", { required: true })}
                 type="text"
               />
@@ -75,6 +76,7 @@ export default function RegistroSedes() {
               <span className="mandatory">*</span>
               <br />
               <input
+                className={`registro__input ${errors.apellido_paterno_coordinadora? 'input-error' : ''}`}
                 {...register("apellido_paterno_coordinadora", {
                   required: true,
                 })}
@@ -89,6 +91,7 @@ export default function RegistroSedes() {
               Apellido materno de la coordinadora
               <br />
               <input
+                className='registro__input'
                 {...register("apellido_materno_coordinadora")}
                 type="text"
               />
@@ -98,6 +101,7 @@ export default function RegistroSedes() {
               Correo <span className="mandatory">*</span>
               <br />
               <input
+                className={`registro__input ${errors.correo_coordinadora ? 'input-error' : ''}`}
                 {...register("correo_coordinadora", { required: true })}
                 type="email"
               />
@@ -106,30 +110,35 @@ export default function RegistroSedes() {
               )}
             </label>
 
-            <div className="input-row">
-              <label>
-                Contraseña <span className="mandatory">*</span>
-                <br />
-                <input
-                  type="password"
-                  autoComplete="new-password"
-                  {...register("contraseña", { required: true })}
-                />
-                {errors.contraseña && (
-                  <p className="error">Este campo es obligatorio</p>
-                )}
-                Verificar contraseña <span className="mandatory">*</span>
-                <br />
-                <input
-                  type="password"
-                  autoComplete="new-password"
-                  {...register("verificar_contraseña", { required: true })}
-                />
-                {errors.verificar_contraseña && (
-                  <p className="error">Este campo es obligatorio</p>
-                )}
-              </label>
-            </div>
+          <div className="input-row">
+            <label>
+              Contraseña <span className="mandatory">*</span>
+              <br />
+              <input
+                className="registro__input"
+                type="password"
+                autoComplete="new-password"
+                {...register("contraseña", { required: true })}
+              />
+              {errors.contraseña && (
+                <p className="error">Este campo es obligatorio</p>
+              )}
+            </label>
+
+            <label>
+              Verificar contraseña <span className="mandatory">*</span>
+              <br />
+              <input
+                className="registro__input"
+                type="password"
+                autoComplete="new-password"
+                {...register("verificar_contraseña", { required: true })}
+              />
+              {errors.verificar_contraseña && (
+                <p className="error">Este campo es obligatorio</p>
+              )}
+            </label>
+          </div>
 
             {error && <p className="error">{error}</p>}
           </div>
@@ -144,8 +153,8 @@ export default function RegistroSedes() {
             <label>
               Nombre de Sede (Con este nombre los alumnos seleccionarán la sede){" "}
               <span className="mandatory">*</span>
-              <br />
               <input
+                className={`registro__input ${errors.nombre_sede ? 'input-error' : ''}`}
                 {...register("nombre_sede", { required: true })}
                 type="text"
               />
@@ -158,6 +167,7 @@ export default function RegistroSedes() {
               Convocatoria de la sede <span className="mandatory">*</span>
               <br />
               <input
+                className={`registro__input ${errors.correo_coordinadora ? 'input-error' : ''}`}
                 type="file"
                 name="archivo_convocatoria"
                 id="archivo_tutor"
@@ -180,8 +190,8 @@ export default function RegistroSedes() {
               Fecha de inicio <span className="mandatory">*</span>
               <br />
               <select
+                className={`select-personalizado ${errors.escolaridad ? 'select-error' : ''}`}  
                 {...register("fecha_inicio", { required: true })}
-                className="select-personalizado"
               >
                 <option value="">Seleccione una fecha</option>
                 <option value="7/11/22">7/11/22</option>
