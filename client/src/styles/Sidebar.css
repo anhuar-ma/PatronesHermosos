@@ -1,179 +1,254 @@
-
-  /* position: fixed; Esto la fija en la pantalla */
-
- 
-  /* border: #2c2c3e 1px solid; */
-    /* box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); */
-  
-  @media (min-width: 1024px) {
-    .sidebar {
-      /* width: 100%; */
-      width: 18%;
-      background-color: white;
-      color: #9197B3;
-      /* padding: 20px; */
-      display: flex;
-     
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      padding: 20px;
-      /* background-color: #9197B3; */
-      flex-direction: column;
-    }
-    
-  }
-  
-  .sidebar-title {
-    font-size: 1.2rem;
-    font-weight: condensed;
-    margin-bottom: 30px;
+@media (min-width: 1024px) {
+  .AdminNavbar {
+    width: 18%;
+    background-color: white;
+    color: #9197b3;
     display: flex;
-    width: 100%;
-    align-items: center;
-    color: black;
-    height: 4.5rem;
-  }
-  
-  .sidebar-nav {
-    display: flex;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    padding: 20px;
     flex-direction: column;
-    gap: 1.1rem;
   }
-  
-  .sidebar-button {
-    text-decoration: none;
-    background: none;
-    border: none;
-    color: inherit;
-    padding: 10px 15px;
-    text-align: left;
+}
+
+.AdminNavbar__title {
+  font-size: 1.2rem;
+  font-weight: condensed;
+  margin-bottom: 30px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  color: black;
+  height: 4.5rem;
+}
+
+.AdminNavbar__nav {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.AdminNavbar__button {
+  text-decoration: none;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 10px 15px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.AdminNavbar__container-icon-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.AdminNavbar__button:hover {
+  background-color: #f3bfef;
+}
+
+.AdminNavbar__button.active {
+  background-color: #9e629a;
+  color: white;
+}
+.AdminNavbar__imgLogoNav {
+  width: auto;
+  height: 100%;
+  border-radius: 50%;
+}
+/* .AdminNavbar__footer {
+  /* margin-top: auto; */
+
+.AdminNavbar__button-logout {
+  text-decoration: none;
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 10px 15px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+  margin-top: auto;
+}
+.AdminNavbar__button-logout:hover {
+  background-color: #f3bfef;
+}
+
+.AdminNavBar__burguerButton {
+  display: block;
+  cursor: pointer;
+  z-index: 20;
+  height: 100%;
+  width: auto;
+  @media (min-width: 1025px) {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .AdminNavbar {
+    background-color: var(--color-primario);
+    /* color: white; */
+    width: 100%;
+    height: 10%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background 0.2s;
+    position: relative;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
-  .sidebar-icon-name{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .sidebar-button:hover {
-    background-color: #f3bfef;
-  }
-  
-  .sidebar-button.active {
-    background-color: #9E629A;
+  .AdminNavbar__title {
+    width: 80%;
+    font-size: 1.8rem;
+    margin-bottom: 0px;
     color: white;
   }
-  .img-logo-nav{
-    width: auto;
+  .AdminNavbar__nav {
+    position: fixed;
+    top: 0;
+    left: 0;
     height: 100%;
-    border-radius: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: white;
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 5;
+    padding-top: 4rem;
+    gap: 2.4rem;
+    padding-left: 3rem;
+    
   }
-  .sidebar-footer{
-    margin-top: auto;
-    /* display: flex; */
-    /* justify-content: space-between;
-    gap: 20px; */
+  .AdminNavBar__icon {
+    fill: white;
+    color: #5d395a;
   }
-  .sidebar-button-logout{
-    text-decoration: none;
-    background: none;
-    border: none;
-    color: inherit;
-    padding: 10px 15px;
-    text-align: left;
+
+  .AdminNavbar__nav.active  {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+  .AdminNavbar__buttonLabel {
+    color: #5d395a;
+    display: block;
+    /* font-weight: bold; */
+    margin-left: 30px;
+    font-size: 1.8rem;
+  }
+  .AdminNavbar__imgLogoNav {
+    width: 3rem;
+    height: auto;
+  }
+  .AdminNavbar__button-logout{
+    margin-bottom: 2rem;
+  }
+  /* .AdminNavbar__button.active {
+    background-color: #9e629a;
+    color: white;
+  } */
+  @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+}
+
+
+@media (max-width: 700px) {
+  .AdminNavbar {
+    background-color: var(--color-primario);
+    /* color: white; */
+    width: 100%;
+    height: 10%;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background 0.2s;
+    justify-content: space-between;
+    position: relative;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
-  .sidebar-button-logout:hover {
-    background-color: #f3bfef;
+  .AdminNavbar__title {
+    width: 80%;
+    font-size: 1.5rem;
+    margin-bottom: 0px;
+    color: white;
   }
-
-
-  .burguer {
-    display: block;
-    cursor: pointer;
-    z-index: 20;
-    width: 20%;
-
-    @media (min-width: 1025px) {
-      display: none;
-    }
-  }
-
-
-  @media (max-width: 1024px) {
-    .sidebar{
-      background-color: var(--color-primario);
-      /* color: white; */
-      width: 100%;
-      height: 10%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-    }
-    .sidebar-title{
-      width: 80%;
-      margin-bottom: 0px;
-      color: white;
-    }
-    .sidebar-nav {
-      background-color: rgba(162, 102, 158, 1);
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      background-color: rgba(162, 102, 158, 1);
-      transform: translateY(-100%);
-      opacity: 0;
-      pointer-events: none;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      z-index: 5;
-      padding-top: 4rem;           
-      gap: 2rem; 
-      padding-left: 3rem;
-    }
-    .icon{
-      fill: white;
-      color:#5d395a
-    }
-     
-
-    .sidebar-nav.active {
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: all;
-    }
+  .AdminNavbar__nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: white;
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 5;
+    padding-top: 4rem;
+    gap: 2.4rem;
+    padding-left: 3rem;
     
-    span {
-      color: white;
-      display: block;
-      font-weight: bold;
-      margin-left: 30px;
-      font-size: 1.8rem;
-    }
-    img {
-      width: 40px;
-      height: auto;
-    }
-      @keyframes fadeInSlide {
+  }
+  .AdminNavBar__icon {
+    fill: white;
+    color: #5d395a;
+  }
+
+  .AdminNavbar__nav.active  {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+  .AdminNavbar__buttonLabel {
+    color: #5d395a;
+    display: block;
+    /* font-weight: bold; */
+    margin-left: 30px;
+    font-size: 1.8rem;
+  }
+  .AdminNavbar__imgLogoNav {
+    width: 3rem;
+    height: auto;
+  }
+  .AdminNavbar__button-logout{
+    margin-bottom: 2rem;
+  }
+  /* .AdminNavbar__button.active {
+    background-color: #9e629a;
+    color: white;
+  } */
+  @keyframes fadeInSlide {
     from {
       opacity: 0;
       transform: translateX(-30px);

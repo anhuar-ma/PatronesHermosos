@@ -7,11 +7,9 @@
     width: auto;
   }
   
-
   /* Estilos generales del dashboard */
 .admin-dashboard-content {
   padding: 2rem;
-  /* font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; */
   background-color: #f9f9f9;
   color: #333;
 }
@@ -29,14 +27,14 @@
 }
 
 /* Sección KPI */
-.kpi-cards {
+.adminDashboard__cards {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 2rem;
 }
 
-.kpi-card {
+.adminDashboard__card {
   flex: 1 1 calc(33.333% - 1rem); /* Máximo 3 por fila */
   min-width: 180px;
   background-color: #ffffff;
@@ -47,31 +45,31 @@
   transition: transform 0.2s ease;
 }
 
-.kpi-card:hover {
+.adminDashboard__card:hover {
   transform: translateY(-3px);
 }
 
-.kpi-card h3 {
+.adminDashboard__card h3 {
   font-size: 1rem;
   margin-bottom: 0.5rem;
   color: #555;
 }
 
-.kpi-card p {
+.adminDashboard__card p {
   font-size: 1.5rem;
   font-weight: bold;
   color: #222;
 }
 
 /* Sección de gráficos */
-.chart-section {
+.adminDashboard__chart-section {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
   margin-bottom: 2rem;
 }
 
-.chart-box {
+.adminDashboard__chart-box {
   flex: 1;
   min-width: 300px;
   background-color: #fff;
@@ -81,12 +79,12 @@
 }
 
 /* Tabla comparativa */
-.table-section {
+.adminDashboard__tableSection {
   margin-bottom: 2rem;
   overflow-x: auto;
 }
 
-.comparison-table {
+.adminDashboard__comparisonTable {
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
@@ -95,60 +93,60 @@
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
 }
 
-.comparison-table th,
-.comparison-table td {
+.adminDashboard__comparisonTable th,
+.adminDashboard__comparisonTable td {
   padding: 0.75rem;
   border-bottom: 1px solid #eee;
   text-align: center;
   font-size: 0.95rem;
 }
 
-.comparison-table th {
+.adminDashboard__comparisonTable th {
   background-color: #f0f0f0;
   font-weight: bold;
 }
 
 /* Alertas */
-.alert-section {
+/* .alert-section {
   margin-bottom: 2rem;
-}
+} */
 
-.alert-list {
+/* .alert-list {
   list-style: none;
   padding: 0;
-}
-
+} */
+/* 
 .alert {
   padding: 0.75rem 1rem;
   border-radius: 6px;
   margin-bottom: 0.5rem;
   font-weight: 500;
-}
+} */
 
-.alert-red {
+/* .alert-red {
   background-color: #ffe5e5;
   color: #b30000;
-}
+} */
 
-.alert-yellow {
+/* .alert-yellow {
   background-color: #fff9e6;
   color: #b38f00;
-}
+} */
 
-.alert-green {
+/* .alert-green {
   background-color: #e6ffe6;
   color: #267300;
-}
+} */
 
 /* Botones de descarga */
-.download-section {
+/* .download-section {
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
   flex-wrap: wrap;
-}
+} */
 
-.btn-download {
+/* .btn-download {
   background-color: #007bff;
   color: white;
   padding: 0.75rem 1.5rem;
@@ -157,11 +155,11 @@
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.2s ease;
-}
+} */
 
-.btn-download:hover {
+/* .btn-download:hover {
   background-color: #0056b3;
-}
+} */
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -188,27 +186,27 @@
 
 
 
-.estado-tag {
+.adminDashboard__estado-tag {
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 500;
 }
 
-.estado-tag.activa {
+.adminDashboard__estado-tag.activa {
   background-color: #e6ffed;
   color: #2e7d32;
   border: 1px solid #b2dfdb;
 }
 
-.estado-tag.pendiente {
+.adminDashboard__estado-tag.pendiente {
   background-color: #fff4e6;
   color: #a15c00;
   border: 1px solid #ffd699;
 }
 
 
-.title-admin {
+.adminDashboard__tituloBienvenida {
   /* color: white; */
   /* font-size: 3rem; */
   font-weight: 400;

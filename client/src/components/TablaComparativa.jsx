@@ -27,9 +27,9 @@ const TablaComparativa = () => {
   ];
 
   return (
-    <div className="table-section">
+    <div className="adminDashboard__tableSection">
       <h2>Información de sedes aceptadas</h2>
-      <table className="comparison-table">
+      <table className="adminDashboard__comparisonTable">
         <thead>
           <tr>
             <th>Sede</th>
