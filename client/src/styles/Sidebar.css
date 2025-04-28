@@ -1,20 +1,19 @@
-.sidebar {
+
   /* position: fixed; Esto la fija en la pantalla */
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 18%;
-  background-color: white;
-  color: #9197B3;
-  padding: 20px;
-  display: flex;
+
  
   /* border: #2c2c3e 1px solid; */
     /* box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); */
-  }
+  
   @media (min-width: 1024px) {
     .sidebar {
       /* width: 100%; */
+      width: 18%;
+      background-color: white;
+      color: #9197B3;
+      /* padding: 20px; */
+      display: flex;
+     
       height: 100vh;
       position: fixed;
       top: 0;
@@ -116,9 +115,10 @@
 
   @media (max-width: 1024px) {
     .sidebar{
-      background-color: #9197B3;
+      background-color: var(--color-primario);
+      /* color: white; */
       width: 100%;
-      height: auto;
+      height: 10%;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -127,6 +127,7 @@
     .sidebar-title{
       width: 80%;
       margin-bottom: 0px;
+      color: white;
     }
     .sidebar-nav {
       background-color: rgba(162, 102, 158, 1);
@@ -160,13 +161,7 @@
       opacity: 1;
       pointer-events: all;
     }
-    h1 {
-      color: white;
-      font-size: 1.8rem;
-      font-weight: 400;
-      white-space: nowrap;
-      font-weight: bold;
-    }
+    
     span {
       color: white;
       display: block;
@@ -175,7 +170,7 @@
       font-size: 1.8rem;
     }
     img {
-      width: 70px;
+      width: 40px;
       height: auto;
     }
       @keyframes fadeInSlide {

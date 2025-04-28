@@ -165,6 +165,12 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+
+
+  .admin-dashboard-content h1 {
+    font-size: 1.7rem;
+    margin-bottom: 0.5rem;
+  }
   .chart-section {
     flex-direction: column;
   }
@@ -172,6 +178,12 @@
   .kpi-cards {
     flex-direction: column;
   }
+
+  .admin-dashboard-content{
+    margin-left: 0; /* Elimina el margen izquierdo en pantallas pequeñas */
+    /* padding: 20px; Ajusta el padding para pantallas pequeñas */
+  }
+
 }
 
 
@@ -193,4 +205,13 @@
   background-color: #fff4e6;
   color: #a15c00;
   border: 1px solid #ffd699;
+}
+
+
+.title-admin {
+  /* color: white; */
+  /* font-size: 3rem; */
+  font-weight: 400;
+  white-space: nowrap;
+  font-weight: bold;
 }
