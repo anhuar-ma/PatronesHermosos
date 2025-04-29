@@ -150,6 +150,10 @@ body {
   border-color: #ec002b !important;
 }
 
+#nombre_sede{
+  display: block;
+}
+
 /* Laptop */
 @media (min-width: 1025px) {
   .registro_containerForm {

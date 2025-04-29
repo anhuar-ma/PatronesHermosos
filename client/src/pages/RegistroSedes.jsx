@@ -46,44 +46,46 @@ export default function RegistroSedes() {
   return (
     <div className="registro__fondoMorado">
       <div className="register-container">
-        <form className="card" onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="registro__titulo">Registro para sedes</h2>
-
-          <h4>
-            Información personal
-            <br />
-            <span className="instructions">
+      <div className="registro_containerForm">
+      <h2 className="registro__titulo">Registro para sedes</h2>
+        <form
+          className="registro__formulario"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <h4 className="registro__tituloSeccion">Información personal</h4>
+            <p className="registro__instrucciones">
               Llenar con datos como aparecen en un documento oficial.
-            </span>
-          </h4>
-
-          <div className="form">
+            </p>
             <label>
-              Nombre(s) de la alumna&nbsp;<span className="mandatory">*</span>
+              Nombre(s) de la alumna&nbsp;<span className="registro__obligatorio">*</span>
               <br />
               <input
-                 className={`registro__input ${errors.nombre_coordinadora ? 'input-error' : ''}`}
+                className={`registro__input ${
+                  errors.nombre_coordinadora ? "registro__input-error" : ""
+                }`}
                 {...register("nombre_coordinadora", { required: true })}
                 type="text"
               />
               {errors.nombre_coordinadora && (
-                <p className="error">Este campo es obligatorio</p>
+                <p className="registro__error">Este campo es obligatorio</p>
               )}
             </label>
 
             <label>
               Apellido paterno de la coordinadora{" "}
-              <span className="mandatory">*</span>
+              <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${errors.apellido_paterno_coordinadora? 'input-error' : ''}`}
+                className={`registro__input ${
+                  errors.apellido_paterno_coordinadora ? "registro__input-error" : ""
+                }`}
                 {...register("apellido_paterno_coordinadora", {
                   required: true,
                 })}
                 type="text"
               />
               {errors.apellido_paterno_coordinadora && (
-                <p className="error">Este campo es obligatorio</p>
+                <p className="registro__error">Este campo es obligatorio</p>
               )}
             </label>
 
@@ -91,83 +93,86 @@ export default function RegistroSedes() {
               Apellido materno de la coordinadora
               <br />
               <input
-                className='registro__input'
+                className="registro__input"
                 {...register("apellido_materno_coordinadora")}
                 type="text"
               />
             </label>
 
             <label>
-              Correo <span className="mandatory">*</span>
+              Correo <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${errors.correo_coordinadora ? 'input-error' : ''}`}
+                className={`registro__input ${
+                  errors.correo_coordinadora ? "registro__input-error" : ""
+                }`}
                 {...register("correo_coordinadora", { required: true })}
                 type="email"
               />
               {errors.correo_coordinadora && (
-                <p className="error">Correo inválido o vacío</p>
+                <p className="registro__error">Correo inválido o vacío</p>
               )}
             </label>
 
-          <div className="input-row">
-            <label>
-              Contraseña <span className="mandatory">*</span>
-              <br />
-              <input
-                className="registro__input"
-                type="password"
-                autoComplete="new-password"
-                {...register("contraseña", { required: true })}
-              />
-              {errors.contraseña && (
-                <p className="error">Este campo es obligatorio</p>
-              )}
-            </label>
+            <div className="input-row">
+              <label>
+                Contraseña <span className="registro__obligatorio">*</span>
+                <br />
+                <input
+                  className="registro__input"
+                  type="password"
+                  autoComplete="new-password"
+                  {...register("contraseña", { required: true })}
+                />
+                {errors.contraseña && (
+                  <p className="registro__error">Este campo es obligatorio</p>
+                )}
+              </label>
 
-            <label>
-              Verificar contraseña <span className="mandatory">*</span>
-              <br />
-              <input
-                className="registro__input"
-                type="password"
-                autoComplete="new-password"
-                {...register("verificar_contraseña", { required: true })}
-              />
-              {errors.verificar_contraseña && (
-                <p className="error">Este campo es obligatorio</p>
-              )}
-            </label>
-          </div>
+              <label>
+                Verificar contraseña <span className="registro__obligatorio">*</span>
+                <br />
+                <input
+                  className="registro__input"
+                  type="password"
+                  autoComplete="new-password"
+                  {...register("verificar_contraseña", { required: true })}
+                />
+                {errors.verificar_contraseña && (
+                  <p className="registro__error">Este campo es obligatorio</p>
+                )}
+              </label>
+            </div>
 
             {error && <p className="error">{error}</p>}
-          </div>
 
-          <h4>
-            Información de la sede
-            <br />
-            <span className="instructions">Llenar con datos de la sede.</span>
-          </h4>
+          <h4 className="registro__tituloSeccion">Información de la sede</h4>
+            <p className="registro__instrucciones">
+            Llenar con datos de la sede.
+            </p>
 
-          <div className="form">
             <label>
               Nombre de Sede (Con este nombre los alumnos seleccionarán la sede){" "}
-              <span className="mandatory">*</span>
-              <input
-                className={`registro__input ${errors.nombre_sede ? 'input-error' : ''}`}
+              <span className="registro__obligatorio">*</span>
+              <input id="nombre_sede"
+                className={`registro__input ${
+                  errors.nombre_sede ? "registro__input-error" : ""
+                }`}
                 {...register("nombre_sede", { required: true })}
                 type="text"
               />
               {errors.nombre_sede && (
-                <p className="error">Este campo es obligatorio</p>
+                <p className="registro__error">Este campo es obligatorio</p>
               )}
             </label>
 
             <label>
-              Convocatoria de la sede <span className="mandatory">*</span>
+              Convocatoria de la sede <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${errors.correo_coordinadora ? 'input-error' : ''}`}
+                className={`registro__input ${
+                  errors.correo_coordinadora ? "registro__input-error" : ""
+                }`}
                 type="file"
                 name="archivo_convocatoria"
                 id="archivo_tutor"
@@ -177,20 +182,22 @@ export default function RegistroSedes() {
               />
               <button
                 type="button"
-                className="gray-button"
+                className="registro__botonGrisArchivos"
                 onClick={() => document.getElementById("archivo_tutor").click()}
               >
                 Subir archivo
               </button>
               {fileName && <p className="archivo-nombre">{fileName}</p>}
-              {fileError && <p className="error">{fileError}</p>}
+              {fileError && <p className="registro__error">{fileError}</p>}
             </label>
 
             <label>
-              Fecha de inicio <span className="mandatory">*</span>
+              Fecha de inicio <span className="registro__obligatorio">*</span>
               <br />
               <select
-                className={`select-personalizado ${errors.escolaridad ? 'select-error' : ''}`}  
+                className={`registro__select ${
+                  errors.escolaridad ? "registro__select-error" : ""
+                }`}
                 {...register("fecha_inicio", { required: true })}
               >
                 <option value="">Seleccione una fecha</option>
@@ -198,19 +205,19 @@ export default function RegistroSedes() {
                 <option value="8/12/22">8/12/22</option>
               </select>
               {errors.fecha_inicio && (
-                <p className="error">Este campo es obligatorio</p>
+                <p className="registro__error">Este campo es obligatorio</p>
               )}
             </label>
-          </div>
 
-          <div className="submit">
+          <div className="registro__contenedor__botonSubmit">
             <input
               type="submit"
-              className="purple-button"
+              className="registro__botonMorado"
               value="Enviar Registro"
             />
           </div>
         </form>
+        </div>
       </div>
     </div>
   );
