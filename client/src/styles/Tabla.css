@@ -7,7 +7,7 @@
     align-items: center;
     height: 100vh;
     padding: 3%;
-    padding-top: 6%;
+    /* padding-top: 6%; */
 }
 .container{
     width: 100%;
@@ -19,6 +19,10 @@
 }
 .container_tablas{
     border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    background-color: white;
+    height: 100%;
 }
 .titulo_tabla{
     margin-top: 0;
@@ -27,8 +31,10 @@
 
 .table_container {
     width: 100%;
-    height: 100%;
-    overflow-x: auto;
+    max-height: 85%;
+    /* background-color: #555; */
+    /* overflow-x: auto; */
+    overflow-y: auto;
     margin: 20px 0;
     border-radius: 8px;
     /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
@@ -40,6 +46,8 @@
     align-items: center;
     margin-bottom: 1rem;
     padding: 0 1rem;
+    height: 8%;
+
   }
   .colaboradores-table {
     width: 100%;
@@ -50,6 +58,9 @@
   
   .colaboradores-table thead {
     background-color: #f4f6f8;
+    position: sticky;
+    top: 0;
+    z-index: 1; /* para que quede por encima del tbody */
   }
   
   .colaboradores-table th,
@@ -64,7 +75,13 @@
     font-weight: 600;
     font-size: 14px;
     text-transform: uppercase;
+    letter-spacing: 0.9px;
+    cursor: pointer;
   }
+  .colaboradores-table th:hover {
+    background-color: #e0e0e0;
+  }
+
   
   .colaboradores-table tbody tr:hover {
     background-color: #f0f4ff;
@@ -166,4 +183,118 @@
     width: 250px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    font-size: 16px;
   }
+  .abrir-filtros {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    justify-content: center;
+    gap: 0.5rem; /* Espacio entre el texto y el ícono */
+    /* margin-bottom: 1rem; */
+    background-color:white;
+    color: #757575;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .abrir-filtros:hover {
+    background-color: #f0f4ff;
+  }
+  .contenedor_busqueda_filtros{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    
+  }
+  
+  .overlay-filtros {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: flex-end;
+    z-index: 999;
+  }
+  
+  .panel-filtros {
+    background: #fff;
+    width: 300px;
+    height: 100%;
+    padding: 1.5rem;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .panel-filtros h3 {
+    margin-bottom: 1rem;
+  }
+  
+  .panel-filtros select {
+    padding: 0.4rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  .boton-limpiar {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: auto;
+  }
+  
+
+
+  .filtro-acordeon {
+    border-top: 1px solid #ddd;
+    padding: 1rem 0;
+  }
+  
+  .filtro-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .filtro-opciones {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .filtro-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+  
+  .filtro-checkbox input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .filtro-checkbox input[type="checkbox"]:checked {
+    background-color: #9E629A;
+  }
+
+  
