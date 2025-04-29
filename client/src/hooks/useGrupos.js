@@ -13,7 +13,7 @@ export default function useColaboradores() {
         setColaboradores(response.data.data);
       } catch (err) {
         setError(
-          "Error al cargar las mentoras: " +
+          "Error al cargar las grupos: " +
             (err.response?.data?.message || err.message),
         );
       } finally {
