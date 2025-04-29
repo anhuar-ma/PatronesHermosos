@@ -4,6 +4,12 @@ const { Pool } = pkg;
 import cors from "cors";
 import bodyParser from "body-parser";
 import colaboradoresRoutes from "./routes/colaboradores.js";
+import coordinadorasRoutes from "./routes/coordinadoras.js";
+import coordinadoras_asociadasRoutes from "./routes/coordinadoras_asociadas.js";
+import gruposRoutes from "./routes/grupos.js";
+import mentorasRoutes from "./routes/mentoras.js";
+import participantesRoutes from "./routes/participantes.js";
+import sedesRoutes from "./routes/sedes.js";
 
 const app = express();
 const port = 8000;
@@ -46,7 +52,12 @@ app.get("/test", (req, res) => {
 
 // Routes
 app.use("/api/colaboradores", colaboradoresRoutes);
-// app.use("/api/participantes", participantesRoutes);
+app.use("/api/coordinadoras", coordinadorasRoutes);
+app.use("/api/coordinadoras_asociadas", coordinadoras_asociadasRoutes);
+app.use("/api/grupos", gruposRoutes);
+app.use("/api/mentoras", mentorasRoutes);
+app.use("/api/participantes", participantesRoutes);
+app.use("/api/sedes", sedesRoutes);
 
 // Listen on all interfaces
 app.listen(process.env.PORT || 8000, "0.0.0.0", () => {

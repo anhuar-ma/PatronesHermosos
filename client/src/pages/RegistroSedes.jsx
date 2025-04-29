@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import "../styles/registros.css/";
+import axios from "axios";
 
 export default function RegistroSedes() {
   const [fileName, setFileName] = useState("");
@@ -13,15 +14,34 @@ export default function RegistroSedes() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    if (data.contraseña !== data.verificar_contraseña) {
-      setError("Las contraseñas no coinciden");
-      return;
-    }
-
+  const onSubmit = async (data) => {
     if (!fileName) {
       setFileError("No hay archivo seleccionado");
       return;
+    }
+
+    try {
+      const sedeData = {
+        // Coordinatora
+        nombre_coordinadora: data.nombre_coordinadora,
+        apellido_paterno_coordinadora: data.apellido_paterno_coordinadora,
+        apellido_materno_coordinadora: data.apellido_materno_coordinadora,
+        correo_coordinadora: data.correo_coordinadora,
+        contraseña: data.contraseña,
+
+        // Sede
+        nombre_sede: data.nombre_sede,
+        fecha_inicio: data.fecha_inicio,
+        archivo_convocatoria: fileName, // The file name, you might need to handle the actual file upload separately
+      };
+
+      await axios.post("/api/sedes", sedeData);
+
+      setError("");
+      setFileError("");
+    } catch (error) {
+      window.alert("Error en el registro");
+      console.error("Error:", error);
     }
 
     setError("");
