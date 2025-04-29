@@ -32,8 +32,8 @@ const renderLabel = ({ percent }) =>
 
 const DistribucionPoblacion = () => {
   return (
-    <div className="chart-section">
-      <div className="chart-box">
+    <div className="adminDashboard__chart-section">
+      <div className="adminDashboard__chart-box">
         <h2>Distribución de Alumnas</h2>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
@@ -54,7 +54,7 @@ const DistribucionPoblacion = () => {
         </ResponsiveContainer>
       </div>
 
-      <div className="chart-box">
+      <div className="adminDashboard__chart-box">
         <h2>Distribución de Staff</h2>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>

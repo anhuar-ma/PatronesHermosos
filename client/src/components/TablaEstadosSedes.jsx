@@ -22,9 +22,9 @@ const TablaEstadoSedes = () => {
   });
 
   return (
-    <div className="table-section">
+    <div className="adminDashboard__tableSection">
       <h2>Estado de Sedes</h2>
-      <table className="comparison-table">
+      <table className="adminDashboard__comparisonTable">
         <thead>
           <tr>
             <th>Sede</th>
@@ -38,7 +38,7 @@ const TablaEstadoSedes = () => {
               <td>{sede.sede}</td>
               <td>
                 <span
-                  className={`estado-tag ${
+                  className={`adminDashboard__estado-tag ${
                     sede.estado === "Activa" ? "activa" : "pendiente"
                   }`}
                 >

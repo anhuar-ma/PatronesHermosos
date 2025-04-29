@@ -184,7 +184,9 @@ export default function RegistroParticipantes() {
               Sede deseada para registro <span className="mandatory">*</span>
               <br />
               <select
-                className={`select-personalizado ${errors.sede_deseada ? "select-error" : ""}`}
+                className={` registro__select${
+                  errors.sede_deseada ? "registro__select-error" : ""
+                }`}
                 {...register("sede_deseada", {
                   required: true,
                 })}

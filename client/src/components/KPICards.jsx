@@ -11,9 +11,9 @@ const KPICards = () => {
   ];
 
   return (
-    <div className="kpi-cards">
+    <div className="adminDashboard__cards">
       {kpis.map((kpi, index) => (
-        <div key={index} className="kpi-card">
+        <div key={index} className="adminDashboard__card">
           <h3>{kpi.label}</h3>
           <p>{kpi.value}</p>
         </div>

@@ -36,6 +36,10 @@ const Burguer = styled.div`
     transition: transform 0.3s ease, opacity 0.3s ease;
     margin-left: 0;
   }
+    /* Cambiar color cuando está activo */
+.hamburger.is-active .line {
+  background-color: #5d395a; /* o cualquier color que desees */
+}
 
   @media (max-width: 767px) {
     margin-right: 0.5rem;
@@ -56,9 +60,6 @@ const Burguer = styled.div`
   @media (max-width: 427px) {
     margin-right: 0rem;
   }
-
-  
-
   /* Animación para transformar en "X" */
   .is-active .line:nth-child(1) {
     transform: translateY(10px) rotate(45deg);
