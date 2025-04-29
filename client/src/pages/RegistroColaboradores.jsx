@@ -60,7 +60,7 @@ export default function RegistroColaboradores() {
 
   return (
     <>
-      <div className="fondo">
+      <div className="registro__fondoMorado">
         <div className="register-container">
           <div className="registro_containerForm">
             <h2 className="registro__titulo">
