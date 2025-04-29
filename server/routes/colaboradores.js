@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error al guardar los datos",
-      error: error.message, 
+      error: error.message,
     });
   }
 });
