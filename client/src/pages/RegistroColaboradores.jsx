@@ -60,10 +60,10 @@ export default function RegistroColaboradores() {
 
   return (
     <>
-      <div className="registro__fondoMorado">
+      <div className="fondo">
         <div className="register-container">
           <div className="card">
-            <h2 className="registro__titulo">
+            <h2 className="titulo">
               Registro para staff/ instructoras/facilitadoras
             </h2>
             <h4>
@@ -79,7 +79,7 @@ export default function RegistroColaboradores() {
                   Nombre(s) del colaborador <span className="mandatory">*</span>
                   <br />
                   <input
-                    className={`registro__input ${errors.nombre_colaborador ? "input-error" : ""}`}
+                    className={errors.nombre_colaborador ? "input-error" : ""}
                     {...register("nombre_colaborador", {
                       required: "Este campo es obligatorio",
                     })}
@@ -96,7 +96,7 @@ export default function RegistroColaboradores() {
                   <br />
                   <input
                     className={
-                     `registro__input ${errors.apellido_paterno_colaborador ? "input-error" : ""}`
+                      errors.apellido_paterno_colaborador ? "input-error" : ""
                     }
                     {...register("apellido_paterno_colaborador", {
                       required: "Este campo es obligatorio",
@@ -115,7 +115,7 @@ export default function RegistroColaboradores() {
                   <br />
                   <input
                     className={
-                      `registro__input ${errors.apellido_materno_colaborador ? "input-error" : ""}`
+                      errors.apellido_materno_colaborador ? "input-error" : ""
                     }
                     {...register("apellido_materno_colaborador", {
                       required: false,
@@ -133,7 +133,7 @@ export default function RegistroColaboradores() {
                   Correo <span className="mandatory">*</span>
                   <br />
                   <input
-                    className={`registro__input ${errors.correo_colaborador ? "input-error" : ""}`}
+                    className={errors.correo_colaborador ? "input-error" : ""}
                     {...register("correo_colaborador", {
                       required: "Este campo es obligatorio",
                       pattern: {
@@ -152,7 +152,7 @@ export default function RegistroColaboradores() {
                   Universidad <span className="mandatory">*</span>
                   <br />
                   <input
-                    className={`registro__input ${errors.universidad ? "input-error" : ""}`}
+                    className={errors.universidad ? "input-error" : ""}
                     {...register("universidad", {
                       required: "Este campo es obligatorio",
                     })}
@@ -226,7 +226,7 @@ export default function RegistroColaboradores() {
                   Carrera <span className="mandatory">*</span>
                   <br />
                   <input
-                    className={`registro__input ${errors.carrera ? "input-error" : ""}`}
+                    className={errors.carrera ? "input-error" : ""}
                     {...register("carrera", {
                       required: "Este campo es obligatorio",
                     })}
