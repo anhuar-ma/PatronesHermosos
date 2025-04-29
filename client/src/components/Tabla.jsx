@@ -1,20 +1,22 @@
 import { getSedeNombre } from "../utils/sedeUtils";
+import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp} from "lucide-react";
+
 export default function Tabla({ colaboradores, onSort, sortField, sortOrder }) {
   const renderSortArrow = (field) => {
-    if (sortField !== field) return null;
-    return sortOrder === "asc" ? " ▲" : " ▼";
+    if (sortField !== field) return <ArrowDownUp size={14}/>;
+    return sortOrder === "asc" ? <ArrowDownAZ size={14} />
+ : < ArrowUpAZ size={14}/>;
   };
 
-  return (
-    <div className="table-container">
+  return (   
       <table className="colaboradores-table">
         <thead>
           <tr>
-            <th onClick={() => onSort("nombre")}>Nombre{renderSortArrow("nombre")}</th>
-            <th onClick={() => onSort("apellido_paterno")}>Apellidos{renderSortArrow("apellido_paterno")}</th>
-            <th onClick={() => onSort("correo")}>Correo{renderSortArrow("correo")}</th>
-            <th onClick={() => onSort("universidad")}>Universidad{renderSortArrow("universidad")}</th>
-            <th onClick={() => onSort("rol")}>Rol{renderSortArrow("rol")}</th>
+            <th onClick={() => onSort("nombre")}>Nombre {renderSortArrow("nombre")}</th>
+            <th onClick={() => onSort("apellido_paterno")}>Apellidos {renderSortArrow("apellido_paterno")}</th>
+            <th onClick={() => onSort("correo")}>Correo {renderSortArrow("correo")}</th>
+            <th onClick={() => onSort("universidad")}>Universidad {renderSortArrow("universidad")}</th>
+            <th onClick={() => onSort("rol")}>Rol {renderSortArrow("rol")}</th>
             <th>Sede</th>
             <th>Estado</th>
           </tr>
@@ -33,6 +35,5 @@ export default function Tabla({ colaboradores, onSort, sortField, sortOrder }) {
           ))}
         </tbody>
       </table>
-    </div>
   );
 }

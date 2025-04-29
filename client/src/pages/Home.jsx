@@ -3,7 +3,7 @@ export default function Home(){
     
     return(
         <>
-            <div className="fondo_home"> 
+            <div className="home__fondoImg"> 
             </div>
         </>
     )
