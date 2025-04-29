@@ -62,218 +62,230 @@ export default function RegistroColaboradores() {
     <>
       <div className="registro__fondoMorado">
         <div className="register-container">
-          <div className="card">
+          <div className="registro_containerForm">
             <h2 className="registro__titulo">
               Registro para staff/ instructoras/facilitadoras
             </h2>
-            <h4>
-              Información personal
-              <br />
-              <span className="instructions">
+            <form
+              className="registro__formulario"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <h4 className="registro__tituloSeccion">Información personal</h4>
+              <p className="registro__instrucciones">
                 Llenar con datos como aparecen en un documento oficial.
-              </span>
-            </h4>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="form">
-                <label>
-                  Nombre(s) del colaborador <span className="mandatory">*</span>
-                  <br />
-                  <input
-                    className={`registro__input ${errors.nombre_colaborador ? "input-error" : ""}`}
-                    {...register("nombre_colaborador", {
-                      required: "Este campo es obligatorio",
-                    })}
-                    type="text"
-                  />
-                  {errors.nombre_colaborador && (
-                    <p className="error">{errors.nombre_colaborador.message}</p>
-                  )}
-                </label>
-
-                <label>
-                  Apellido paterno del colaborador
-                  <span className="mandatory">*</span>
-                  <br />
-                  <input
-                    className={
-                     `registro__input ${errors.apellido_paterno_colaborador ? "input-error" : ""}`
-                    }
-                    {...register("apellido_paterno_colaborador", {
-                      required: "Este campo es obligatorio",
-                    })}
-                    type="text"
-                  />
-                  {errors.apellido_paterno_colaborador && (
-                    <p className="error">
-                      {errors.apellido_paterno_colaborador.message}
-                    </p>
-                  )}
-                </label>
-
-                <label>
-                  Apellido materno del colaborador
-                  <br />
-                  <input
-                    className={
-                      `registro__input ${errors.apellido_materno_colaborador ? "input-error" : ""}`
-                    }
-                    {...register("apellido_materno_colaborador", {
-                      required: false,
-                    })}
-                    type="text"
-                  />
-                  {errors.apellido_materno_colaborador && (
-                    <p className="error">
-                      {errors.apellido_materno_colaborador.message}
-                    </p>
-                  )}
-                </label>
-
-                <label>
-                  Correo <span className="mandatory">*</span>
-                  <br />
-                  <input
-                    className={`registro__input ${errors.correo_colaborador ? "input-error" : ""}`}
-                    {...register("correo_colaborador", {
-                      required: "Este campo es obligatorio",
-                      pattern: {
-                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: "Correo electrónico inválido",
-                      },
-                    })}
-                    type="email"
-                  />
-                  {errors.correo_colaborador && (
-                    <p className="error">{errors.correo_colaborador.message}</p>
-                  )}
-                </label>
-
-                <label>
-                  Universidad <span className="mandatory">*</span>
-                  <br />
-                  <input
-                    className={`registro__input ${errors.universidad ? "input-error" : ""}`}
-                    {...register("universidad", {
-                      required: "Este campo es obligatorio",
-                    })}
-                    type="text"
-                  />
-                  {errors.universidad && (
-                    <p className="error">{errors.universidad.message}</p>
-                  )}
-                </label>
-
-                <label>
-                  Sede en la que se desea participar
-                  <span className="mandatory">*</span>
-                  <br />
-                  <select
-                    className={`select-personalizado ${errors.sede_participar ? "select-error" : ""}`}
-                    {...register("sede_participar", {
-                      required: "Este campo es obligatorio",
-                    })}
-                  >
-                    <option value="">Seleccionar</option>
-                    <option value="ITESM Puebla">ITESM Puebla</option>
-                    <option value="ITESM Monterrey">ITESM Monterrey</option>
-                  </select>
-                  {errors.sede_participar && (
-                    <p className="error">{errors.sede_participar.message}</p>
-                  )}
-                </label>
-
-                <div className="input-row">
-                  <label>
-                    Idioma de preferencia <span className="mandatory">*</span>
-                    <br />
-                    <select
-                      className={`select-personalizado ${errors.idioma_preferencia ? "select-error" : ""}`}
-                      {...register("idioma_preferencia", {
-                        required: "Este campo es obligatorio",
-                      })}
-                    >
-                      <option value="">Seleccionar</option>
-                      <option value="Español">Español</option>
-                      <option value="Inglés">Inglés</option>
-                    </select>
-                    {errors.idioma_preferencia && (
-                      <p className="error">
-                        {errors.idioma_preferencia.message}
-                      </p>
-                    )}
-                  </label>
-
-                  <label>
-                    Nivel de dominio <span className="mandatory">*</span>
-                    <br />
-                    <select
-                      className={`select-personalizado ${errors.nivel_dominio ? "select-error" : ""}`}
-                      {...register("nivel_dominio", {
-                        required: "Este campo es obligatorio",
-                      })}
-                    >
-                      <option value="">Seleccionar</option>
-                      <option value="Basico">Básico</option>
-                      <option value="Avanzado">Avanzado</option>
-                    </select>
-                    {errors.nivel_dominio && (
-                      <p className="error">{errors.nivel_dominio.message}</p>
-                    )}
-                  </label>
-                </div>
-
-                <label>
-                  Carrera <span className="mandatory">*</span>
-                  <br />
-                  <input
-                    className={`registro__input ${errors.carrera ? "input-error" : ""}`}
-                    {...register("carrera", {
-                      required: "Este campo es obligatorio",
-                    })}
-                    type="text"
-                  />
-                  {errors.carrera && (
-                    <p className="error">{errors.carrera.message}</p>
-                  )}
-                </label>
-
-                <label>
-                  Rol <span className="mandatory">*</span>
-                  <br />
-                  <select
-                    className={`select-personalizado ${errors.rol ? "select-error" : ""}`}
-                    {...register("rol", {
-                      required: "Este campo es obligatorio",
-                    })}
-                  >
-                    <option value="">Seleccionar</option>
-                    <option value="Instructora">Instructora</option>
-                    <option value="Facilitadora">Facilitadora</option>
-                    <option value="Staff">Staff</option>
-                  </select>
-                  {errors.rol && <p className="error">{errors.rol.message}</p>}
-                </label>
-
-                <div className="submit">
-                  <button
-                    type="submit"
-                    className="purple-button"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Enviando..." : "Enviar Registro"}
-                  </button>
-                </div>
-
-                {submitResult && (
-                  <div
-                    className={
-                      submitResult.success ? "success-message" : "error-message"
-                    }
-                  >
-                    {submitResult.message}
-                  </div>
+              </p>
+              <label>
+                Nombre(s) del colaborador <span className="registro__obligatorio">*</span>
+                <br />
+                <input
+                  className={`registro__input ${
+                    errors.nombre_colaborador ? "registro__input-error" : ""
+                  }`}
+                  {...register("nombre_colaborador", {
+                    required: "Este campo es obligatorio",
+                  })}
+                  type="text"
+                />
+                {errors.nombre_colaborador && (
+                  <p className="registro__error">{errors.nombre_colaborador.message}</p>
                 )}
+              </label>
+
+              <label>
+                Apellido paterno del colaborador
+                <span className="registro__obligatorio">*</span>
+                <br />
+                <input
+                  className={`registro__input ${
+                    errors.apellido_paterno_colaborador ? "registro__input-error" : ""
+                  }`}
+                  {...register("apellido_paterno_colaborador", {
+                    required: "Este campo es obligatorio",
+                  })}
+                  type="text"
+                />
+                {errors.apellido_paterno_colaborador && (
+                  <p className="registro__error">
+                    {errors.apellido_paterno_colaborador.message}
+                  </p>
+                )}
+              </label>
+
+              <label>
+                Apellido materno del colaborador
+                <br />
+                <input
+                  className={`registro__input ${
+                    errors.apellido_materno_colaborador ? "registro__input-error" : ""
+                  }`}
+                  {...register("apellido_materno_colaborador", {
+                    required: false,
+                  })}
+                  type="text"
+                />
+                {errors.apellido_materno_colaborador && (
+                  <p className="registro__error">
+                    {errors.apellido_materno_colaborador.message}
+                  </p>
+                )}
+              </label>
+
+              <label>
+                Correo <span className="registro__obligatorio">*</span>
+                <br />
+                <input
+                  className={`registro__input ${
+                    errors.correo_colaborador ? "registro__input-error" : ""
+                  }`}
+                  {...register("correo_colaborador", {
+                    required: "Este campo es obligatorio",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Correo electrónico inválido",
+                    },
+                  })}
+                  type="email"
+                />
+                {errors.correo_colaborador && (
+                  <p className="registro__error">{errors.correo_colaborador.message}</p>
+                )}
+              </label>
+
+              <label>
+                Universidad <span className="registro__obligatorio">*</span>
+                <br />
+                <input
+                  className={`registro__input ${
+                    errors.universidad ? "registro__input-error" : ""
+                  }`}
+                  {...register("universidad", {
+                    required: "Este campo es obligatorio",
+                  })}
+                  type="text"
+                />
+                {errors.universidad && (
+                  <p className="registro__error">{errors.universidad.message}</p>
+                )}
+              </label>
+
+              <label>
+                Sede en la que se desea participar
+                <span className="registro__obligatorio">*</span>
+                <br />
+                <select
+                  className={`registro__select ${
+                    errors.sede_participar ? "registro__select-error" : ""
+                  }`}
+                  {...register("sede_participar", {
+                    required: "Este campo es obligatorio",
+                  })}
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="ITESM Puebla">ITESM Puebla</option>
+                  <option value="ITESM Monterrey">ITESM Monterrey</option>
+                </select>
+                {errors.sede_participar && (
+                  <p className="registro__error">{errors.sede_participar.message}</p>
+                )}
+              </label>
+
+              <div className="registro__container__2inputsInRow">
+                <label>
+                  Idioma de preferencia <span className="registro__obligatorio">*</span>
+                  <br />
+                  <select
+                    className={`registro__select ${
+                      errors.idioma_preferencia ? "registro__select-error" : ""
+                    }`}
+                    {...register("idioma_preferencia", {
+                      required: "Este campo es obligatorio",
+                    })}
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="Español">Español</option>
+                    <option value="Inglés">Inglés</option>
+                  </select>
+                  {errors.idioma_preferencia && (
+                    <p className="registro__error">{errors.idioma_preferencia.message}</p>
+                  )}
+                </label>
+
+                <label>
+                  Nivel de dominio <span className="registro__obligatorio">*</span>
+                  <br />
+                  <select
+                    className={`registro__select ${
+                      errors.nivel_dominio ? "registro__select-error" : ""
+                    }`}
+                    {...register("nivel_dominio", {
+                      required: "Este campo es obligatorio",
+                    })}
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="Basico">Básico</option>
+                    <option value="Avanzado">Avanzado</option>
+                  </select>
+                  {errors.nivel_dominio && (
+                    <p className="registro__error">{errors.nivel_dominio.message}</p>
+                  )}
+                </label>
               </div>
+
+              <label>
+                Carrera <span className="registro__obligatorio">*</span>
+                <br />
+                <input
+                  className={`registro__input ${
+                    errors.carrera ? "registro__input-error" : ""
+                  }`}
+                  {...register("carrera", {
+                    required: "Este campo es obligatorio",
+                  })}
+                  type="text"
+                />
+                {errors.carrera && (
+                  <p className="registro__error">{errors.carrera.message}</p>
+                )}
+              </label>
+
+              <label>
+                Rol <span className="registro__obligatorio">*</span>
+                <br />
+                <select
+                  className={`registro__select ${
+                    errors.rol ? "registro__select-error" : ""
+                  }`}
+                  {...register("rol", {
+                    required: "Este campo es obligatorio",
+                  })}
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="Instructora">Instructora</option>
+                  <option value="Facilitadora">Facilitadora</option>
+                  <option value="Staff">Staff</option>
+                </select>
+                {errors.rol && <p className="registro__error">{errors.rol.message}</p>}
+              </label>
+
+              <div className="registro__contenedor__botonSubmit">
+                <button
+                  type="submit"
+                  className="registro__botonMorado"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Enviando..." : "Enviar Registro"}
+                </button>
+              </div>
+
+              {submitResult && (
+                <div
+                  className={
+                    submitResult.success ? "success-message" : "error-message"
+                  }
+                >
+                  {submitResult.message}
+                </div>
+              )}
             </form>
           </div>
         </div>

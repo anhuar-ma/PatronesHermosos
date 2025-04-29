@@ -167,7 +167,7 @@ export default function RegistroParticipantes() {
               <span className="registro__obligatorio">*</span>
               <br />
               <select
-                className={`registro__select-personalizado registro__select${
+                className={` registro__select${
                   errors.sede_deseada ? "registro__select-error" : ""
                 }`}
                 {...register("sede_deseada", {
