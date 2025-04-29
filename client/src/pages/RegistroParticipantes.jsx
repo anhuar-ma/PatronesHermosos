@@ -111,7 +111,7 @@ export default function RegistroParticipantes() {
               Apellido paterno de la alumna <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={errors.apellido_paterno_alumna ? "registro__input-error" : ""}
+                className={`registro__input ${errors.apellido_paterno_alumna ? "registro__input-error" : ""}`}
                 {...register("apellido_paterno_alumna", {
                   required: true,
                 })}
@@ -124,6 +124,7 @@ export default function RegistroParticipantes() {
               Apellido materno de la alumna
               <br />
               <input
+                className="registro__input"
                 {...register("apellido_materno_alumna", {
                   required: false,
                 })}
@@ -138,7 +139,7 @@ export default function RegistroParticipantes() {
               {/* <input type="email" {...register("correo_alumna", { required: true })} />
                             {errors.correo_alumna && <p className="error">Este campo es obligatorio</p>} */}
               <input
-                className={errors.correo_alumna ? "registro__input-error" : ""}
+                className={`registro__input ${errors.correo_alumna ? "registro__input-error" : ""}`}
                 type="email"
                 {...register("correo_alumna", {
                   required: "Este campo es obligatorio.",
@@ -156,7 +157,7 @@ export default function RegistroParticipantes() {
               Edad <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={errors.edad_alumna ? "registro__input-error" : ""}
+                className={`registro__input ${errors.edad_alumna ? "registro__input-error" : ""}`}
                 type="number"
                 {...register("edad_alumna", {
                   required: true,
@@ -170,7 +171,7 @@ export default function RegistroParticipantes() {
               Escuela <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={errors.escuela ? "registro__input-error" : ""}
+                className={`registro__input ${errors.escuela ? "registro__input-error" : ""}`}
                 {...register("escuela", {
                   required: true,
                 })}
@@ -198,12 +199,12 @@ export default function RegistroParticipantes() {
                 <p className="registro__error">Este campo es obligatorio</p>
               )}
             </label>
-            <div className="input-row">
+            <div className="registro__container__2inputsInRow">
               <label>
                 Escolaridad <span className="registro__obligatorio">*</span>
                 <br />
                 <select
-                  className={`select-personalizado ${
+                  className={`registro__select ${
                     errors.escolaridad ? "select-error" : ""
                   }`}
                   {...register("escolaridad", {
@@ -223,7 +224,7 @@ export default function RegistroParticipantes() {
                 Idioma de preferencia <span className="registro__obligatorio">*</span>
                 <br />
                 <select
-                  className={`select-personalizado ${
+                  className={`registro__select ${
                     errors.escolaridad ? "select-error" : ""
                   }`}
                   {...register("idioma", {
@@ -239,18 +240,18 @@ export default function RegistroParticipantes() {
                 )}
               </label>
             </div>
-            <h4>
-              Información del tutor
-              <br />
-              <span className="instructions">
-                Llenar con datos como aparecen en un documento oficial.
-              </span>
-            </h4>
+
+            <h4 className="registro__tituloSeccion">Información del tutor</h4>
+            <p className="registro__instrucciones">
+              Llenar con datos como aparecen en un documento oficial.
+            </p>
+
+            
             <label>
               Nombre(s) del tutor <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={errors.nombre_tutor ? "registro__input-error" : ""}
+                className={`registro__input ${errors.nombre_tutor ? "registro__input-error" : ""}`}
                 {...register("nombre_tutor", {
                   required: true,
                 })}
@@ -263,7 +264,7 @@ export default function RegistroParticipantes() {
               Apellido paterno del tutor <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={errors.apellido_paterno_tutor ? "registro__input-error" : ""}
+                className={`registro__input ${errors.apellido_paterno_tutor ? "registro__input-error" : ""}`}
                 {...register("apellido_paterno_tutor", {
                   required: true,
                 })}
@@ -275,7 +276,7 @@ export default function RegistroParticipantes() {
             <label>
               Apellido materno del tutor <br />
               <input
-                className={errors.apellido_materno_tutor ? "registro__input-error" : ""}
+                className={`registro__input ${errors.apellido_materno_tutor ? "registro__input-error" : ""}`}
                 {...register("apellido_materno_tutor", {
                   required: false,
                 })}
@@ -290,7 +291,7 @@ export default function RegistroParticipantes() {
               {/* <input type="email" {...register("correo_tutor", { required: true })} />
                             {errors.correo_tutor && <p className="error">Este campo es obligatorio</p>} */}
               <input
-                className={errors.correo_tutor ? "input-error" : ""}
+                className={`registro__input ${errors.correo_tutor ? "input-error" : ""}`}
                 type="email"
                 {...register("correo_tutor", {
                   required: "Este campo es obligatorio.",
@@ -308,7 +309,7 @@ export default function RegistroParticipantes() {
               Teléfono del tutor <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={errors.telefono_tutor ? "registro__input-error" : ""}
+                className={`registro__input ${errors.telefono_tutor ? "registro__input-error" : ""}`}
                 type="tel"
                 {...register("telefono_tutor", {
                   required: true,
