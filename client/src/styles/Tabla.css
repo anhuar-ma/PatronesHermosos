@@ -37,6 +37,7 @@
     overflow-y: auto;
     margin: 20px 0;
     border-radius: 8px;
+    /* margin-top: 2rem; */
     /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   }
   
@@ -132,6 +133,12 @@
       text-transform: uppercase;
     }
   } */
+
+  .tablas__thContainer{
+    display: flex;
+    align-items: center;
+    gap: 4px
+  }
   .btn-detalles {
     background-color: #555;
     color: white;
@@ -180,7 +187,7 @@
   }
   .tabla__input-busqueda {
     padding: 0.5rem;
-    width: 250px;
+    width: 100%;
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 16px;
@@ -299,9 +306,35 @@
 
   /* Media queries */
 
-  @media (max-width: 1024px)  {
+  @media (max-width: 1024px) and (min-width: 767px) {
     .fondo_tablas_admin{
       margin-left: 0;
     }
+    .tabla__container__tituloBusqueda{ 
+      /* margin-bottom: 0; */
+    }
+  
+    /* .table_container{
+      margin-top: rem;
+    } */
    
+  }
+
+  @media (max-width: 767px) and (min-width: 410px)  {
+    .fondo_tablas_admin{
+      margin-left: 0;
+    }
+    .tabla__container__tituloBusqueda{
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;  
+    }
+    .table_container{
+      margin-top: 3.3rem;
+    }
+   
+  }
+
+  @media (max-width: 409px) {
+
   }
