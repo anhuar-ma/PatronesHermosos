@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function useColaboradores() {
-  const [colaboradores, setColaboradores] = useState([]);
+export default function useGrupos() {
+  const [grupos, setGrupos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchColaboradores = async () => {
+    const fetchGrupos = async () => {
       try {
         const response = await axios.get("/api/grupos");
-        setColaboradores(response.data.data);
+        setGrupos(response.data.data);
       } catch (err) {
         setError(
           "Error al cargar las grupos: " +
@@ -21,8 +21,8 @@ export default function useColaboradores() {
       }
     };
 
-    fetchColaboradores();
+    fetchGrupos();
   }, []);
 
-  return { colaboradores, loading, error };
+  return { grupos, loading, error };
 }

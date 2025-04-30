@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function useColaboradores() {
-  const [colaboradores, setColaboradores] = useState([]);
+export default function useParticipantes() {
+  const [participantes, setParticipantes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchColaboradores = async () => {
+    const fetchParticipantes = async () => {
       try {
         const response = await axios.get("/api/participantes");
-        setColaboradores(response.data.data);
+        setParticipantes(response.data.data);
       } catch (err) {
         setError(
           "Error al cargar las participantes: " +
@@ -21,8 +21,8 @@ export default function useColaboradores() {
       }
     };
 
-    fetchColaboradores();
+    fetchParticipantes();
   }, []);
 
-  return { colaboradores, loading, error };
+  return { participantes, loading, error };
 }
