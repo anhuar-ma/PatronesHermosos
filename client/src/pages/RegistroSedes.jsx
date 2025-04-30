@@ -11,8 +11,10 @@ export default function RegistroSedes() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
+  
 
   const onSubmit = async (data) => {
     if (!fileName) {
@@ -149,6 +151,7 @@ export default function RegistroSedes() {
                 )}
               </label>
 
+
               <label>
                 Verificar contraseña <span className="registro__obligatorio">*</span>
                 <br />
@@ -156,10 +159,14 @@ export default function RegistroSedes() {
                   className="registro__input"
                   type="password"
                   autoComplete="new-password"
-                  {...register("verificar_contraseña", { required: true })}
+                  {...register("verificar_contraseña", {
+                    required: true,
+                    validate: (value) =>
+                      value === watch("contraseña") || "Las contraseñas no coinciden",
+                  })}
                 />
                 {errors.verificar_contraseña && (
-                  <p className="registro__error">Este campo es obligatorio</p>
+                  <p className="registro__error">{errors.verificar_contraseña.message}</p>
                 )}
               </label>
             </div>
