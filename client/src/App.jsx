@@ -8,6 +8,7 @@ import RegistroSedes from "./pages/RegistroSedes";
 import IniciarSesion from "./pages/IniciarSesion";
 import Home from "./pages/Home";
 import ListadoColaboradores from "./pages/admin/ViewColaboradores";
+import ListadoParticipantes from "./pages/admin/ViewParticipantes"
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
 import { useLocation } from "react-router-dom";
@@ -47,6 +48,11 @@ function App() {
         <Route
           path="/admin/colaboradores"
           element={<ListadoColaboradores></ListadoColaboradores>}
+        ></Route>
+
+        <Route
+          path="/admin/participantes"
+          element={<ListadoParticipantes></ListadoParticipantes>}
         ></Route>
 
         <Route path="/admin/add-person" element={<RegistroSedes></RegistroSedes>} />
