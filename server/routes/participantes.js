@@ -81,4 +81,39 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get participantes with their parents
+router.get("/parents", async (req, res) => {
+  try {
+    const result = await pool.query(`
+    SELECT
+        participante.nombre,
+        participante.apellido_paterno,
+        participante.apellido_materno,
+        padre_o_tutor.nombre AS nombre_tutor,
+        padre_o_tutor.apellido_paterno AS apellido_paterno_tutor,
+        padre_o_tutor.apellido_materno AS apellido_materno_tutor,
+        padre_o_tutor.telefono AS telefono_tutor,
+        participante.id_grupo
+    FROM
+        participante
+    JOIN
+        padre_o_tutor
+    ON
+        participante.id_padre_o_tutor = padre_o_tutor.id_padre_o_tutor;
+    `);
+
+    res.status(200).json({
+      success: true,
+      data: result.rows,
+    });
+  } catch (error) {
+    console.error("Error fetching colaboradores:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener los datos",
+      error: error.message,
+    });
+  }
+});
+
 export default router;

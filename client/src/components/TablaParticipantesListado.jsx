@@ -17,48 +17,31 @@ export default function Tabla({ participantes, onSort, sortField, sortOrder }) {
           <th onClick={() => onSort("nombre")}>
             {" "}
             <div className="tablas__thContainer">
-              <span>Nombre</span>
+              <span>Nombre de la participante</span>
               {renderSortArrow("nombre")}
             </div>
           </th>
           <th onClick={() => onSort("apellido_paterno")}>
             <div className="tablas__thContainer">
-              <span> Apellidos</span>
+              <span> Nombre del tutor</span>
               {renderSortArrow("apellido_paterno")}
             </div>
           </th>
-          <th onClick={() => onSort("correo")}>
-            <div className="tablas__thContainer">
-              <span> Correo</span>
-              {renderSortArrow("correo")}
-            </div>
-          </th>
-          <th onClick={() => onSort("universidad")}>
-            <div className="tablas__thContainer">
-              <span> Universidad</span>
-              {renderSortArrow("universidad")}
-            </div>
-          </th>
-          <th onClick={() => onSort("rol")}>
-            <div className="tablas__thContainer">
-              <span> Rol</span>
-              {renderSortArrow("universidad")}
-            </div>
-          </th>
-          <th>Sede</th>
+          <th>Telefono de contacto</th>
+          <th> Grupo </th>
+          <th>Mas Información</th>
           <th>Estado</th>
         </tr>
       </thead>
       <tbody>
-        {colaboradores.map((colaborador) => (
-          <tr key={colaborador.id_colaborador}>
-            <td>{colaborador.nombre}</td>
-            <td>{`${colaborador.apellido_paterno} ${colaborador.apellido_materno}`}</td>
-            <td>{colaborador.correo}</td>
-            <td>{colaborador.universidad}</td>
-            <td>{colaborador.rol}</td>
-            <td>{getSedeNombre(colaborador.id_sede)}</td>
-            <td>{colaborador.estado}</td>
+        {participantes.map((participante) => (
+          <tr key={participante.id_colaborador}>
+            <td>{`${participante.nombre} ${participante.apellido_paterno} ${participante.apellido_materno}`}</td>
+            <td>{`${participante.nombre_tutor} ${participante.apellido_paterno_tutor} ${participante.apellido_materno_tutor}`}</td>
+            <td>{participante.telefono_tutor}</td>
+            <td>{participante.id_grupo}</td>
+            <td>{participante.nombre}</td>
+            <td>{participante.nombre}</td>
           </tr>
         ))}
       </tbody>

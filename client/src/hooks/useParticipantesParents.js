@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function useParticipantes() {
+export default function useParticipantesParents() {
   const [participantes, setParticipantes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -9,11 +9,11 @@ export default function useParticipantes() {
   useEffect(() => {
     const fetchParticipantes = async () => {
       try {
-        const response = await axios.get("/api/participantes");
+        const response = await axios.get("/api/participantes/parents");
         setParticipantes(response.data.data);
       } catch (err) {
         setError(
-          "Error al cargar las participantes: " +
+          "Error al cargar las participantes con los padres: " +
             (err.response?.data?.message || err.message),
         );
       } finally {
@@ -26,5 +26,3 @@ export default function useParticipantes() {
 
   return { participantes, loading, error };
 }
-
-

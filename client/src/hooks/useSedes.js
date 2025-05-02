@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function useColaboradores() {
-  const [colaboradores, setColaboradores] = useState([]);
+export default function useSedes() {
+  const [sedes, setSedes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchColaboradores = async () => {
+    const fetchSedes = async () => {
       try {
         const response = await axios.get("/api/sedes");
-        setColaboradores(response.data.data);
+        setSedes(response.data.data);
       } catch (err) {
         setError(
           "Error al cargar de sedes: " +
@@ -21,8 +21,8 @@ export default function useColaboradores() {
       }
     };
 
-    fetchColaboradores();
+    fetchSedes();
   }, []);
 
-  return { colaboradores, loading, error };
+  return { sedes, loading, error };
 }

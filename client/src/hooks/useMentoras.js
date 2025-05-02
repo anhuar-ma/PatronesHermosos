@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function useColaboradores() {
-  const [colaboradores, setColaboradores] = useState([]);
+export default function useMentoras() {
+  const [mentoras, setMentoras] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchColaboradores = async () => {
+    const fetchMentoras = async () => {
       try {
         const response = await axios.get("/api/mentoras");
-        setColaboradores(response.data.data);
+        setMentoras(response.data.data);
       } catch (err) {
         setError(
           "Error al cargar las mentoras: " +
@@ -21,8 +21,8 @@ export default function useColaboradores() {
       }
     };
 
-    fetchColaboradores();
+    fetchMentoras();
   }, []);
 
-  return { colaboradores, loading, error };
+  return { mentoras, loading, error };
 }
