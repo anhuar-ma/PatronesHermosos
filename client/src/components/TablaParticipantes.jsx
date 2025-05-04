@@ -13,13 +13,17 @@ export default function TablaParticipantes() {
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
-
-  // Si tienes campos como 'grupo', 'estado' o 'sede', agrega sus estados aquí.
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
 
+  // ✅ useMemo deben estar antes de cualquier return
   const gruposDisponibles = useMemo(() => {
     const grupos = participantes.map((p) => p.id_grupo);
     return [...new Set(grupos)].sort();
+  }, [participantes]);
+
+  const statusOptions = useMemo(() => {
+    const estados = participantes.map((c) => c.estado);
+    return [...new Set(estados)].sort();
   }, [participantes]);
 
   const ordenarParticipantes = (data) => {
@@ -56,6 +60,11 @@ export default function TablaParticipantes() {
       setSortField(field);
       setSortOrder("asc");
     }
+  };
+
+  const handleStatusChange = (id_participante, nuevoEstado) => {
+    // Aquí podrías enviar una petición para actualizar el estado del participante
+    console.log(`Cambiar estado del participante ${id_participante} a ${nuevoEstado}`);
   };
 
   return (
@@ -114,6 +123,8 @@ export default function TablaParticipantes() {
           onSort={handleSort}
           sortField={sortField}
           sortOrder={sortOrder}
+          onStatusChange={handleStatusChange}
+          statusOptions={statusOptions}
         />
       </div>
     </div>

@@ -86,6 +86,7 @@ router.get("/parents", async (req, res) => {
   try {
     const result = await pool.query(`
     SELECT
+        participante.id_participante,
         participante.nombre,
         participante.apellido_paterno,
         participante.apellido_materno,
@@ -93,6 +94,7 @@ router.get("/parents", async (req, res) => {
         padre_o_tutor.apellido_paterno AS apellido_paterno_tutor,
         padre_o_tutor.apellido_materno AS apellido_materno_tutor,
         padre_o_tutor.telefono AS telefono_tutor,
+        participante.estado,
         participante.id_grupo
     FROM
         participante
@@ -115,5 +117,45 @@ router.get("/parents", async (req, res) => {
     });
   }
 });
+
+
+// Get un participante con su padre o tutor
+router.get("/parents/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(`
+      SELECT
+        participante.id_participante,
+        participante.nombre,
+        participante.apellido_paterno,
+        participante.apellido_materno,
+        padre_o_tutor.nombre AS nombre_tutor,
+        padre_o_tutor.apellido_paterno AS apellido_paterno_tutor,
+        padre_o_tutor.apellido_materno AS apellido_materno_tutor,
+        padre_o_tutor.telefono AS telefono_tutor,
+        participante.estado,
+        participante.id_grupo
+      FROM
+        participante
+      JOIN
+        padre_o_tutor
+      ON
+        participante.id_padre_o_tutor = padre_o_tutor.id_padre_o_tutor
+      WHERE
+        participante.id_participante = $1
+    `, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Participante no encontrado" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error al obtener participante:", error);
+    res.status(500).json({ message: "Error del servidor" });
+  }
+});
+
 
 export default router;

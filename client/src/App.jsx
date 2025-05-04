@@ -11,8 +11,10 @@ import ListadoColaboradores from "./pages/admin/ViewColaboradores";
 import ListadoParticipantes from "./pages/admin/ViewParticipantes"
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
-import { useLocation } from "react-router-dom";
+import DetalleParticipante from "./components/DetallesParticipantes";
+// import AdminSedeDashboard from "./pages/adminSede/adminHome";
 
+import { useLocation } from "react-router-dom";
 
 function App() {
   const location = useLocation();
@@ -39,12 +41,11 @@ function App() {
         <Route path="/sede" element={<RegistroSedes></RegistroSedes>}></Route>
         <Route path="/sesion" element={<IniciarSesion></IniciarSesion>}></Route>
 
-       
-
         {/* Admin routes */}
-        <Route 
-          path="/admin/inicio" 
-          element={<AdminDashboard></AdminDashboard>} />
+        <Route
+          path="/admin/inicio"
+          element={<AdminDashboard></AdminDashboard>}
+        />
         <Route
           path="/admin/colaboradores"
           element={<ListadoColaboradores></ListadoColaboradores>}
@@ -54,9 +55,20 @@ function App() {
           path="/admin/participantes"
           element={<ListadoParticipantes></ListadoParticipantes>}
         ></Route>
+        <Route
+          path="/adminSede/inicio"
+          element={<AdminDashboard></AdminDashboard>}
+        ></Route>
 
-        <Route path="/admin/add-person" element={<RegistroSedes></RegistroSedes>} />
+        <Route
+          path="/admin/add-person"
+          element={<RegistroSedes></RegistroSedes>}
+        />
+
+        <Route path="/participantes/:id" element={<DetalleParticipante />} />
       </Routes>
+
+      
     </>
   );
 }
