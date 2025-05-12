@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef,useEffect } from "react";
 import { getSedeNombre } from "../utils/sedeUtils"; // Función auxiliar para obtener el nombre de la sede a partir de su ID
 import useColaboradores from "../hooks/useColaboradores"; // Hook personalizado para obtener datos de colaboradores
 import { SlidersHorizontal } from "lucide-react"; // Ícono para el botón de filtros
@@ -15,8 +15,40 @@ import FiltroTabla from "./FiltroTabla"; // Componente para filtros avanzados
  * @component
  */
 export default function TablaColaboradores() {
+
+
   // Obtiene datos, estado de carga y posibles errores
   const { colaboradores, loading, error } = useColaboradores();
+
+   // 1. Copia local para poder mutar el estado en cliente
+   const [colabList, setColabList] = useState([]);
+   useEffect(() => {
+     setColabList(colaboradores);
+   }, [colaboradores]);
+ 
+   // 2. Opciones de estado dinámicas
+   const statusOptions = useMemo(() => {
+      const estados = colaboradores.map((c) => c.estado);
+      return [...new Set(estados)].sort();
+   }, [colaboradores]);
+ 
+
+  //  const rolesDisponibles = useMemo(() => {
+  //   const roles = colaboradores.map((c) => c.rol);
+  //   return [...new Set(roles)].sort();
+  // }, [colaboradores]);
+
+   // 3. Handler para cambiar estado
+   const handleStatusChange = (id, newStatus) => {
+     // Actualización local
+     setColabList((prev) =>
+       prev.map((c) =>
+         c.id_colaborador === id ? { ...c, estado: newStatus } : c
+       )
+     );
+     // TODO: aquí disparar tu llamada al backend, p.ej:
+     // axios.patch(`/api/colaboradores/${id}`, { estado: newStatus });
+   };
 
   // Estado para el texto de búsqueda
   const [busqueda, setBusqueda] = useState("");
@@ -199,11 +231,14 @@ export default function TablaColaboradores() {
 
       {/* Renderizado de la tabla con datos filtrados y ordenados */}
       <div className="table_container" ref={containerRef}>
-        <Tabla
+         <Tabla
           colaboradores={colaboradoresOrdenados}
           onSort={handleSort}
           sortField={sortField}
           sortOrder={sortOrder}
+          // 6. Pasamos las props nuevas al componente Tabla
+          statusOptions={statusOptions}
+          onStatusChange={handleStatusChange}
         />
       </div>
     </div>

@@ -86,6 +86,7 @@ router.get("/parents", async (req, res) => {
   try {
     const result = await pool.query(`
     SELECT
+        participante.id_participante,
         participante.nombre,
         participante.apellido_paterno,
         participante.apellido_materno,
@@ -93,6 +94,7 @@ router.get("/parents", async (req, res) => {
         padre_o_tutor.apellido_paterno AS apellido_paterno_tutor,
         padre_o_tutor.apellido_materno AS apellido_materno_tutor,
         padre_o_tutor.telefono AS telefono_tutor,
+        participante.estado,
         participante.id_grupo
     FROM
         participante
@@ -115,5 +117,139 @@ router.get("/parents", async (req, res) => {
     });
   }
 });
+
+
+// Get un participante con su padre o tutor
+router.get("/parents/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(`
+      SELECT
+        participante.id_participante,
+        participante.nombre,
+        participante.apellido_paterno,
+        participante.apellido_materno,
+        participante.correo,
+        padre_o_tutor.nombre AS nombre_tutor,
+        padre_o_tutor.apellido_paterno AS apellido_paterno_tutor,
+        padre_o_tutor.apellido_materno AS apellido_materno_tutor,
+        padre_o_tutor.telefono AS telefono_tutor,
+        padre_o_tutor.correo AS correo_tutor,
+        participante.estado,
+        participante.escuela,
+        participante.escolaridad,
+        participante.idioma,
+        participante.edad,
+        participante.id_grupo
+      FROM
+        participante
+      JOIN
+        padre_o_tutor
+      ON
+        participante.id_padre_o_tutor = padre_o_tutor.id_padre_o_tutor
+      WHERE
+        participante.id_participante = $1
+    `, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Participante no encontrado" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error al obtener participante:", error);
+    res.status(500).json({ message: "Error del servidor" });
+  }
+});
+
+
+// Editar un participante y su tutor
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    nombre,
+    apellido_paterno,
+    apellido_materno,
+    correo,
+    edad,
+    escuela,
+    escolaridad,
+    idioma,
+    id_grupo,
+    nombre_tutor,
+    apellido_paterno_tutor,
+    apellido_materno_tutor,
+    correo_tutor,
+    telefono_tutor,
+  } = req.body;
+
+  try {
+    // Obtener ID del tutor relacionado
+    const tutorResult = await pool.query(
+      "SELECT id_padre_o_tutor FROM participante WHERE id_participante = $1",
+      [id]
+    );
+
+    if (tutorResult.rows.length === 0) {
+      return res.status(404).json({ message: "Participante no encontrado" });
+    }
+
+    const id_tutor = tutorResult.rows[0].id_padre_o_tutor;
+
+    // Actualizar participante
+    await pool.query(
+      `UPDATE participante SET
+        nombre = $1,
+        apellido_paterno = $2,
+        apellido_materno = $3,
+        correo = $4,
+        edad = $5,
+        escuela = $6,
+        escolaridad = $7,
+        idioma = $8,
+        id_grupo = $9
+      WHERE id_participante = $10`,
+      [
+        nombre,
+        apellido_paterno,
+        apellido_materno,
+        correo,
+        edad,
+        escuela,
+        escolaridad,
+        idioma,
+        id_grupo,
+        id,
+      ]
+    );
+
+    // Actualizar tutor
+    await pool.query(
+      `UPDATE padre_o_tutor SET
+        nombre = $1,
+        apellido_paterno = $2,
+        apellido_materno = $3,
+        correo = $4,
+        telefono = $5
+      WHERE id_padre_o_tutor = $6`,
+      [
+        nombre_tutor,
+        apellido_paterno_tutor,
+        apellido_materno_tutor,
+        correo_tutor,
+        telefono_tutor,
+        id_tutor,
+      ]
+    );
+
+    res.json({ success: true, message: "Participante actualizado correctamente" });
+  } catch (error) {
+    console.error("Error al actualizar participante:", error);
+    res.status(500).json({ message: "Error al actualizar participante", error: error.message });
+  }
+});
+
+
 
 export default router;

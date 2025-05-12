@@ -8,11 +8,18 @@ import RegistroSedes from "./pages/RegistroSedes";
 import IniciarSesion from "./pages/IniciarSesion";
 import Home from "./pages/Home";
 import ListadoColaboradores from "./pages/admin/ViewColaboradores";
+import ListadoParticipantes from "./pages/admin/ViewParticipantes"
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
+import DetalleParticipante from "./pages/admin/DetallesParticipantes";
+// import AdminSedeDashboard from "./pages/adminSede/adminHome";
+
 import { useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
+import DetalleParticipante from "./pages/admin/DetallesParticipantes";
+// import AdminSedeDashboard from "./pages/adminSede/adminHome";
+
 
 function App() {
   const location = useLocation();
@@ -54,6 +61,17 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/admin/participantes"
+          element={<ListadoParticipantes></ListadoParticipantes>}
+        ></Route>
+        <Route
+          path="/adminSede/inicio"
+          element={<AdminDashboard></AdminDashboard>}
+        ></Route>
+
+        <Route path="/admin/participantes/:id" element={<DetalleParticipante />} />
       </Routes>
     </AuthProvider>
   );
