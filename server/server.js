@@ -10,6 +10,10 @@ import gruposRoutes from "./routes/grupos.js";
 import mentorasRoutes from "./routes/mentoras.js";
 import participantesRoutes from "./routes/participantes.js";
 import sedesRoutes from "./routes/sedes.js";
+import authRoutes from "./routes/authRoute.js";
+import dotenv from "dotenv";
+
+dotenv.config({ path: "./config/.env" });
 
 const app = express();
 const port = 8000;
@@ -58,6 +62,7 @@ app.use("/api/grupos", gruposRoutes);
 app.use("/api/mentoras", mentorasRoutes);
 app.use("/api/participantes", participantesRoutes);
 app.use("/api/sedes", sedesRoutes);
+app.use("/api/auth", authRoutes);
 
 // Listen on all interfaces
 app.listen(process.env.PORT || 8000, "0.0.0.0", () => {

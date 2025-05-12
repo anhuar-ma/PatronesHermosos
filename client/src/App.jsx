@@ -11,48 +11,53 @@ import ListadoColaboradores from "./pages/admin/ViewColaboradores";
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
 import { useLocation } from "react-router-dom";
-
+import { AuthProvider } from "./context/AuthContext.jsx";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
+
   return (
-    <>
+    <AuthProvider>
       {isAdminRoute ? <AdminNavbar /> : <Navbar />}
       <Routes>
-        <Route path="/" element={<Home></Home>}>
-          {" "}
-        </Route>
-        <Route
-          path="/participante"
-          element={<RegistroParticipantes></RegistroParticipantes>}
-        >
-          {" "}
-        </Route>
-        <Route
-          path="/colaborador"
-          element={<RegistroColaboradores></RegistroColaboradores>}
-        >
-          {" "}
-        </Route>
-        <Route path="/sede" element={<RegistroSedes></RegistroSedes>}></Route>
-        <Route path="/sesion" element={<IniciarSesion></IniciarSesion>}></Route>
+        {/* Public routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/participante" element={<RegistroParticipantes />} />
+        <Route path="/colaborador" element={<RegistroColaboradores />} />
+        <Route path="/sede" element={<RegistroSedes />} />
+        <Route path="/sesion" element={<IniciarSesion />} />
 
-       
-
-        {/* Admin routes */}
-        <Route 
-          path="/admin/inicio" 
-          element={<AdminDashboard></AdminDashboard>} />
+        {/* Protected admin routes */}
+        <Route
+          path="/admin/inicio"
+          element={
+            <ProtectedRoute requiredRoles={[0, 1]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin/colaboradores"
-          element={<ListadoColaboradores></ListadoColaboradores>}
-        ></Route>
-
-        <Route path="/admin/add-person" element={<RegistroSedes></RegistroSedes>} />
+          element={
+            <ProtectedRoute requiredRoles={[0,1]}>
+              <ListadoColaboradores />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/add-person"
+          element={
+            <ProtectedRoute requiredRoles={[0]}>
+              <RegistroSedes />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-    </>
+    </AuthProvider>
   );
+
 }
 
 export default App;
