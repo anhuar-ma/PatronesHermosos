@@ -11,7 +11,6 @@ import ListadoColaboradores from "./pages/admin/ViewColaboradores";
 import ListadoParticipantes from "./pages/admin/ViewParticipantes"
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
-import DetalleParticipante from "./pages/admin/DetallesParticipantes";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
 
 import { useLocation } from "react-router-dom";
