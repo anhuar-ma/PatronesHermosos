@@ -14,6 +14,8 @@ export default function TablaParticipantes() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
+  const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
+
 
   // ✅ useMemo deben estar antes de cualquier return
   const gruposDisponibles = useMemo(() => {
@@ -44,9 +46,12 @@ export default function TablaParticipantes() {
     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
     const coincideGrupo =
       gruposSeleccionados.length === 0 || gruposSeleccionados.includes(p.id_grupo);
-
-    return coincideBusqueda && coincideGrupo;
+    const coincideEstado =
+      estadosSeleccionados.length === 0 || estadosSeleccionados.includes(p.estado);
+  
+    return coincideBusqueda && coincideGrupo && coincideEstado;
   });
+  
 
   const participantesOrdenados = ordenarParticipantes(participantesFiltrados);
 
@@ -97,17 +102,20 @@ export default function TablaParticipantes() {
             <h3>Filtros avanzados</h3>
 
             <FiltroTabla
-              titulo="Grupo"
-              opciones={gruposDisponibles}
-              seleccionados={gruposSeleccionados}
-              setSeleccionados={setGruposSeleccionados}
+                titulo="Estado"
+                opciones={statusOptions}
+                seleccionados={estadosSeleccionados}
+                setSeleccionados={setEstadosSeleccionados}
             />
+
+
 
             <button
               className="tabla_boton-limpiar-filtros"
               onClick={() => {
                 setBusqueda("");
                 setGruposSeleccionados([]);
+                setEstadosSeleccionados([])
                 setMostrarFiltros(false);
               }}
             >

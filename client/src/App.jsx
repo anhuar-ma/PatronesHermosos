@@ -8,10 +8,10 @@ import RegistroSedes from "./pages/RegistroSedes";
 import IniciarSesion from "./pages/IniciarSesion";
 import Home from "./pages/Home";
 import ListadoColaboradores from "./pages/admin/ViewColaboradores";
-import ListadoParticipantes from "./pages/admin/ViewParticipantes"
+import ListadoParticipantes from "./pages/admin/ViewParticipantes";
+import ListadoSedes from "./pages/admin/ViewSedes.jsx"
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
-import DetalleParticipante from "./pages/admin/DetallesParticipantes";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
 
 import { useLocation } from "react-router-dom";
@@ -66,6 +66,15 @@ function App() {
           path="/admin/participantes"
           element={<ListadoParticipantes></ListadoParticipantes>}
         ></Route>
+
+
+        <Route
+          path="/admin/sedes"
+          element={<ListadoSedes></ListadoSedes>}
+        ></Route>
+
+
+
         <Route
           path="/adminSede/inicio"
           element={<AdminDashboard></AdminDashboard>}
