@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
             id: decoded.id,
             correo: decoded.correo,
             rol: decoded.rol,
-            id_sede: decoded.id_sede
+            id_sede: decoded.id_sede,
           });
           // Set authorization header for all future requests
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -44,7 +44,9 @@ export function AuthProvider({ children }) {
         correo: email,
         contraseña: password,
       });
+
       const { token, user } = response.data;
+      console.log("Login response:", response.data);
 
       // Save token to localStorage
       localStorage.setItem("token", token);
@@ -52,8 +54,18 @@ export function AuthProvider({ children }) {
       // Set authorization header for all future requests
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-      // Update user state
-      setUser(user);
+      // Decode the token to ensure we get all user data
+      const decoded = jwtDecode(token);
+      console.log("Decoded token:", decoded);
+
+      // Update user state with consistent structure
+      setUser({
+        id: decoded.id,
+        correo: decoded.correo,
+        rol: decoded.rol,
+        id_sede: decoded.id_sede,
+        ...user, 
+      });
 
       return { success: true };
     } catch (error) {
@@ -100,4 +112,3 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
-

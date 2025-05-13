@@ -1,5 +1,5 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function ProtectedRoute({ children, requiredRoles = [] }) {
   const { isAuthenticated, user, loading, hasRole } = useAuth();
@@ -23,3 +23,4 @@ export default function ProtectedRoute({ children, requiredRoles = [] }) {
   // If authenticated and authorized, render the component
   return children;
 }
+

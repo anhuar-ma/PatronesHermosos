@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import BurguerButton from "./BurguerButton"; // Asegúrate de importar el mismo
 import {
   House,
@@ -18,10 +19,19 @@ export default function AdminNavbar() {
   const [active, setActive] = useState("/");
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate(); // Add navigate hook
+  const { logout } = useAuth(); // Get logout function from auth context
+
 
   useEffect(() => {
     setMenuOpen(false); // Cierra menú al navegar
   }, [location.pathname]);
+
+  const handleLogout = () =>{
+    logout();
+    navigate("/");
+
+  }
 
   const navItems = [
     {
@@ -79,11 +89,14 @@ export default function AdminNavbar() {
           </Link>
         ))}
 
-        {/* <div className="AdminNavbar__footer"> */}
-          <Link to="/" className="AdminNavbar__button-logout">
-            <LogOut size={20} />
-            <span className="AdminNavbar__buttonLabel">Cerrar sesión</span>
-          </Link>
+          {/* <div className="AdminNavbar__footer"> */}
+      <button
+        onClick={handleLogout}
+        className="AdminNavbar__button-logout"
+      >
+        <LogOut size={20} />
+        <span className="AdminNavbar__buttonLabel">Cerrar sesión</span>
+      </button>
         {/* </div> */}
       </div>
 

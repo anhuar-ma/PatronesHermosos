@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get sedes from sede
+// Get sedes and their respective coordinadoras
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(
@@ -68,6 +68,26 @@ router.get("/", async (req, res) => {
       ON
           coordinadora.id_coordinadora = sede.id_coordinadora;
       `,
+    );
+    res.status(200).json({
+      success: true,
+      data: result.rows,
+    });
+  } catch (error) {
+    console.error("Error fetching colaboradores:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener los datos",
+      error: error.message,
+    });
+  }
+});
+
+// Get the names from sedes that are accepeted
+router.get("/nombres", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT nombre FROM sede WHERE estado = 'Aceptado'",
     );
     res.status(200).json({
       success: true,

@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import styles from "../styles/inicio_sesion.module.css";
 
 export default function IniciarSesion() {
   const [loading, setLoading] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const { login } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+
+  // Add this effect to wait for authentication before navigation
+  useEffect(() => {
+    if (loginSuccess && isAuthenticated) {
+      console.log("Entradooooo");
+      console.log(user);
+      console.log("Current user role:", user?.rol);
+      navigate("/admin/inicio");
+    }
+  }, [loginSuccess, isAuthenticated, navigate, user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,11 +56,11 @@ export default function IniciarSesion() {
 
     try {
       // Use the login function from auth context
+      setLoading(true);
       const result = await login(email, password);
 
       if (result.success) {
-        // Redirect based on user role
-        navigate("/admin/inicio");
+        setLoginSuccess(true);
       } else {
         setError(result.message || "Error al iniciar sesión.");
       }

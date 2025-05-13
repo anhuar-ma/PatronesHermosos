@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
 import "../styles/registros.css";
+import useSedesNames from "../hooks/useSedesNombres";
 
 export default function RegistroParticipantes() {
   const [fileName, setFileName] = useState("");
@@ -9,6 +10,9 @@ export default function RegistroParticipantes() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
+  const { sedes, loading: sedesLoading, error: sedesError } = useSedesNames();
+
+  console.log(sedes);
 
   const {
     register,
@@ -89,13 +93,18 @@ export default function RegistroParticipantes() {
       <div className="register-container">
         <div className="registro_containerForm">
           <h2 className="registro__titulo">Registro para participantes</h2>
-          <form className="registro__formulario" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form
+            className="registro__formulario"
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+          >
             <h4 className="registro__tituloSeccion">Información personal</h4>
             <p className="registro__instrucciones">
               Llenar con datos como aparecen en un documento oficial.
             </p>
             <label>
-              Nombre(s) de la alumna <span className="registro__obligatorio">*</span>
+              Nombre(s) de la alumna{" "}
+              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${errors.nombre_alumna ? "registro__input-error" : ""}`}
@@ -108,7 +117,8 @@ export default function RegistroParticipantes() {
               )}
             </label>
             <label>
-              Apellido paterno de la alumna <span className="registro__obligatorio">*</span>
+              Apellido paterno de la alumna{" "}
+              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${errors.apellido_paterno_alumna ? "registro__input-error" : ""}`}
@@ -150,7 +160,9 @@ export default function RegistroParticipantes() {
                 })}
               />
               {errors.correo_alumna && (
-                <p className="registro__error">{errors.correo_alumna.message}</p>
+                <p className="registro__error">
+                  {errors.correo_alumna.message}
+                </p>
               )}
             </label>
             <label>
@@ -181,7 +193,8 @@ export default function RegistroParticipantes() {
               )}
             </label>
             <label>
-              Sede deseada para registro <span className="registro__obligatorio">*</span>
+              Sede deseada para registro{" "}
+              <span className="registro__obligatorio">*</span>
               <br />
               <select
                 className={` registro__select${
@@ -192,8 +205,11 @@ export default function RegistroParticipantes() {
                 })}
               >
                 <option value="">Seleccionar</option>
-                <option>ITESM Puebla</option>
-                <option>ITESM Monterrey</option>
+                {sedes.map((sede, index) => (
+                  <option key={index} value={sede.nombre}>
+                    {sede.nombre}
+                  </option>
+                ))}
               </select>
               {errors.sede_deseada && (
                 <p className="registro__error">Este campo es obligatorio</p>
@@ -221,7 +237,8 @@ export default function RegistroParticipantes() {
               </label>
 
               <label>
-                Idioma de preferencia <span className="registro__obligatorio">*</span>
+                Idioma de preferencia{" "}
+                <span className="registro__obligatorio">*</span>
                 <br />
                 <select
                   className={`registro__select ${
@@ -246,9 +263,9 @@ export default function RegistroParticipantes() {
               Llenar con datos como aparecen en un documento oficial.
             </p>
 
-            
             <label>
-              Nombre(s) del tutor <span className="registro__obligatorio">*</span>
+              Nombre(s) del tutor{" "}
+              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${errors.nombre_tutor ? "registro__input-error" : ""}`}
@@ -261,7 +278,8 @@ export default function RegistroParticipantes() {
               )}
             </label>
             <label>
-              Apellido paterno del tutor <span className="registro__obligatorio">*</span>
+              Apellido paterno del tutor{" "}
+              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${errors.apellido_paterno_tutor ? "registro__input-error" : ""}`}
@@ -306,7 +324,8 @@ export default function RegistroParticipantes() {
               )}
             </label>
             <label>
-              Teléfono del tutor <span className="registro__obligatorio">*</span>
+              Teléfono del tutor{" "}
+              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${errors.telefono_tutor ? "registro__input-error" : ""}`}
@@ -320,7 +339,8 @@ export default function RegistroParticipantes() {
               )}
             </label>
             <label>
-              Convocatoria de la sede <span className="registro__obligatorio">*</span>
+              Convocatoria de la sede{" "}
+              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 type="file"
