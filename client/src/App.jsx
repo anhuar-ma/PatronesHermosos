@@ -12,6 +12,7 @@ import ListadoParticipantes from "./pages/admin/ViewParticipantes";
 import ListadoSedes from "./pages/admin/ViewSedes.jsx"
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
+import ListadoGrupos from "./pages/admin/ViewGrupos";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
 
 import { useLocation } from "react-router-dom";
@@ -77,6 +78,11 @@ function App() {
         <Route
           path="/adminSede/inicio"
           element={<AdminDashboard></AdminDashboard>}
+        ></Route>
+
+        <Route
+          path="/admin/grupos"
+          element={<ListadoGrupos></ListadoGrupos>}
         ></Route>
 
         <Route
