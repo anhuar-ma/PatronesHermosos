@@ -3,8 +3,6 @@ import { pool } from "../server.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
 
-
-
 const router = express.Router();
 
 // Handle colaborador registration
@@ -70,8 +68,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-
-router.get("/",async(req,res) => {
+router.get("/", async (req, res) => {
   try {
     // Extract the token from Authorization header
     const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -96,10 +93,9 @@ router.get("/",async(req,res) => {
     else if (decoded.rol === 1 && decoded.id_sede) {
       result = await pool.query(
         "SELECT * FROM colaborador WHERE id_sede = $1",
-        [decoded.id_sede]
+        [decoded.id_sede],
       );
-    }
-    else {
+    } else {
       return res.status(403).json({
         success: false,
         message: "Insufficient permissions",
@@ -127,7 +123,6 @@ router.get("/",async(req,res) => {
       error: error.message,
     });
   }
-})
-
+});
 
 export default router;
