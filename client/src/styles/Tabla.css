@@ -313,6 +313,17 @@
     color: #ffffff;
     padding: 0.5rem 1rem;
   }
+
+  .tabla__botonGris {
+    border-radius: 5px;
+    /* width: 150px; */
+    /* height: 35px; */
+    border: none;
+    background-color: gray;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+  }
+
   
   .tabla__botonMorado:hover {
     border-radius: 5px;

@@ -32,6 +32,8 @@
   
   .btn-edit:hover, .btn-change-group:hover {
     background-color: #a16ab7;
+    transform: scale(1.03); /* Sutil aumento de tamaño */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave para profundidad */
   }
   
   .subtitle__view {
@@ -46,6 +48,7 @@
     margin-top: 1rem;
 
   }
+  
   
   .info-column {
     flex: 1;
@@ -85,7 +88,6 @@
     background-color: darkred;
   }
   
-
   .main-content {
     flex: 1;
     display: flex;
@@ -111,4 +113,70 @@
     justify-content: center; 
     align-items: center; 
   }
+  .registroEdicion__input{
+    border: none;
+    border-bottom: 1px solid #c0c0c0;
+    padding: 8px 4px;
+    width: 70%;
+  }
+  .registroEdicion__botonCancelar {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background-color: #ff7b7b; /* Gris original */
+    color: #ffffff;
+    /* margin-top: 0.5rem; */
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: scale(1);
+  }
+  .registroEdicion__botonCancelar:hover {
+    background-color: red; /* Gris un poco más oscuro */
+    transform: scale(1.03); /* Sutil aumento de tamaño */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave para profundidad */
+  }
+
+  .registroEdicion__botonGuardar {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background-color: #45aa44; /* Gris original */
+    color: #ffffff;
+    /* margin-top: 0.5rem; */
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: scale(1);
+  }
+  .registroEdicion__botonGuardar:hover {
+    background-color: green; /* Gris un poco más oscuro */
+    transform: scale(1.03); /* Sutil aumento de tamaño */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave para profundidad */
+  }
+
   
+  @media (max-width: 768px) {
+    .info-grid {
+      flex-direction: column;
+    }
+    .background__view {
+      margin-left: 0;
+      padding: 1rem;
+      width: 100%;
+    }
+    .header-actions {
+      display: block;
+    }
+    .btn-change-group,
+    .btn-edit {
+      padding: 1rem 2rem;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column; /* Cambia la dirección de fila a columna */
+      gap: 1rem;
+    }
+  }
