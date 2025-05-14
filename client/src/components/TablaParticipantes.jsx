@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import useParticipantesParents from "../hooks/useParticipantesParents";
 import { SlidersHorizontal } from "lucide-react";
 import Tabla from "./TablaParticipantesListado";
@@ -6,7 +6,12 @@ import LoadingCard from "./LoadingCard";
 import FiltroTabla from "./FiltroTabla";
 
 export default function TablaParticipantes() {
-  const { participantes, loading, error } = useParticipantesParents();
+    const { participantes: participantesOriginales, loading, error } = useParticipantesParents();
+    const [participantes, setParticipantes] = useState([]);
+  
+    useEffect(() => {
+      setParticipantes(participantesOriginales);
+    }, [participantesOriginales]);
 
   const [busqueda, setBusqueda] = useState("");
   const containerRef = useRef(null);
@@ -44,11 +49,9 @@ export default function TablaParticipantes() {
   const participantesFiltrados = participantes.filter((p) => {
     const nombreCompleto = `${p.nombre} ${p.apellido_paterno} ${p.apellido_materno || ""}`.toLowerCase();
     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
-    const coincideGrupo =
-      gruposSeleccionados.length === 0 || gruposSeleccionados.includes(p.id_grupo);
-    const coincideEstado =
-      estadosSeleccionados.length === 0 || estadosSeleccionados.includes(p.estado);
-  
+    const coincideGrupo = gruposSeleccionados.length === 0 || gruposSeleccionados.includes(p.id_grupo);
+    const coincideEstado = estadosSeleccionados.length === 0 || estadosSeleccionados.includes(p.estado);
+
     return coincideBusqueda && coincideGrupo && coincideEstado;
   });
   
@@ -67,10 +70,30 @@ export default function TablaParticipantes() {
     }
   };
 
-  const handleStatusChange = (id_participante, nuevoEstado) => {
-    // Aquí podrías enviar una petición para actualizar el estado del participante
-    console.log(`Cambiar estado del participante ${id_participante} a ${nuevoEstado}`);
+  const handleStatusChange = async (id_participante, nuevoEstado) => {
+    try {
+      const response = await fetch(`/api/participantes/estado/${id_participante}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: nuevoEstado }),
+      });
+
+      if (response.ok) {
+        setParticipantes((prev) =>
+          prev.map((p) =>
+            p.id_participante === id_participante ? { ...p, estado: nuevoEstado } : p
+          )
+        );
+      } else {
+        console.error("Error al actualizar el estado");
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+    }
   };
+
+  
+  
 
   return (
     <div className="tabla__containerBlanco">

@@ -10,12 +10,12 @@ router.post("/", async (req, res) => {
       nombre_alumna,
       apellido_paterno,
       apellido_materno,
-      correo,
       edad,
+      correo,
       escuela,
       escolaridad,
       // sede deseada
-      sede,
+      sede_deseada,
       idioma,
       nombre_tutor,
       apellido_paterno_tutor,
@@ -25,9 +25,11 @@ router.post("/", async (req, res) => {
       // archivo_tutor would need file handling
     } = req.body;
 
+    console.log("ESTA ES LA SEDE:", sede_deseada);
+    console.log(req.body);
     const result = await pool.query(
       `CALL registro_participante_con_tutor(
-       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
       [
         nombre_alumna,
         apellido_paterno,
@@ -39,8 +41,7 @@ router.post("/", async (req, res) => {
         // permiso es null
         null,
         idioma,
-        //sede es null
-        null,
+        sede_deseada,
         nombre_tutor,
         apellido_paterno_tutor,
         apellido_materno_tutor,
@@ -118,13 +119,13 @@ router.get("/parents", async (req, res) => {
   }
 });
 
-
 // Get un participante con su padre o tutor
 router.get("/parents/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
       SELECT
         participante.id_participante,
         participante.nombre,
@@ -150,7 +151,9 @@ router.get("/parents/:id", async (req, res) => {
         participante.id_padre_o_tutor = padre_o_tutor.id_padre_o_tutor
       WHERE
         participante.id_participante = $1
-    `, [id]);
+    `,
+      [id],
+    );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "Participante no encontrado" });
@@ -162,7 +165,6 @@ router.get("/parents/:id", async (req, res) => {
     res.status(500).json({ message: "Error del servidor" });
   }
 });
-
 
 // Editar un participante y su tutor
 router.put("/:id", async (req, res) => {
@@ -188,7 +190,7 @@ router.put("/:id", async (req, res) => {
     // Obtener ID del tutor relacionado
     const tutorResult = await pool.query(
       "SELECT id_padre_o_tutor FROM participante WHERE id_participante = $1",
-      [id]
+      [id],
     );
 
     if (tutorResult.rows.length === 0) {
@@ -221,7 +223,7 @@ router.put("/:id", async (req, res) => {
         idioma,
         id_grupo,
         id,
-      ]
+      ],
     );
 
     // Actualizar tutor
@@ -240,16 +242,47 @@ router.put("/:id", async (req, res) => {
         correo_tutor,
         telefono_tutor,
         id_tutor,
-      ]
+      ],
     );
 
-    res.json({ success: true, message: "Participante actualizado correctamente" });
+    res.json({
+      success: true,
+      message: "Participante actualizado correctamente",
+    });
   } catch (error) {
     console.error("Error al actualizar participante:", error);
-    res.status(500).json({ message: "Error al actualizar participante", error: error.message });
+    res.status(500).json({
+      message: "Error al actualizar participante",
+      error: error.message,
+    });
   }
 });
 
+// Update estado
+router.put("/estado/:id", async (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.body;
 
+  try {
+    // Actualizar participante
+    await pool.query(
+      `UPDATE participante SET
+        estado = $1
+      WHERE id_participante = $2`,
+      [estado, id],
+    );
+
+    res.json({
+      success: true,
+      message: "Participante actualizado correctamente",
+    });
+  } catch (error) {
+    console.error("Error al actualizar participante:", error);
+    res.status(500).json({
+      message: "Error al actualizar participante",
+      error: error.message,
+    });
+  }
+});
 
 export default router;

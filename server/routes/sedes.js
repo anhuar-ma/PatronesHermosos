@@ -57,6 +57,7 @@ router.get("/", async (req, res) => {
     const result = await pool.query(
       `SELECT
           CONCAT(coordinadora.nombre, ' ', coordinadora.apellido_paterno, ' ', coordinadora.apellido_materno) AS nombre_completo_coordinadora,
+          sede.id_sede,   
           coordinadora.correo AS correo_coordinadora,
           sede.nombre AS nombre_sede,
           sede.fecha_inicio,
