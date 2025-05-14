@@ -38,7 +38,9 @@ export default function DetalleParticipante() {
         setEditMode(false);
       })
       .catch((err) => {
-        alert("Error al guardar: " + (err.response?.data?.message || err.message));
+        alert(
+          "Error al guardar: " + (err.response?.data?.message || err.message)
+        );
       });
   };
 
@@ -52,81 +54,140 @@ export default function DetalleParticipante() {
           <h2 className="title__view">Vista detallada de participantes</h2>
           <div className="actions">
             <button className="btn-change-group">Cambiar grupo</button>
-            <button className="btn-edit" onClick={() => setEditMode(!editMode)}>
+            {/* <button className="btn-edit" onClick={() => setEditMode(!editMode)}>
+              {editMode ? "Cancelar edición" : "Editar registro"}
+            </button> */}
+            <button
+              className={`btn-edit ${
+                editMode ? "registroEdicion__botonCancelar" : ""
+              }`}
+              onClick={() => setEditMode(!editMode)}
+            >
               {editMode ? "Cancelar edición" : "Editar registro"}
             </button>
             {editMode && (
-              <button className="btn-save" onClick={handleSave}>
+              <button className="registroEdicion__botonGuardar" onClick={handleSave}>
                 Guardar cambios
               </button>
             )}
           </div>
         </div>
 
-        <h3 className="subtitle__view">Información personal de la participante</h3>
+        <h3 className="subtitle__view">
+          Información personal de la participante
+        </h3>
         <div className="info-grid">
           <div className="info-column">
-            <h5 className="label__colaborator">Nombre(s) de la participante:</h5>
+            <h5 className="label__colaborator">
+              Nombre(s) de la participante:
+            </h5>
             {editMode ? (
-              <input value={editableData.nombre || ''} onChange={(e) => handleChange("nombre", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.nombre || ""}
+                onChange={(e) => handleChange("nombre", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.nombre}</p>
             )}
 
-            <h5 className="label__colaborator">Apellido paterno de la participante:</h5>
+            <h5 className="label__colaborator">
+              Apellido paterno de la participante:
+            </h5>
             {editMode ? (
-              <input value={editableData.apellido_paterno || ''} onChange={(e) => handleChange("apellido_paterno", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.apellido_paterno || ""}
+                onChange={(e) =>
+                  handleChange("apellido_paterno", e.target.value)
+                }
+              />
             ) : (
-              <p className="info__colaborator">{participante.apellido_paterno}</p>
+              <p className="info__colaborator">
+                {participante.apellido_paterno}
+              </p>
             )}
 
             <h5 className="label__colaborator">Correo:</h5>
             {editMode ? (
-              <input value={editableData.correo || ''} onChange={(e) => handleChange("correo", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.correo || ""}
+                onChange={(e) => handleChange("correo", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.correo}</p>
             )}
 
             <h5 className="label__colaborator">Escolaridad:</h5>
             {editMode ? (
-              <input value={editableData.escolaridad || ''} onChange={(e) => handleChange("escolaridad", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.escolaridad || ""}
+                onChange={(e) => handleChange("escolaridad", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.escolaridad}</p>
             )}
 
             <h5 className="label__colaborator">Grupo asignado:</h5>
             {editMode ? (
-              <input value={editableData.id_grupo || ''} onChange={(e) => handleChange("id_grupo", e.target.value)} />
+              <input
+                value={editableData.id_grupo || ""}
+                onChange={(e) => handleChange("id_grupo", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.id_grupo}</p>
             )}
           </div>
 
           <div className="info-column">
-            <h5 className="label__colaborator">Apellido materno de la participante:</h5>
+            <h5 className="label__colaborator">
+              Apellido materno de la participante:
+            </h5>
             {editMode ? (
-              <input value={editableData.apellido_materno || ''} onChange={(e) => handleChange("apellido_materno", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.apellido_materno || ""}
+                onChange={(e) =>
+                  handleChange("apellido_materno", e.target.value)
+                }
+              />
             ) : (
-              <p className="info__colaborator">{participante.apellido_materno}</p>
+              <p className="info__colaborator">
+                {participante.apellido_materno}
+              </p>
             )}
 
             <h5 className="label__colaborator">Edad de la participante:</h5>
             {editMode ? (
-              <input value={editableData.edad || ''} onChange={(e) => handleChange("edad", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.edad || ""}
+                onChange={(e) => handleChange("edad", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.edad}</p>
             )}
 
             <h5 className="label__colaborator">Idioma de preferencia:</h5>
             {editMode ? (
-              <input value={editableData.idioma || ''} onChange={(e) => handleChange("idioma", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.idioma || ""}
+                onChange={(e) => handleChange("idioma", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.idioma}</p>
             )}
 
             <h5 className="label__colaborator">Escuela:</h5>
             {editMode ? (
-              <input value={editableData.escuela || ''} onChange={(e) => handleChange("escuela", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.escuela || ""}
+                onChange={(e) => handleChange("escuela", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.escuela}</p>
             )}
@@ -138,21 +199,37 @@ export default function DetalleParticipante() {
           <div className="info-column">
             <h5 className="label__colaborator">Nombre(s) del tutor:</h5>
             {editMode ? (
-              <input value={editableData.nombre_tutor || ''} onChange={(e) => handleChange("nombre_tutor", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.nombre_tutor || ""}
+                onChange={(e) => handleChange("nombre_tutor", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.nombre_tutor}</p>
             )}
 
             <h5 className="label__colaborator">Apellido paterno del tutor:</h5>
             {editMode ? (
-              <input value={editableData.apellido_paterno_tutor || ''} onChange={(e) => handleChange("apellido_paterno_tutor", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.apellido_paterno_tutor || ""}
+                onChange={(e) =>
+                  handleChange("apellido_paterno_tutor", e.target.value)
+                }
+              />
             ) : (
-              <p className="info__colaborator">{participante.apellido_paterno_tutor}</p>
+              <p className="info__colaborator">
+                {participante.apellido_paterno_tutor}
+              </p>
             )}
 
             <h5 className="label__colaborator">Correo:</h5>
             {editMode ? (
-              <input value={editableData.correo_tutor || ''} onChange={(e) => handleChange("correo_tutor", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.correo_tutor || ""}
+                onChange={(e) => handleChange("correo_tutor", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.correo_tutor}</p>
             )}
@@ -161,17 +238,31 @@ export default function DetalleParticipante() {
           <div className="info-column">
             <h5 className="label__colaborator">Apellido materno del tutor:</h5>
             {editMode ? (
-              <input value={editableData.apellido_materno || ''} onChange={(e) => handleChange("apellido_materno_tutor", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.apellido_materno || ""}
+                onChange={(e) =>
+                  handleChange("apellido_materno_tutor", e.target.value)
+                }
+              />
             ) : (
-              <p className="info__colaborator">{participante.apellido_materno}</p>
+              <p className="info__colaborator">
+                {participante.apellido_materno}
+              </p>
             )}
 
             <h5 className="label__colaborator">Permiso firmado tutor:</h5>
-            <button>Descargar archivo</button>
+            <button className="registro__botonGrisArchivos">
+              Descargar archivo
+            </button>
 
             <h5 className="label__colaborator">Teléfono del tutor:</h5>
             {editMode ? (
-              <input value={editableData.telefono_tutor || ''} onChange={(e) => handleChange("telefono_tutor", e.target.value)} />
+              <input
+                className="registroEdicion__input"
+                value={editableData.telefono_tutor || ""}
+                onChange={(e) => handleChange("telefono_tutor", e.target.value)}
+              />
             ) : (
               <p className="info__colaborator">{participante.telefono_tutor}</p>
             )}
