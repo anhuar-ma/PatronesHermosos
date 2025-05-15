@@ -87,12 +87,36 @@ router.get("/", async (req, res) => {
 
     // Role 0 can see all colaboradores
     if (decoded.rol === 0) {
-      result = await pool.query("SELECT * FROM colaborador");
+      result = await pool.query(
+        `
+      SELECT
+          c.*,
+          s.nombre AS nombre_sede
+      FROM
+          colaborador c
+      LEFT JOIN
+          sede s
+      ON
+          c.id_sede = s.id_sede
+      `,
+      );
     }
     // Role 1 can only see colaboradores from their sede
     else if (decoded.rol === 1 && decoded.id_sede) {
       result = await pool.query(
-        "SELECT * FROM colaborador WHERE id_sede = $1",
+        `
+      SELECT
+          c.*,
+          s.nombre AS nombre_sede
+      FROM
+          colaborador c
+      LEFT JOIN
+          sede s
+      ON
+          c.id_sede = s.id_sede
+      WHERE
+          c.id_sede = $1;
+      `,
         [decoded.id_sede],
       );
     } else {
@@ -125,10 +149,10 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async(req,res)=>{
-  const {id} = req.params;
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
 
-  try{
+  try {
     const result = await pool.query(
       `
       SELECT
@@ -142,7 +166,8 @@ router.get("/:id", async(req,res)=>{
           c.id_sede = s.id_sede
       WHERE
           c.id_colaborador = $1;
-      `,[id],
+      `,
+      [id],
     );
 
     if (result.rows.length === 0) {
@@ -150,11 +175,11 @@ router.get("/:id", async(req,res)=>{
     }
 
     res.json(result.rows[0]);
-  } catch(error){
+  } catch (error) {
     console.error("Error al obtener Colaborador:", error);
     res.status(500).json({ message: "Error del servidor" });
   }
-})
+});
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
@@ -173,10 +198,10 @@ router.put("/:id", async (req, res) => {
     rol,
     estado,
     nombre_sede,
-} = req.body;
+  } = req.body;
 
-try{
-      const result = await pool.query(
+  try {
+    const result = await pool.query(
       `UPDATE colaborador SET
         nombre = $1,
         apellido_paterno = $2,
@@ -205,30 +230,29 @@ try{
         carrera,
         rol,
         estado,
-        id
-      ]
+        id,
+      ],
     );
 
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Colaborador no encontrado"
+        message: "Colaborador no encontrado",
       });
     }
 
     res.json({
       success: true,
-      data: result.rows[0]
+      data: result.rows[0],
     });
-
-} catch (error){
+  } catch (error) {
     console.error("Error al actualizar colaborador:", error);
     res.status(500).json({
       message: "Error al actualizar colaborador",
       error: error.message,
     });
-}
-})
+  }
+});
 
 // Update estado
 router.put("/estado/:id", async (req, res) => {
@@ -238,20 +262,20 @@ router.put("/estado/:id", async (req, res) => {
   try {
     // Actualizar participante
     await pool.query(
-      `UPDATE participante SET
+      `UPDATE colaborador SET
         estado = $1
-      WHERE id_participante = $2`,
+      WHERE id_colaborador = $2`,
       [estado, id],
     );
 
     res.json({
       success: true,
-      message: "Participante actualizado correctamente",
+      message: "Colaborador actualizado correctamente",
     });
   } catch (error) {
-    console.error("Error al actualizar participante:", error);
+    console.error("Error al actualizar Colaborador:", error);
     res.status(500).json({
-      message: "Error al actualizar participante",
+      message: "Error al actualizar colaborador",
       error: error.message,
     });
   }
