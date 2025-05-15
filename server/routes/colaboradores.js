@@ -125,4 +125,136 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async(req,res)=>{
+  const {id} = req.params;
+
+  try{
+    const result = await pool.query(
+      `
+      SELECT
+          c.*,
+          s.nombre AS nombre_sede
+      FROM
+          colaborador c
+      LEFT JOIN
+          sede s
+      ON
+          c.id_sede = s.id_sede
+      WHERE
+          c.id_colaborador = $1;
+      `,[id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Colabor no encontrado" });
+    }
+
+    res.json(result.rows[0]);
+  } catch(error){
+    console.error("Error al obtener Colaborador:", error);
+    res.status(500).json({ message: "Error del servidor" });
+  }
+})
+
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    id_colaborador,
+    nombre,
+    apellido_paterno,
+    apellido_materno,
+    correo,
+    universidad,
+    idioma,
+    id_sede,
+    nivel,
+    id_grupo,
+    carrera,
+    rol,
+    estado,
+    nombre_sede,
+} = req.body;
+
+try{
+      const result = await pool.query(
+      `UPDATE colaborador SET
+        nombre = $1,
+        apellido_paterno = $2,
+        apellido_materno = $3,
+        correo = $4,
+        universidad = $5,
+        idioma = $6,
+        id_sede = $7,
+        nivel = $8,
+        id_grupo = $9,
+        carrera = $10,
+        rol = $11,
+        estado = $12
+      WHERE id_colaborador = $13
+      RETURNING *`,
+      [
+        nombre,
+        apellido_paterno,
+        apellido_materno,
+        correo,
+        universidad,
+        idioma,
+        id_sede,
+        nivel,
+        id_grupo,
+        carrera,
+        rol,
+        estado,
+        id
+      ]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Colaborador no encontrado"
+      });
+    }
+
+    res.json({
+      success: true,
+      data: result.rows[0]
+    });
+
+} catch (error){
+    console.error("Error al actualizar colaborador:", error);
+    res.status(500).json({
+      message: "Error al actualizar colaborador",
+      error: error.message,
+    });
+}
+})
+
+// Update estado
+router.put("/estado/:id", async (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.body;
+
+  try {
+    // Actualizar participante
+    await pool.query(
+      `UPDATE participante SET
+        estado = $1
+      WHERE id_participante = $2`,
+      [estado, id],
+    );
+
+    res.json({
+      success: true,
+      message: "Participante actualizado correctamente",
+    });
+  } catch (error) {
+    console.error("Error al actualizar participante:", error);
+    res.status(500).json({
+      message: "Error al actualizar participante",
+      error: error.message,
+    });
+  }
+});
+
 export default router;

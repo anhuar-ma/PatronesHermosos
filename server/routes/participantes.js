@@ -1,5 +1,7 @@
 import express from "express";
 import { pool } from "../server.js";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config/jwtConfig.js";
 
 const router = express.Router();
 
@@ -85,25 +87,94 @@ router.get("/", async (req, res) => {
 // Get participantes with their parents
 router.get("/parents", async (req, res) => {
   try {
-    const result = await pool.query(`
-    SELECT
-        participante.id_participante,
-        participante.nombre,
-        participante.apellido_paterno,
-        participante.apellido_materno,
-        padre_o_tutor.nombre AS nombre_tutor,
-        padre_o_tutor.apellido_paterno AS apellido_paterno_tutor,
-        padre_o_tutor.apellido_materno AS apellido_materno_tutor,
-        padre_o_tutor.telefono AS telefono_tutor,
-        participante.estado,
-        participante.id_grupo
-    FROM
-        participante
-    JOIN
-        padre_o_tutor
-    ON
-        participante.id_padre_o_tutor = padre_o_tutor.id_padre_o_tutor;
+    // Extract the token from Authorization header
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
+
+    // Verify and decode the token
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    let result;
+
+    // Role 0 can see all colaboradores
+    if (decoded.rol === 0) {
+      result = await pool.query(`
+      SELECT
+          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS participante_nombre,
+          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS tutor_nombre,
+          p.id_participante AS participante_id,
+          p.edad AS participante_edad,
+          p.correo AS participante_correo,
+          p.id_padre_o_tutor AS participante_id_padre_o_tutor,
+          p.id_sede AS participante_id_sede,
+          p.escuela AS participante_escuela,
+          p.escolaridad AS participante_escolaridad,
+          p.permiso_padre_tutor AS participante_permiso_padre_tutor,
+          p.idioma AS participante_idioma,
+          p.estado AS participante_estado,
+          t.id_padre_o_tutor AS tutor_id,
+          t.correo AS tutor_correo,
+          t.telefono AS tutor_telefono,
+          s.nombre AS nombre_sede
+      FROM
+          participante p
+      LEFT JOIN
+          padre_o_tutor t
+      ON
+          p.id_padre_o_tutor = t.id_padre_o_tutor
+      LEFT JOIN
+          sede s
+      ON
+          p.id_sede = s.id_sede;
+
     `);
+    }
+    // Role 1 can only see colaboradores from their sede
+    else if (decoded.rol === 1 && decoded.id_sede) {
+      result = await pool.query(`
+      SELECT
+          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS participante_nombre,
+          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS tutor_nombre,
+          p.id_participante AS participante_id,
+          p.edad AS participante_edad,
+          p.correo AS participante_correo,
+          p.id_padre_o_tutor AS participante_id_padre_o_tutor,
+          p.id_sede AS participante_id_sede,
+          p.escuela AS participante_escuela,
+          p.escolaridad AS participante_escolaridad,
+          p.permiso_padre_tutor AS participante_permiso_padre_tutor,
+          p.idioma AS participante_idioma,
+          p.estado AS participante_estado,
+          t.id_padre_o_tutor AS tutor_id,
+          t.correo AS tutor_correo,
+          t.telefono AS tutor_telefono,
+          s.nombre AS nombre_sede
+      FROM
+          participante p
+      LEFT JOIN
+          padre_o_tutor t
+      ON
+          p.id_padre_o_tutor = t.id_padre_o_tutor
+      LEFT JOIN
+          sede s
+      ON
+          p.id_sede = s.id_sede;
+          WHERE p.id_sede = $1
+    `,
+        [decoded.id_sede],
+      );
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Insufficient permissions",
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -111,11 +182,21 @@ router.get("/parents", async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching colaboradores:", error);
+
+    // Check if error is from JWT verification
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Error al obtener los datos",
       error: error.message,
     });
+
   }
 });
 

@@ -13,16 +13,31 @@ import ListadoSedes from "./pages/admin/ViewSedes.jsx"
 import AdminNavbar from "./components/AdminNavBar";
 import AdminDashboard from "./pages/admin/adminHome";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
-
+import {jwtDecode} from "jwt-decode";
 import { useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DetalleParticipante from "./pages/admin/DetallesParticipantes";
-// import AdminSedeDashboard from "./pages/adminSede/adminHome";
+// impor/t AdminSedeDashboard from "./pages/adminSede/adminHome";
 
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
+
+  const token = localStorage.getItem("token");
+  let currentRol = null;
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      currentRol = decoded.rol;     // aquí tienes el rol
+    } catch (err) {
+      console.error("Error decodificando token:", err);
+    }
+  }
+
+  console.log("Current Token");
+  console.log(currentRol);
+
 
   return (
     <AuthProvider>
