@@ -59,7 +59,7 @@ export default function Tabla({
           <tr key={colaborador.id_colaborador}>
             <td>{`${colaborador.nombre} ${colaborador.apellido_paterno} ${colaborador.apellido_materno}`}</td>
             <td>{colaborador.rol}</td>
-            <td>{getSedeNombre(colaborador.id_sede)}</td>
+            <td>{colaborador.id_sede}</td>
             <td>{colaborador.correo}</td>
             {/* <td>{colaborador.universidad}</td> */}
             <td>
