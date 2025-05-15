@@ -1,19 +1,8 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-//protects a single route
-//example
-// <Route
-//   path="/admin/add-person"
-//   element={
-//     <ProtectedRoute requiredRoles={[0]}>
-//       <RegistroSedes />
-//     </ProtectedRoute>
-//   }
-// />
-
-export default function ProtectedRoute({ children, requiredRoles = [] }) {
-  const { isAuthenticated, user, loading, hasRole } = useAuth();
+export default function ProtectedRoute({ requiredRoles = [] }) {
+  const { isAuthenticated, loading, hasRole } = useAuth();
 
   // If still loading auth state, show loading indicator
   if (loading) {
@@ -31,6 +20,6 @@ export default function ProtectedRoute({ children, requiredRoles = [] }) {
     return <Navigate to="/" replace />;
   }
 
-  // If authenticated and authorized, render the component
-  return children;
+  // If authenticated and authorized, render the outlet
+  return <Outlet />;
 }
