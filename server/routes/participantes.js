@@ -93,7 +93,7 @@ router.get("/parents", async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Authentication required",
+        message: "Authentication required aoeitsretaeosrentiareistaoenir arseiotn",
       });
     }
 
@@ -106,21 +106,20 @@ router.get("/parents", async (req, res) => {
     if (decoded.rol === 0) {
       result = await pool.query(`
       SELECT
-          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS participante_nombre,
-          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS tutor_nombre,
-          p.id_participante AS participante_id,
-          p.edad AS participante_edad,
-          p.correo AS participante_correo,
-          p.id_padre_o_tutor AS participante_id_padre_o_tutor,
-          p.id_sede AS participante_id_sede,
-          p.escuela AS participante_escuela,
-          p.escolaridad AS participante_escolaridad,
-          p.permiso_padre_tutor AS participante_permiso_padre_tutor,
-          p.idioma AS participante_idioma,
-          p.estado AS participante_estado,
-          t.id_padre_o_tutor AS tutor_id,
-          t.correo AS tutor_correo,
-          t.telefono AS tutor_telefono,
+          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre,
+          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_tutor,
+          p.id_participante,
+          p.edad,
+          p.correo,
+          p.id_padre_o_tutor,
+          p.id_sede,
+          p.escuela,
+          p.escolaridad,
+          p.permiso_padre_tutor,
+          p.idioma,
+          p.estado,
+          t.correo AS correo_tutor,
+          t.telefono AS telefono_tutor,
           s.nombre AS nombre_sede
       FROM
           participante p
@@ -139,21 +138,20 @@ router.get("/parents", async (req, res) => {
     else if (decoded.rol === 1 && decoded.id_sede) {
       result = await pool.query(`
       SELECT
-          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS participante_nombre,
-          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS tutor_nombre,
-          p.id_participante AS participante_id,
-          p.edad AS participante_edad,
-          p.correo AS participante_correo,
-          p.id_padre_o_tutor AS participante_id_padre_o_tutor,
-          p.id_sede AS participante_id_sede,
-          p.escuela AS participante_escuela,
-          p.escolaridad AS participante_escolaridad,
-          p.permiso_padre_tutor AS participante_permiso_padre_tutor,
-          p.idioma AS participante_idioma,
-          p.estado AS participante_estado,
-          t.id_padre_o_tutor AS tutor_id,
-          t.correo AS tutor_correo,
-          t.telefono AS tutor_telefono,
+          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre,
+          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_tutor,
+          p.id_participante,
+          p.edad,
+          p.correo,
+          p.id_padre_o_tutor,
+          p.id_sede,
+          p.escuela,
+          p.escolaridad,
+          p.permiso_padre_tutor,
+          p.idioma,
+          p.estado,
+          t.correo AS correo_tutor,
+          t.telefono AS telefono_tutor,
           s.nombre AS nombre_sede
       FROM
           participante p
@@ -164,11 +162,10 @@ router.get("/parents", async (req, res) => {
       LEFT JOIN
           sede s
       ON
-          p.id_sede = s.id_sede;
+          p.id_sede = s.id_sede
           WHERE p.id_sede = $1
-    `,
-        [decoded.id_sede],
-      );
+
+    `,[decoded.id_sede])
     } else {
       return res.status(403).json({
         success: false,
