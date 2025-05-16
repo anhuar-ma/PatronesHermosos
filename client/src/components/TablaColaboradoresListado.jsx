@@ -60,7 +60,7 @@ export default function Tabla({
       <tbody>
         {colaboradores.map((colaborador) => (
           <tr key={colaborador.id_colaborador}>
-            <td>{`${colaborador.nombre} ${colaborador.apellido_paterno} ${colaborador.apellido_materno}`}</td>
+            <td>{colaborador.nombre_completo_colaborador}</td>
             <td>{colaborador.rol}</td>
             <td>{colaborador.id_sede}</td>
             <td>{colaborador.correo}</td>

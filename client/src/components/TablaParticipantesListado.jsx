@@ -32,10 +32,10 @@ export default function Tabla({
               {renderSortArrow("nombre")}
             </div>
           </th>
-          <th onClick={() => onSort("apellido_paterno")}>
+          <th onClick={() => onSort("nombre_tutor")}>
             <div className="tablas__thContainer">
               <span>Nombre del tutor</span>
-              {renderSortArrow("apellido_paterno")}
+              {renderSortArrow("nombre_tutor")}
             </div>
           </th>
           <th>Teléfono de contacto</th>
