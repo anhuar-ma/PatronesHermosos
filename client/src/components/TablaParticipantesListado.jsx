@@ -48,19 +48,17 @@ export default function Tabla({
       <tbody>
         {participantes.map((participante) => (
           <tr key={participante.id_participante}>
-            <td>
-              {`${participante.nombre} ${participante.apellido_paterno} ${participante.apellido_materno || ""}`}
-            </td>
-            <td>
-              {`${participante.nombre_tutor} ${participante.apellido_paterno_tutor} ${participante.apellido_materno_tutor || ""}`}
-            </td>
+            <td>{participante.nombre_completo_participante}</td>
+            <td>{participante.nombre_completo_tutor}</td>
             <td>{participante.telefono_tutor}</td>
             <td>{participante.id_grupo}</td>
             <td>
               <button
                 className="tabla__botonMorado"
                 onClick={() =>
-                  navigate(`/admin/participantes/${participante.id_participante}`)
+                  navigate(
+                    `/admin/participantes/${participante.id_participante}`,
+                  )
                 }
               >
                 Ver detalles

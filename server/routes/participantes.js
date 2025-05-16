@@ -93,7 +93,8 @@ router.get("/parents", async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Authentication required aoeitsretaeosrentiareistaoenir arseiotn",
+        message:
+          "Authentication required aoeitsretaeosrentiareistaoenir arseiotn",
       });
     }
 
@@ -106,18 +107,9 @@ router.get("/parents", async (req, res) => {
     if (decoded.rol === 0) {
       result = await pool.query(`
       SELECT
-          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre,
-          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_tutor,
-          p.id_participante,
-          p.edad,
-          p.correo,
-          p.id_padre_o_tutor,
-          p.id_sede,
-          p.escuela,
-          p.escolaridad,
-          p.permiso_padre_tutor,
-          p.idioma,
-          p.estado,
+          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo_participante,
+          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_completo_tutor,
+          p.*,
           t.correo AS correo_tutor,
           t.telefono AS telefono_tutor,
           s.nombre AS nombre_sede
@@ -136,7 +128,8 @@ router.get("/parents", async (req, res) => {
     }
     // Role 1 can only see colaboradores from their sede
     else if (decoded.rol === 1 && decoded.id_sede) {
-      result = await pool.query(`
+      result = await pool.query(
+        `
       SELECT
           CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre,
           CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_tutor,
@@ -165,7 +158,9 @@ router.get("/parents", async (req, res) => {
           p.id_sede = s.id_sede
           WHERE p.id_sede = $1
 
-    `,[decoded.id_sede])
+    `,
+        [decoded.id_sede],
+      );
     } else {
       return res.status(403).json({
         success: false,
@@ -193,7 +188,6 @@ router.get("/parents", async (req, res) => {
       message: "Error al obtener los datos",
       error: error.message,
     });
-
   }
 });
 

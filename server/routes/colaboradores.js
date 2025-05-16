@@ -90,6 +90,7 @@ router.get("/", async (req, res) => {
       result = await pool.query(
         `
       SELECT
+          CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_completo_colaborador,
           c.*,
           s.nombre AS nombre_sede
       FROM
@@ -106,6 +107,7 @@ router.get("/", async (req, res) => {
       result = await pool.query(
         `
       SELECT
+          CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_completo_colaborador,
           c.*,
           s.nombre AS nombre_sede
       FROM
