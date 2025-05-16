@@ -37,6 +37,8 @@ function App() {
     }
   }
 
+
+
   console.log("Current Token");
   console.log(currentRol);
 
@@ -54,6 +56,9 @@ function App() {
         {/* Protected admin routes */}
 
         <Route element={<ProtectedRoutes requiredRoles={[0, 1]} />}>
+          <Route
+            path="/admin/"
+          />
           <Route
             path="/admin/inicio"
             element={<AdminDashboard></AdminDashboard>}

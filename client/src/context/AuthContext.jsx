@@ -1,12 +1,66 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useEffect, useRef } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { setupAxiosInterceptors } from "../utils/axiosConfig";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const tokenExpirationTimer = useRef(null);
+
+  // Function to calculate remaining time until token expires (in milliseconds)
+  const getTokenRemainingTime = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return 0;
+
+    try {
+      const decoded = jwtDecode(token);
+      const expirationTime = decoded.exp * 1000; // Convert to milliseconds
+      return Math.max(0, expirationTime - Date.now());
+    } catch (error) {
+      return 0;
+    }
+  };
+
+  // Set timer for token expiration
+  const setupExpirationTimer = () => {
+    // Clear any existing timer
+    if (tokenExpirationTimer.current) {
+      clearTimeout(tokenExpirationTimer.current);
+    }
+
+    const remainingTime = getTokenRemainingTime();
+    if (remainingTime > 0) {
+      console.log(`Token will expire in ${remainingTime/1000} seconds`);
+      tokenExpirationTimer.current = setTimeout(() => {
+        console.log('Token expired, logging out');
+        handleLogout();
+      }, remainingTime);
+    }
+  };
+
+  const handleLogout = () => {
+    // Remove token from localStorage
+    localStorage.removeItem("token");
+
+    // Remove authorization header
+    delete axios.defaults.headers.common["Authorization"];
+
+    // Clear user state
+    setUser(null);
+
+    // Clear expiration timer
+    if (tokenExpirationTimer.current) {
+      clearTimeout(tokenExpirationTimer.current);
+    }
+  };
+
+  // Initialize axios interceptors
+  useEffect(() => {
+    setupAxiosInterceptors(handleLogout);
+  }, []);
 
   useEffect(() => {
     // Check if user is logged in on page load
@@ -30,6 +84,9 @@ export function AuthProvider({ children }) {
           });
           // Set authorization header for all future requests
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+          // Setup expiration timer
+          setupExpirationTimer();
         }
       } catch (error) {
         handleLogout();
@@ -64,8 +121,11 @@ export function AuthProvider({ children }) {
         correo: decoded.correo,
         rol: decoded.rol,
         id_sede: decoded.id_sede,
-        ...user, 
+        ...user,
       });
+
+      // Setup expiration timer
+      setupExpirationTimer();
 
       return { success: true };
     } catch (error) {
@@ -74,17 +134,6 @@ export function AuthProvider({ children }) {
         message: error.response?.data?.message || "Error al iniciar sesión",
       };
     }
-  };
-
-  const handleLogout = () => {
-    // Remove token from localStorage
-    localStorage.removeItem("token");
-
-    // Remove authorization header
-    delete axios.defaults.headers.common["Authorization"];
-
-    // Clear user state
-    setUser(null);
   };
 
   // Check if user has a specific role
