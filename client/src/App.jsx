@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./styles/App.css";
+import useCurrentRol from "./hooks/useCurrentRol";
 import Navbar from "./components/Navbar";
 import { Route, Routes } from "react-router-dom";
 import RegistroParticipantes from "./pages/RegistroParticipantes";
@@ -11,6 +12,8 @@ import ListadoColaboradores from "./pages/admin/ViewColaboradores";
 import ListadoParticipantes from "./pages/admin/ViewParticipantes";
 import ListadoSedes from "./pages/admin/ViewSedes.jsx";
 import AdminNavbar from "./components/AdminNavBar";
+import AdminNavbarSede from "./components/AdminNavBarSede";
+
 import AdminDashboard from "./pages/admin/adminHome";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
 import { jwtDecode } from "jwt-decode";
@@ -26,25 +29,18 @@ function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
-  const token = localStorage.getItem("token");
-  let currentRol = null;
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      currentRol = decoded.rol; // aquí tienes el rol
-    } catch (err) {
-      console.error("Error decodificando token:", err);
-    }
-  }
+    // const token = localStorage.getItem("token");
+    const currentRol    = useCurrentRol(); 
 
-
-
-  console.log("Current Token");
-  console.log(currentRol);
-
-  return (
-    <AuthProvider>
-      {isAdminRoute ? <AdminNavbar /> : <Navbar />}
+    return (
+      <AuthProvider>
+        {
+          isAdminRoute
+            ? (currentRol === 0
+                ? <AdminNavbar />
+                : <AdminNavbarSede />)
+            : <Navbar />
+        }
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
