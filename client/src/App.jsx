@@ -19,6 +19,7 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import DetalleParticipante from "./pages/admin/DetallesParticipantes";
+import DetalleColaborador from "./pages/admin/DetallesColaborador.jsx";
 // impor/t AdminSedeDashboard from "./pages/adminSede/adminHome";
 
 function App() {
@@ -81,6 +82,12 @@ function App() {
             path="/admin/participantes/:id"
             element={<DetalleParticipante />}
           />
+
+          <Route
+            path="/admin/colaboradores/:id"
+            element={<DetalleColaborador />}
+          />
+
         </Route>
       </Routes>
     </AuthProvider>
