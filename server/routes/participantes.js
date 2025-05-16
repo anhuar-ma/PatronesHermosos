@@ -131,8 +131,8 @@ router.get("/parents", async (req, res) => {
       result = await pool.query(
         `
       SELECT
-          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre,
-          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_tutor,
+          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo_participante,
+          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_completo_tutor,
           p.id_participante,
           p.edad,
           p.correo,
