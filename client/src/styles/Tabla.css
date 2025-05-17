@@ -405,3 +405,38 @@
   @media (max-width: 409px) {
 
   }
+
+
+  .tabla__containerBlancoMentora{
+    display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    background-color: white;
+    height: 100%;
+  }
+
+  .table_containerMentora {
+    width: 100%;
+    max-height: 85%;
+    /* background-color: #555; */
+    /* overflow-x: auto; */
+    flex: 1 1 auto;
+    overflow-y: auto; /* ya lo tienes */
+    margin: 20px 0;
+    border-radius: 8px;
+    /* margin-top: 2rem; */
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
+  }
+
+  .btn-agregarMentora{
+    background-color: #b084c4;
+    color: white;
+    border: none;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: auto;
+    width: 20%;
+  }

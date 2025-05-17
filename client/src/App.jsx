@@ -10,7 +10,9 @@ import IniciarSesion from "./pages/IniciarSesion";
 import Home from "./pages/Home";
 import ListadoColaboradores from "./pages/admin/ViewColaboradores";
 import ListadoParticipantes from "./pages/admin/ViewParticipantes";
-import ListadoSedes from "./pages/admin/ViewSedes.jsx";
+import ListadoSedes from "./pages/admin/ViewSedes.jsx"; 
+import ListadoGrupos from "./pages/admin/ViewGrupos.jsx";
+import ListadoMentoras from "./pages/admin/ViewMentoras.jsx"; 
 import AdminNavbar from "./components/AdminNavBar";
 import AdminNavbarSede from "./components/AdminNavBarSede";
 
@@ -87,6 +89,14 @@ function App() {
           <Route
             path="/admin/colaboradores/:id"
             element={<DetalleColaborador />}
+          />
+            <Route
+            path="/admin/mentoras"
+            element={<ListadoMentoras />}
+          />
+          <Route
+            path="/admin/grupos"
+            element={<ListadoGrupos />}
           />
 
         </Route>
