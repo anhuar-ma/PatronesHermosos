@@ -1,5 +1,6 @@
 // src/components/TablaParticipantesListado.jsx
 import React from "react";
+import useCurrentRol from "../hooks/useCurrentRol";
 import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +23,10 @@ export default function Tabla({
     );
   };
 
+  // const token = localStorage.getItem("token");
+  const currentRol = useCurrentRol();
+  console.log(currentRol);
+
   return (
     <table className="colaboradores-table">
       <thead>
@@ -39,7 +44,8 @@ export default function Tabla({
             </div>
           </th>
           <th>Teléfono de contacto</th>
-          <th>Grupo</th>
+          {currentRol === 0 ? <th>Sede</th> : <th>Grupo</th>}
+
           <th>Más Información</th>
           <th>Estado</th>
         </tr>
@@ -51,13 +57,18 @@ export default function Tabla({
             <td>{participante.nombre_completo_participante}</td>
             <td>{participante.nombre_completo_tutor}</td>
             <td>{participante.telefono_tutor}</td>
-            <td>{participante.id_grupo}</td>
+            {currentRol === 0 ? (
+              <td>{participante.nombre_sede}</td>
+            ) : (
+              <td>{participante.id_grupo || "Sin asignar"}</td>
+            )}
+
             <td>
               <button
                 className="tabla__botonMorado"
                 onClick={() =>
                   navigate(
-                    `/admin/participantes/${participante.id_participante}`,
+                    `/admin/participantes/${participante.id_participante}`
                   )
                 }
               >
