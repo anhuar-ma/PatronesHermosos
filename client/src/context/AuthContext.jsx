@@ -33,9 +33,9 @@ export function AuthProvider({ children }) {
 
     const remainingTime = getTokenRemainingTime();
     if (remainingTime > 0) {
-      console.log(`Token will expire in ${remainingTime/1000} seconds`);
+      console.log(`Token will expire in ${remainingTime / 1000} seconds`);
       tokenExpirationTimer.current = setTimeout(() => {
-        console.log('Token expired, logging out');
+        console.log("Token expired, logging out");
         handleLogout();
       }, remainingTime);
     }

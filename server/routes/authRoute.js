@@ -40,12 +40,13 @@ router.post("/login", async (req, res) => {
       });
     }
 
-   const sedeResult = await pool.query(
+    const sedeResult = await pool.query(
       "SELECT id_sede FROM sede WHERE id_coordinadora = $1",
       [user.id_coordinadora],
     );
 
-    const id_sede = sedeResult.rows.length > 0 ? sedeResult.rows[0].id_sede : null;
+    const id_sede =
+      sedeResult.rows.length > 0 ? sedeResult.rows[0].id_sede : null;
 
     // Generate JWT token
     const token = jwt.sign(
@@ -53,7 +54,7 @@ router.post("/login", async (req, res) => {
         id: user.id_coordinadora,
         correo: user.correo,
         rol: user.rol,
-        id_sede: id_sede
+        id_sede: id_sede,
       },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES_IN },
@@ -66,7 +67,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
         correo: user.email,
         rol: user.role,
-        id_sede: user.id_sede
+        id_sede: user.id_sede,
       },
     });
   } catch (error) {
@@ -118,4 +119,3 @@ router.get("/me", async (req, res) => {
 });
 
 export default router;
-

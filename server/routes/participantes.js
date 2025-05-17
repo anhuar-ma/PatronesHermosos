@@ -131,18 +131,9 @@ router.get("/parents", async (req, res) => {
       result = await pool.query(
         `
       SELECT
-          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre,
-          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_tutor,
-          p.id_participante,
-          p.edad,
-          p.correo,
-          p.id_padre_o_tutor,
-          p.id_sede,
-          p.escuela,
-          p.escolaridad,
-          p.permiso_padre_tutor,
-          p.idioma,
-          p.estado,
+          CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo_participante,
+          CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_completo_tutor,
+          p.*,
           t.correo AS correo_tutor,
           t.telefono AS telefono_tutor,
           s.nombre AS nombre_sede
@@ -155,9 +146,8 @@ router.get("/parents", async (req, res) => {
       LEFT JOIN
           sede s
       ON
-          p.id_sede = s.id_sede
-          WHERE p.id_sede = $1
-
+          p.id_sede = s.id_sede;
+      WHERE p.id_sede = $1
     `,
         [decoded.id_sede],
       );
