@@ -2,6 +2,11 @@ import express from "express";
 import { pool } from "../server.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
+import {
+  authenticateToken,
+  requireAdmin,
+  checkSedeAccess,
+} from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -67,22 +72,22 @@ router.post("/", async (req, res) => {
 });
 
 // Get all participantes
-router.get("/", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM participante");
-    res.status(200).json({
-      success: true,
-      data: result.rows,
-    });
-  } catch (error) {
-    console.error("Error fetching colaboradores:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error al obtener los datos",
-      error: error.message,
-    });
-  }
-});
+// router.get("/", async (req, res) => {
+//   try {
+//     const result = await pool.query("SELECT * FROM participante");
+//     res.status(200).json({
+//       success: true,
+//       data: result.rows,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching colaboradores:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Error al obtener los datos",
+//       error: error.message,
+//     });
+//   }
+// });
 
 // Get participantes with their parents
 router.get("/parents", async (req, res) => {
@@ -93,8 +98,7 @@ router.get("/parents", async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message:
-          "Authentication required aoeitsretaeosrentiareistaoenir arseiotn",
+        message: "Authentication required",
       });
     }
 
@@ -146,8 +150,8 @@ router.get("/parents", async (req, res) => {
       LEFT JOIN
           sede s
       ON
-          p.id_sede = s.id_sede;
-      WHERE p.id_sede = $1
+          p.id_sede = s.id_sede
+      WHERE p.id_sede = $1;
     `,
         [decoded.id_sede],
       );
@@ -182,12 +186,16 @@ router.get("/parents", async (req, res) => {
 });
 
 // Get un participante con su padre o tutor
-router.get("/parents/:id", async (req, res) => {
-  const { id } = req.params;
+router.get(
+  "/parents/:id",
+  authenticateToken,
+  checkSedeAccess,
+  async (req, res) => {
+    const { id } = req.params;
 
-  try {
-    const result = await pool.query(
-      `
+    try {
+      const result = await pool.query(
+        `
       SELECT
         participante.id_participante,
         participante.nombre,
@@ -214,22 +222,23 @@ router.get("/parents/:id", async (req, res) => {
       WHERE
         participante.id_participante = $1
     `,
-      [id],
-    );
+        [id],
+      );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Participante no encontrado" });
+      if (result.rows.length === 0) {
+        return res.status(404).json({ message: "Participante no encontrado" });
+      }
+
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error("Error al obtener participante:", error);
+      res.status(500).json({ message: "Error del servidor" });
     }
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error("Error al obtener participante:", error);
-    res.status(500).json({ message: "Error del servidor" });
-  }
-});
+  },
+);
 
 // Editar un participante y su tutor
-router.put("/:id", async (req, res) => {
+router.put("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   const { id } = req.params;
   const {
     nombre,
@@ -321,27 +330,97 @@ router.put("/:id", async (req, res) => {
 });
 
 // Update estado
-router.put("/estado/:id", async (req, res) => {
-  const { id } = req.params;
-  const { estado } = req.body;
+router.put(
+  "/estado/:id",
+  authenticateToken,
+  checkSedeAccess,
+  async (req, res) => {
+    const { id } = req.params;
+    const { estado, id_sede } = req.body;
 
-  try {
-    // Actualizar participante
-    await pool.query(
-      `UPDATE participante SET
+    try {
+      if (estado == "Aceptado") {
+        const capacityResult = await pool.query(
+          "SELECT check_sede_capacity($1);",
+          [id],
+        );
+
+        const hasCapacity = capacityResult.rows[0].has_capacity;
+        if (!hasCapacity) {
+          return res.status(400).json({
+            success: false,
+            message: "No hay lugares disponibles en esta sede",
+          });
+        }
+      }
+      // Actualizar participante
+      await pool.query(
+        `UPDATE participante SET
         estado = $1
       WHERE id_participante = $2`,
-      [estado, id],
+        [estado, id],
+      );
+
+      res.json({
+        success: true,
+        message: "Participante actualizado correctamente",
+      });
+    } catch (error) {
+      console.error("Error al actualizar participante:", error);
+      res.status(500).json({
+        message: "Error al actualizar participante",
+        error: error.message,
+      });
+    }
+  },
+);
+
+// Delete participant and associated tutor data
+router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // First get the tutor ID associated with this participant
+    const participanteResult = await pool.query(
+      "SELECT id_padre_o_tutor FROM participante WHERE id_participante = $1",
+      [id],
     );
+
+    if (participanteResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Participante not found",
+      });
+    }
+
+    const tutorId = participanteResult.rows[0].id_padre_o_tutor;
+
+    // Begin transaction
+    await pool.query("BEGIN");
+    //  delete the tutor
+    await pool.query("DELETE FROM padre_o_tutor WHERE id_padre_o_tutor = $1", [
+      tutorId,
+    ]);
+    //then Delete participant first (due to foreign key constraints)
+    await pool.query("DELETE FROM participante WHERE id_participante = $1", [
+      id,
+    ]);
+
+    // Commit transaction
+    await pool.query("COMMIT");
 
     res.json({
       success: true,
-      message: "Participante actualizado correctamente",
+      message: "Participante y tutor eliminados correctamente",
     });
   } catch (error) {
-    console.error("Error al actualizar participante:", error);
+    // Rollback transaction in case of error
+    await pool.query("ROLLBACK");
+
+    console.error("Error eliminando participante y tutor:", error);
     res.status(500).json({
-      message: "Error al actualizar participante",
+      success: false,
+      message: "Error al eliminar los datos",
       error: error.message,
     });
   }

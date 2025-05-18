@@ -2,6 +2,7 @@ import express from "express";
 import { pool } from "../server.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
+import { authenticateToken, checkSedeAccess } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -278,6 +279,51 @@ router.put("/estado/:id", async (req, res) => {
     console.error("Error al actualizar Colaborador:", error);
     res.status(500).json({
       message: "Error al actualizar colaborador",
+      error: error.message,
+    });
+  }
+});
+
+// Delete colaborador by ID
+router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Begin transaction
+    await pool.query("BEGIN");
+
+    // Check if colaborador exists
+    const checkResult = await pool.query(
+      "SELECT id_colaborador FROM colaborador WHERE id_colaborador = $1",
+      [id],
+    );
+
+    if (checkResult.rows.length === 0) {
+      await pool.query("ROLLBACK");
+      return res.status(404).json({
+        success: false,
+        message: "Colaborador not found",
+      });
+    }
+
+    // Delete the colaborador
+    await pool.query("DELETE FROM colaborador WHERE id_colaborador = $1", [id]);
+
+    // Commit transaction
+    await pool.query("COMMIT");
+
+    res.json({
+      success: true,
+      message: "Colaborador eliminado correctamente",
+    });
+  } catch (error) {
+    // Rollback transaction in case of error
+    await pool.query("ROLLBACK");
+
+    console.error("Error eliminando colaborador:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al eliminar el colaborador",
       error: error.message,
     });
   }

@@ -205,8 +205,8 @@ export default function RegistroParticipantes() {
                 })}
               >
                 <option value="">Seleccionar</option>
-                {sedes.map((sede, index) => (
-                  <option key={index} value={sede.nombre}>
+                {sedes.map((sede) => (
+                  <option key={sede.id_sede} value={sede.id_sede}>
                     {sede.nombre}
                   </option>
                 ))}

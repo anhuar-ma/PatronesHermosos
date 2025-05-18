@@ -48,28 +48,24 @@ export default function Tabla({
       <tbody>
         {sedes.map((sede) => (
           <tr key={sede.id_sedes}>
-            <td>
-              {sede.nombre_completo_coordinadora}
-            </td>
-            <td>
-              {sede.correo_coordinadora}
-            </td>
+            <td>{sede.nombre_completo_coordinadora}</td>
+            <td>{sede.correo}</td>
             <td>{sede.nombre_sede}</td>
-            <td>{new Date(sede.fecha_inicio).toLocaleDateString("es-MX", { day: "2-digit", month: "2-digit", year: "numeric" })}</td>
             <td>
-              <button
-                className="tabla__botonGris"
-              >
-                Ver archivo
-              </button>
+              {new Date(sede.fecha_inicio).toLocaleDateString("es-MX", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
+            </td>
+            <td>
+              <button className="tabla__botonGris">Ver archivo</button>
             </td>
             <td>
               <select
                 className={`select-estado select-estado--${sede.estado.toLowerCase()}`}
                 value={sede.estado}
-                onChange={(e) =>
-                  onStatusChange(sede.id_sede, e.target.value)
-                }
+                onChange={(e) => onStatusChange(sede.id_sede, e.target.value)}
               >
                 {statusOptions.map((status) => (
                   <option
