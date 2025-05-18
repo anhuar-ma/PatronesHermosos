@@ -52,7 +52,7 @@ export default function Tabla({
               {sede.nombre_completo_coordinadora}
             </td>
             <td>
-              {sede.correo_coordinadora}
+              {sede.correo}
             </td>
             <td>{sede.nombre_sede}</td>
             <td>{new Date(sede.fecha_inicio).toLocaleDateString("es-MX", { day: "2-digit", month: "2-digit", year: "numeric" })}</td>

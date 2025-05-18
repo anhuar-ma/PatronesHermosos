@@ -3,12 +3,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingCard from "../../components/LoadingCard";
 import { useEditColaborador } from "../../hooks/useEditColaborador";
+import useCurrentRol from "../../hooks/useCurrentRol";
 import { useFetchColaborador } from "../../hooks/useFetchColaborador";
+import useSedesNames from "../../hooks/useSedesNombres";
 import "../../styles/ViewDetails.css";
 
 export default function DetalleColaborador() {
   const { id } = useParams();
   const { colaborador, loading, error, setColaborador } = useFetchColaborador(id);
+  const { sedes, loading: sedesLoading, error: sedesError } = useSedesNames();
+
+  console.log(`Sedes ${sedes}`);
   const {
     editableData,
     setEditableData,
@@ -33,6 +38,10 @@ export default function DetalleColaborador() {
 
   if (loading) return <LoadingCard mensaje="Cargando colaborador..." />;
   if (error) return <LoadingCard mensaje={error} />;
+
+    // const token = localStorage.getItem("token");
+    const currentRol = useCurrentRol();
+    console.log(`User current role: ${currentRol}`) ;
 
   return (
     <div className="background__view">
@@ -121,8 +130,28 @@ export default function DetalleColaborador() {
               <p className="info__colaborator">{colaborador.idioma}</p>
             )}
 
-            <h5 className="label__colaborator">Grupo asignado:</h5>
-            <p className="info__colaborator">{colaborador.id_grupo}</p>
+
+            {currentRol === 0 ?(
+              <h5 className="label__colaborator">Sede asignada:</h5>
+            ): (<h5 className="label__colaborator">Grupo asignado:</h5>)}
+
+            {currentRol === 0 ?(
+                          editMode ? (
+                            <select
+                              className="registroEdicion__input"
+                              value={editableData.nombre_sede || ""}
+                              onChange={(e) => handleChange("nombre_sede", e.target.value)}
+                            >
+                              {sedes.map((sede, index) => (
+                                <option key={index} value={sede.nombre}>
+                                  {sede.nombre}
+                                </option>
+                              ))}
+                            </select>  
+                          ) : (
+                            <p className="info__colaborator">{colaborador.nombre_sede}</p>
+                          )
+            ): (<p className="info__colaborator">{colaborador.id_grupo}</p>)}
             
           </div>
 
@@ -185,20 +214,6 @@ export default function DetalleColaborador() {
               <p className="info__colaborator">{colaborador.nivel}</p>
             )}
 
-            <h5 className="label__colaborator">Sede:</h5>
-            {editMode ? (
-              <select
-                className="registroEdicion__input"
-                value={editableData.nombre_sede || ""}
-                onChange={(e) => handleChange("nombre_sede", e.target.value)}
-              >
-                <option value="Instructora">ITESM</option>
-                <option value="Facilitadora">UPAEP</option>
-                <option value="Staff">TEC</option>
-              </select>  
-            ) : (
-              <p className="info__colaborator">{colaborador.nombre_sede}</p>
-            )}
           </div>
         </div>
 

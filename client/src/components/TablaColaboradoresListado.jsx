@@ -62,7 +62,7 @@ export default function Tabla({
           <tr key={colaborador.id_colaborador}>
             <td>{colaborador.nombre_completo_colaborador}</td>
             <td>{colaborador.rol}</td>
-            <td>{colaborador.id_sede}</td>
+            <td>{colaborador.nombre_sede}</td>
             <td>{colaborador.correo}</td>
             {/* <td>{colaborador.universidad}</td> */}
             <td>

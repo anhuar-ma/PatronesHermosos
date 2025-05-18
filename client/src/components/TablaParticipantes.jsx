@@ -29,7 +29,7 @@ export default function TablaParticipantes() {
   }, [participantes]);
 
   const statusOptions = useMemo(() => {
-    const estados = participantes.map((c) => c.estado);
+    const estados = participantes.map((p) => p.estado);
     return [...new Set(estados)].sort();
   }, [participantes]);
 

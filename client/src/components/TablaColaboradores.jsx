@@ -148,18 +148,30 @@ export default function TablaColaboradores() {
   //Funcion para manejo de cambio de estado en colaboradores
   const handleStatusChange = async (id_colaborador, nuevoEstado) => {
     try {
+      // Actualiza el estado del colaborador
       const response = await fetch(`/api/colaboradores/estado/${id_colaborador}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estado: nuevoEstado }),
       });
-
+  
       if (response.ok) {
         setColaboradores((prev) =>
           prev.map((c) =>
             c.id_colaborador === id_colaborador ? { ...c, estado: nuevoEstado } : c
           )
         );
+  
+        // Si el estado es "Aceptado", envía el correo
+        if (nuevoEstado === "Aceptado") {
+          const emailResponse = await fetch(`/api/colaboradores/email/${id_colaborador}`, {
+            method: "POST",
+          });
+  
+          if (!emailResponse.ok) {
+            console.error("Error al enviar el correo");
+          }
+        }
       } else {
         console.error("Error al actualizar el estado");
       }

@@ -1,10 +1,12 @@
 import express from "express";
 import { pool } from "../server.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config/jwtConfig.js";
 
 const router = express.Router();
 
-// Handle participant registration
+// Handle sedes registration
 router.post("/", async (req, res) => {
   try {
     const {
@@ -54,28 +56,60 @@ router.post("/", async (req, res) => {
 // Get sedes and their respective coordinadoras
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT
+    // Extract the token from Authorization header
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required ",
+      });
+    }
+
+    // Verify and decode the token
+    const decoded = jwt.verify(token, JWT_SECRET);
+    //cambiar a simplemente coreo
+    if (decoded.rol === 0) {
+      const result = await pool.query(
+        `SELECT
           CONCAT(coordinadora.nombre, ' ', coordinadora.apellido_paterno, ' ', coordinadora.apellido_materno) AS nombre_completo_coordinadora,
-          sede.id_sede,   
-          coordinadora.correo AS correo_coordinadora,
+          coordinadora.correo, 
+          sede.id_sede,
           sede.nombre AS nombre_sede,
           sede.fecha_inicio,
+          sede.convocatoria,
           sede.estado
       FROM
           coordinadora
       JOIN
           sede
       ON
-          coordinadora.id_coordinadora = sede.id_coordinadora;
+          coordinadora.id_coordinadora = sede.id_coordinadora AND coordinadora.rol = 1;
       `,
-    );
-    res.status(200).json({
-      success: true,
-      data: result.rows,
-    });
+      );
+
+      res.status(200).json({
+        success: true,
+        data: result.rows,
+        message: "Mostrado Sedes y coordinadoras correcto",
+      });
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Insufficient permissions",
+      });
+    }
   } catch (error) {
     console.error("Error fetching colaboradores:", error);
+
+    // Check if error is from JWT verification
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Error al obtener los datos",
@@ -95,7 +129,223 @@ router.get("/nombres", async (req, res) => {
       data: result.rows,
     });
   } catch (error) {
+    console.error("Error fetching nombres sedes:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener los datos",
+      error: error.message,
+    });
+  }
+});
+
+// vista detallada sede y coordinadora
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Extract the token from Authorization header
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
+
+    // Verify and decode the token
+    const decoded = jwt.verify(token, JWT_SECRET);
+    //cambiar a simplemente coreo
+    if (decoded.rol === 0) {
+      const result = await pool.query(
+        `
+SELECT coordinadora.id_coordinadora,
+       coordinadora.nombre,
+       coordinadora.apellido_paterno,
+       coordinadora.apellido_materno,
+       coordinadora.correo,
+       sede.id_sede,
+       sede.nombre AS nombre_sede,
+       sede.fecha_inicio,
+       sede.convocatoria,
+       sede.estado
+FROM coordinadora
+         JOIN
+     sede
+     ON
+         coordinadora.id_coordinadora = sede.id_coordinadora
+WHERE coordinadora.rol = 1
+  AND sede.id_sede = $1
+      `,
+        [id],
+      );
+
+      res.status(200).json({
+        success: true,
+        data: result.rows,
+        message: "Mostrado Sedes y coordinadoras correcto",
+      });
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Insufficient permissions",
+      });
+    }
+  } catch (error) {
     console.error("Error fetching colaboradores:", error);
+
+    // Check if error is from JWT verification
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener los datos",
+      error: error.message,
+    });
+  }
+});
+
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Extract the token from Authorization header
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
+
+    const {
+      id_coordinadora,
+      nombre,
+      apellido_paterno,
+      apellido_materno,
+      correo,
+      nombre_sede,
+      fecha_inicio,
+      convocatoria,
+    } = req.body;
+
+    // Verify and decode the token
+    const decoded = jwt.verify(token, JWT_SECRET);
+    //cambiar a simplemente coreo
+    if (decoded.rol === 0) {
+      const result = await pool.query(
+        `
+        -- Update coordinadora table
+        UPDATE coordinadora
+        SET nombre = $2,
+            apellido_paterno = $3,
+            apellido_materno = $4,
+            correo = $5
+        WHERE id_coordinadora = $1;
+
+        -- Update sede table
+        UPDATE sede
+        SET nombre = $6,
+            fecha_inicio = $7,
+            convocatoria = $8
+        WHERE id_sede = $9;
+        `,
+        [
+          id_coordinadora,
+          nombre,
+          apellido_paterno,
+          apellido_materno,
+          correo,
+          nombre_sede,
+          fecha_inicio,
+          convocatoria,
+          id,
+        ],
+      );
+
+      res.status(200).json({
+        success: true,
+        data: result.rows,
+        message: "Mostrado Sedes y coordinadoras correcto",
+      });
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Insufficient permissions",
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching coordinadora y sede:", error);
+
+    // Check if error is from JWT verification
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Error al obtener los datos",
+      error: error.message,
+    });
+  }
+});
+
+// Update estado
+router.put("/estado/:id", async (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.body;
+
+  try {
+    // Extract the token from Authorization header
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required",
+      });
+    }
+
+    // Verify and decode the token
+    const decoded = jwt.verify(token, JWT_SECRET);
+    //cambiar a simplemente coreo
+    if (decoded.rol === 0) {
+      // Actualizar participante
+      await pool.query(
+        `UPDATE sede SET
+        estado = $1
+      WHERE id_sede = $2`,
+        [estado, id],
+      );
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Insufficient permissions",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Sede y coordinadora actualizado correctamente",
+    });
+  } catch (error) {
+    console.error("Error actualizando coordinadora y sede:", error);
+
+    // Check if error is from JWT verification
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Error al obtener los datos",

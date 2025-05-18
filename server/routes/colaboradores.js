@@ -2,6 +2,7 @@ import express from "express";
 import { pool } from "../server.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
+import { sendEmail } from "../routes/emailservices.js";
 
 const router = express.Router();
 
@@ -278,6 +279,47 @@ router.put("/estado/:id", async (req, res) => {
     console.error("Error al actualizar Colaborador:", error);
     res.status(500).json({
       message: "Error al actualizar colaborador",
+      error: error.message,
+    });
+  }
+});
+
+router.post("/email/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Obtén los datos del colaborador desde la base de datos
+    const result = await pool.query(
+      `SELECT nombre, correo FROM colaborador WHERE id_colaborador = $1`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Colaborador no encontrado" });
+    }
+
+    const colaborador = result.rows[0];
+
+    // Configura el contenido del correo
+    const subject = "¡Felicidades!";
+    const html = `
+      <p>Hola ${colaborador.nombre},</p>
+      <p>¡Felicidades! Tu estado ha sido actualizado a "Aceptado".</p>
+      <p>Saludos,</p>
+      <p>El equipo</p>
+    `;
+
+    // Envía el correo
+    await sendEmail(colaborador.correo, subject, html);
+
+    res.json({
+      success: true,
+      message: `Correo enviado a ${colaborador.correo}`,
+    });
+  } catch (error) {
+    console.error("Error al enviar el correo:", error);
+    res.status(500).json({
+      message: "Error al enviar el correo",
       error: error.message,
     });
   }
