@@ -210,7 +210,7 @@ WHERE coordinadora.rol = 1
   }
 });
 
-router.put("/:id",checkSedeAccess,authenticateToken,requireAdmin, async (req, res) => {
+router.put("/:id",authenticateToken,checkSedeAccess,requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
 
@@ -252,8 +252,6 @@ router.put("/:id",checkSedeAccess,authenticateToken,requireAdmin, async (req, re
     // Commit transaction
     await pool.query('COMMIT');
 
-
-
       res.status(200).json({
         success: true,
         message: "Sede y coordinadora actualizada correctamente",
@@ -262,13 +260,6 @@ router.put("/:id",checkSedeAccess,authenticateToken,requireAdmin, async (req, re
   } catch (error) {
     console.error("Error updating coordinadora y sede:", error);
 
-    // Check if error is from JWT verification
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
-    }
 
     res.status(500).json({
       success: false,
@@ -279,25 +270,13 @@ router.put("/:id",checkSedeAccess,authenticateToken,requireAdmin, async (req, re
 });
 
 // Update estado
-router.put("/estado/:id", async (req, res) => {
+router.put("/estado/:id",authenticateToken,checkSedeAccess,requireAdmin, async (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
 
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
-
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
     //cambiar a simplemente coreo
-    if (decoded.rol === 0) {
       // Actualizar participante
       await pool.query(
         `UPDATE sede SET
@@ -305,12 +284,6 @@ router.put("/estado/:id", async (req, res) => {
       WHERE id_sede = $2`,
         [estado, id],
       );
-    } else {
-      return res.status(403).json({
-        success: false,
-        message: "Insufficient permissions",
-      });
-    }
 
     res.json({
       success: true,
@@ -319,13 +292,6 @@ router.put("/estado/:id", async (req, res) => {
   } catch (error) {
     console.error("Error actualizando coordinadora y sede:", error);
 
-    // Check if error is from JWT verification
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
-    }
 
     res.status(500).json({
       success: false,
@@ -340,7 +306,6 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
-    if (decoded.rol === 0) {
       // First get the coordinadora ID associated with this sede
       const sedeResult = await pool.query(
         "SELECT id_coordinadora FROM sede WHERE id_sede = $1",
@@ -359,14 +324,55 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
       // Begin transaction
       await pool.query("BEGIN");
 
-      // Delete sede first (due to foreign key constraints)
-      await pool.query("DELETE FROM sede WHERE id_sede = $1", [id]);
+    // Delete mentoras
+    await pool.query("DELETE FROM mentora WHERE id_sede = $1", [id]);
 
-      // Then delete the coordinadora
+    // Delete colaboradores
+    await pool.query("DELETE FROM colaborador WHERE id_sede = $1", [id]);
+
+
+    //Remove group assignments first - mentora_grupo relationships
+    await pool.query(
+      `DELETE FROM mentora_grupo
+       WHERE id_grupo IN (SELECT id_grupo FROM grupo WHERE id_sede = $1)`,
+      [id]
+    );
+
+    //Delete grupos from this sede
+    await pool.query("DELETE FROM grupo WHERE id_sede = $1", [id]);
+
+    //Delete participantes and their tutors
+    // First get all tutor IDs
+    const tutoresResult = await pool.query(
+      `SELECT id_padre_o_tutor FROM participante WHERE id_sede = $1`,
+      [id]
+    );
+
+    // Delete participantes
+    await pool.query("DELETE FROM participante WHERE id_sede = $1", [id]);
+
+    // Delete tutors
+    if (tutoresResult.rows.length > 0) {
+      const tutorIds = tutoresResult.rows.map(row => row.id_padre_o_tutor);
       await pool.query(
-        "DELETE FROM coordinadora WHERE id_coordinadora = $1 AND rol = 1",
-        [coordinadoraId],
+        `DELETE FROM padre_o_tutor WHERE id_padre_o_tutor = ANY($1)`,
+        [tutorIds]
       );
+    }
+
+    //Delete coordinadoras_asociadas
+    await pool.query("DELETE FROM coordinadora_asociada WHERE id_sede = $1", [id]);
+
+    // Delete sede
+    await pool.query("DELETE FROM sede WHERE id_sede = $1", [id]);
+
+    // Delete the main coordinadora
+    await pool.query(
+      "DELETE FROM coordinadora WHERE id_coordinadora = $1 AND rol = 1",
+      [coordinadoraId],
+    );
+
+
 
       // Commit transaction
       await pool.query("COMMIT");
@@ -375,12 +381,7 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
         success: true,
         message: "Sede y coordinadora eliminados correctamente",
       });
-    } else {
-      return res.status(403).json({
-        success: false,
-        message: "Insufficient permissions",
-      });
-    }
+
   } catch (error) {
     // Rollback transaction in case of error
     await pool.query("ROLLBACK");
