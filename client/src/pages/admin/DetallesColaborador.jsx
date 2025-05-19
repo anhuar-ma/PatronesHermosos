@@ -49,7 +49,12 @@ export default function DetalleColaborador() {
         <div className="header-actions">
           <h2 className="title__view">Vista detallada de colaborador</h2>
           <div className="actions">
-            <button className="btn-change-group">Cambiar grupo</button>
+
+          {currentRol === 1 && (
+            <>
+              <button className="btn-change-group">Cambiar grupo</button>
+            </>
+          )}
             {/* <button className="btn-edit" onClick={() => setEditMode(!editMode)}>
               {editMode ? "Cancelar edición" : "Editar registro"}
             </button> */}
@@ -130,10 +135,14 @@ export default function DetalleColaborador() {
               <p className="info__colaborator">{colaborador.idioma}</p>
             )}
 
-
-            {currentRol === 0 ?(
-              <h5 className="label__colaborator">Sede asignada:</h5>
-            ): (<h5 className="label__colaborator">Grupo asignado:</h5>)}
+              {currentRol === 1 && (
+                <>
+                  <h5 className="label__colaborator">Grupo asignado:</h5>
+                  <p className="info__colaborator">{colaborador.id_grupo}</p>
+                </>
+              )}
+            {/* currentRol === 1 ?(
+              (<h5 className="label__colaborator">Grupo asignado:</h5>)
 
             {currentRol === 0 ?(
                           editMode ? (
@@ -151,7 +160,7 @@ export default function DetalleColaborador() {
                           ) : (
                             <p className="info__colaborator">{colaborador.nombre_sede}</p>
                           )
-            ): (<p className="info__colaborator">{colaborador.id_grupo}</p>)}
+            ): (<p className="info__colaborator">{colaborador.id_grupo}</p>)} */}
             
           </div>
 
