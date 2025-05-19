@@ -31,29 +31,41 @@ export default function RegistroParticipantes() {
     }
 
     try {
-      const participanteData = {
-        nombre_alumna: data.nombre_alumna,
-        apellido_paterno: data.apellido_paterno_alumna,
-        apellido_materno: data.apellido_materno_alumna,
-        edad: data.edad_alumna,
-        correo: data.correo_alumna,
-        escuela: data.escuela,
-        escolaridad: data.escolaridad,
-        sede_deseada: data.sede_deseada,
-        idioma: data.idioma,
-        nombre_tutor: data.nombre_tutor,
-        apellido_paterno_tutor: data.apellido_paterno_tutor,
-        apellido_materno_tutor: data.apellido_materno_tutor,
-        correo_tutor: data.correo_tutor,
-        telefono_tutor: data.telefono_tutor,
-      };
+      // Create FormData object for file upload
+      const formData = new FormData();
 
-      await axios.post("/api/participantes", participanteData);
+      // Add all form fields to FormData
+      formData.append('nombre_alumna', data.nombre_alumna);
+      formData.append('apellido_paterno', data.apellido_paterno_alumna);
+      formData.append('apellido_materno', data.apellido_materno_alumna || '');
+      formData.append('edad', data.edad_alumna);
+      formData.append('correo', data.correo_alumna);
+      formData.append('escuela', data.escuela);
+      formData.append('escolaridad', data.escolaridad);
+      formData.append('sede_deseada', data.sede_deseada);
+      formData.append('idioma', data.idioma);
+      formData.append('nombre_tutor', data.nombre_tutor);
+      formData.append('apellido_paterno_tutor', data.apellido_paterno_tutor);
+      formData.append('apellido_materno_tutor', data.apellido_materno_tutor || '');
+      formData.append('correo_tutor', data.correo_tutor);
+      formData.append('telefono_tutor', data.telefono_tutor);
+
+      // Add the file to FormData
+      const fileInput = document.getElementById('archivo_tutor');
+      if (fileInput.files[0]) {
+        formData.append('archivo_tutor', fileInput.files[0]);
+      }
+
+      // Send the FormData with file to the server
+      const response = await axios.post('/api/participantes', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
       setSubmitResult({
         success: true,
-        message:
-          "¡Registro exitoso! La participante ha sido registrada correctamente.",
+        message: "¡Registro exitoso! La participante ha sido registrada correctamente."
       });
       setError("");
       setFileError("");
@@ -64,9 +76,8 @@ export default function RegistroParticipantes() {
         success: false,
         message: `Error en el registro: ${
           error.response?.data?.message || "No se pudo completar el registro"
-        }`,
+        }`
       });
-      console.error("Error:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -339,7 +350,7 @@ export default function RegistroParticipantes() {
               )}
             </label>
             <label>
-              Convocatoria de la sede{" "}
+              Permiso Firmado{" "}
               <span className="registro__obligatorio">*</span>
               <br />
               <input

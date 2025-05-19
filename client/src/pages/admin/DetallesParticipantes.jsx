@@ -252,8 +252,37 @@ export default function DetalleParticipante() {
             )}
 
             <h5 className="label__colaborator">Permiso firmado tutor:</h5>
-            <button className="registro__botonGrisArchivos">
-              Descargar archivo
+            <button
+              className={`registro__botonGrisArchivos ${
+                editMode ? "registro__botonDeshabilitado" : ""
+              }`}
+              disabled={editMode || !participante.permiso_padre_tutor}
+              onClick={async () => {
+                try {
+                  // // Method 1: Direct download if the file URL is available
+                  // if (participante.permiso_padre_tutor) {
+                  //   window.open(participante.permiso_padre_tutor, '_blank');
+                  // }
+
+                  // Method 2: Using the download endpoint
+                  const response = await axios.get(`/api/participantes/download/${id}`, {
+                    responseType: 'blob'
+                  });
+
+                  const url = window.URL.createObjectURL(new Blob([response.data]));
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.setAttribute('download', participante.archivo_nombre || 'permiso.pdf');
+                  document.body.appendChild(link);
+                  link.click();
+                  link.remove();
+                } catch (error) {
+                  console.error("Error downloading file:", error);
+                  alert("Error al descargar el archivo");
+                }
+              }}
+            >
+              {participante.permiso_padre_tutor ? 'Descargar archivo' : 'No hay archivo disponible'}
             </button>
 
             <h5 className="label__colaborator">Teléfono del tutor:</h5>

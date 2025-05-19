@@ -3,7 +3,7 @@ import { pool } from "../server.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
-import { authenticateToken, requireAdmin } from "../middleware/auth.js";
+import { authenticateToken, checkSedeAccess, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -74,7 +74,7 @@ router.get("/", async (req, res) => {
       const result = await pool.query(
         `SELECT
           CONCAT(coordinadora.nombre, ' ', coordinadora.apellido_paterno, ' ', coordinadora.apellido_materno) AS nombre_completo_coordinadora,
-          coordinadora.correo, 
+          coordinadora.correo,
           sede.id_sede,
           sede.nombre AS nombre_sede,
           sede.fecha_inicio,
@@ -210,18 +210,9 @@ WHERE coordinadora.rol = 1
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id",checkSedeAccess,authenticateToken,requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
 
     const {
       id_coordinadora,
@@ -234,53 +225,42 @@ router.put("/:id", async (req, res) => {
       convocatoria,
     } = req.body;
 
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
-    //cambiar a simplemente coreo
-    if (decoded.rol === 0) {
-      const result = await pool.query(
-        `
-        -- Update coordinadora table
-        UPDATE coordinadora
-        SET nombre = $2,
-            apellido_paterno = $3,
-            apellido_materno = $4,
-            correo = $5
-        WHERE id_coordinadora = $1;
+    // Begin transaction
+    await pool.query('BEGIN');
 
-        -- Update sede table
-        UPDATE sede
-        SET nombre = $6,
-            fecha_inicio = $7,
-            convocatoria = $8
-        WHERE id_sede = $9;
-        `,
-        [
-          id_coordinadora,
-          nombre,
-          apellido_paterno,
-          apellido_materno,
-          correo,
-          nombre_sede,
-          fecha_inicio,
-          convocatoria,
-          id,
-        ],
-      );
+    // Update coordinadora table
+    await pool.query(
+      `UPDATE coordinadora
+       SET nombre = $1,
+           apellido_paterno = $2,
+           apellido_materno = $3,
+           correo = $4
+       WHERE id_coordinadora = $5`,
+      [nombre, apellido_paterno, apellido_materno, correo, id_coordinadora]
+    );
+
+    // Update sede table
+    await pool.query(
+      `UPDATE sede
+       SET nombre = $1,
+           fecha_inicio = $2,
+           convocatoria = $3
+       WHERE id_sede = $4`,
+      [nombre_sede, fecha_inicio, convocatoria, id]
+    );
+
+    // Commit transaction
+    await pool.query('COMMIT');
+
+
 
       res.status(200).json({
         success: true,
-        data: result.rows,
-        message: "Mostrado Sedes y coordinadoras correcto",
+        message: "Sede y coordinadora actualizada correctamente",
       });
-    } else {
-      return res.status(403).json({
-        success: false,
-        message: "Insufficient permissions",
-      });
-    }
+
   } catch (error) {
-    console.error("Error fetching coordinadora y sede:", error);
+    console.error("Error updating coordinadora y sede:", error);
 
     // Check if error is from JWT verification
     if (error.name === "JsonWebTokenError") {
@@ -292,7 +272,7 @@ router.put("/:id", async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: "Error al obtener los datos",
+      message: "Error al actualizar los datos",
       error: error.message,
     });
   }

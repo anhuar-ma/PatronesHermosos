@@ -11,7 +11,11 @@ import mentorasRoutes from "./routes/mentoras.js";
 import participantesRoutes from "./routes/participantes.js";
 import sedesRoutes from "./routes/sedes.js";
 import authRoutes from "./routes/authRoute.js";
+import diplomasRoutes from "./routes/diplomas.js";
 import dotenv from "dotenv";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 
 dotenv.config({ path: "./config/.env" });
 
@@ -49,6 +53,9 @@ export const pool = new Pool({
   },
 });
 
+
+
+
 // Add to server.js
 app.get("/test", (req, res) => {
   res.send("Server is working");
@@ -63,8 +70,15 @@ app.use("/api/mentoras", mentorasRoutes);
 app.use("/api/participantes", participantesRoutes);
 app.use("/api/sedes", sedesRoutes);
 app.use("/api/auth", authRoutes);
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+//Diplomas
+app.use('/api/diplomas',diplomasRoutes);
+
+
 
 // Listen on all interfaces
 app.listen(process.env.PORT || 8000, "0.0.0.0", () => {
   console.log(`Server running on port ${process.env.PORT || 8000}`);
 });
+

@@ -1,5 +1,5 @@
 import express from "express";
-import { pool } from "../server.js";
+import {pool} from "../server.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
 import {
@@ -7,11 +7,32 @@ import {
   requireAdmin,
   checkSedeAccess,
 } from "../middleware/auth.js";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { uploadsDir,participantesDir,storage,upload } from "../uploadManager.js";
 
 const router = express.Router();
 
+
+// // Import multer configuration from server.js or redefine it here
+// // For simplicity, I'll define a simple version here
+// const upload = multer({
+//   dest: path.join(process.cwd(), 'uploads/participantes'),
+//   fileFilter: (req, file, cb) => {
+//     if (file.mimetype !== 'application/pdf') {
+//       return cb(new Error('Solo se permiten archivos PDF'));
+//     }
+//     cb(null, true);
+//   },
+//   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+// });
+
+
+
+
 // Handle participant registration
-router.post("/", async (req, res) => {
+router.post("/",upload.single('archivo_tutor'), async (req, res) => {
   try {
     const {
       nombre_alumna,
@@ -32,6 +53,9 @@ router.post("/", async (req, res) => {
       // archivo_tutor would need file handling
     } = req.body;
 
+    // File path to store in the database (or null if no file)
+    const permiso_padre_tutor = req.file ? `/uploads/participantes/${req.file.filename}` : null;
+
     console.log("ESTA ES LA SEDE:", sede_deseada);
     console.log(req.body);
     const result = await pool.query(
@@ -45,8 +69,7 @@ router.post("/", async (req, res) => {
         correo,
         escuela,
         escolaridad,
-        // permiso es null
-        null,
+        permiso_padre_tutor,
         idioma,
         sede_deseada,
         nombre_tutor,
@@ -57,11 +80,27 @@ router.post("/", async (req, res) => {
       ],
     );
 
-    res.status(201).json({
+  res.status(201).json({
       success: true,
       data: result.rows[0],
+      file: req.file ? {
+        filename: req.file.filename,
+        path: permiso_padre_tutor
+      } : null
     });
+
   } catch (error) {
+
+    // If there was a file uploaded but an error occurred, delete the file
+    if (req.file) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (unlinkError) {
+        console.error("Error deleting file:", unlinkError);
+      }
+    }
+
+
     console.error("Error saving participant:", error);
     res.status(500).json({
       success: false,
@@ -88,6 +127,49 @@ router.post("/", async (req, res) => {
 //     });
 //   }
 // });
+
+// Add a route to download files
+router.get("/download/:id", authenticateToken,checkSedeAccess, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Query the database to get the file path
+    const result = await pool.query(
+      "SELECT permiso_padre_tutor FROM participante WHERE id_participante = $1",
+      [id]
+    );
+
+    console.log(result);
+
+    if (result.rows.length === 0 || !result.rows[0].permiso_padre_tutor) {
+      return res.status(404).json({
+        success: false,
+        message: "Archivo no encontrado"
+      });
+    }
+
+    const filePath = path.join(process.cwd(), result.rows[0].permiso_padre_tutor.substring(1));
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        message: "Archivo no encontrado en el servidor"
+      });
+    }
+
+    // Send the file
+    res.download(filePath);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al descargar el archivo",
+      error: error.message
+    });
+  }
+});
+
 
 // Get participantes with their parents
 router.get("/parents", async (req, res) => {
@@ -197,22 +279,12 @@ router.get(
       const result = await pool.query(
         `
       SELECT
-        participante.id_participante,
-        participante.nombre,
-        participante.apellido_paterno,
-        participante.apellido_materno,
-        participante.correo,
+        participante.*,
         padre_o_tutor.nombre AS nombre_tutor,
         padre_o_tutor.apellido_paterno AS apellido_paterno_tutor,
         padre_o_tutor.apellido_materno AS apellido_materno_tutor,
         padre_o_tutor.telefono AS telefono_tutor,
-        padre_o_tutor.correo AS correo_tutor,
-        participante.estado,
-        participante.escuela,
-        participante.escolaridad,
-        participante.idioma,
-        participante.edad,
-        participante.id_grupo
+        padre_o_tutor.correo AS correo_tutor
       FROM
         participante
       JOIN
@@ -224,6 +296,8 @@ router.get(
     `,
         [id],
       );
+
+      // console.log(result);
 
       if (result.rows.length === 0) {
         return res.status(404).json({ message: "Participante no encontrado" });
