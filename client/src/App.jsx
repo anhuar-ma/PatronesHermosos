@@ -25,6 +25,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import DetalleParticipante from "./pages/admin/DetallesParticipantes";
 import DetalleColaborador from "./pages/admin/DetallesColaborador.jsx";
+import DetalleSede from "./pages/admin/DetallesSedes.jsx";
 // impor/t AdminSedeDashboard from "./pages/adminSede/adminHome";
 
 function App() {
@@ -90,10 +91,17 @@ function App() {
             path="/admin/colaboradores/:id"
             element={<DetalleColaborador />}
           />
+
+          <Route
+            path="/admin/sedes/:id"
+            element={<DetalleSede />}
+          />
+
             <Route
             path="/admin/mentoras"
             element={<ListadoMentoras />}
           />
+          
           <Route
             path="/admin/grupos"
             element={<ListadoGrupos />}

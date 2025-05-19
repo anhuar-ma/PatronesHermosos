@@ -142,8 +142,8 @@ export default function DetalleColaborador() {
                               value={editableData.nombre_sede || ""}
                               onChange={(e) => handleChange("nombre_sede", e.target.value)}
                             >
-                              {sedes.map((sede, index) => (
-                                <option key={index} value={sede.nombre}>
+                              {sedes.map((sede) => (
+                                <option key={sede.id_sede} value={sede.id_sede}>
                                   {sede.nombre}
                                 </option>
                               ))}

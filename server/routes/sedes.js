@@ -3,6 +3,7 @@ import { pool } from "../server.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
+import { authenticateToken, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -122,7 +123,7 @@ router.get("/", async (req, res) => {
 router.get("/nombres", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT nombre FROM sede WHERE estado = 'Aceptado'",
+      "SELECT id_sede,nombre FROM sede WHERE estado = 'Aceptado'",
     );
     res.status(200).json({
       success: true,
@@ -349,6 +350,74 @@ router.put("/estado/:id", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error al obtener los datos",
+      error: error.message,
+    });
+  }
+});
+
+// Delete sede and coordinadora by sede ID
+router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (decoded.rol === 0) {
+      // First get the coordinadora ID associated with this sede
+      const sedeResult = await pool.query(
+        "SELECT id_coordinadora FROM sede WHERE id_sede = $1",
+        [id],
+      );
+
+      if (sedeResult.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Sede not found",
+        });
+      }
+
+      const coordinadoraId = sedeResult.rows[0].id_coordinadora;
+
+      // Begin transaction
+      await pool.query("BEGIN");
+
+      // Delete sede first (due to foreign key constraints)
+      await pool.query("DELETE FROM sede WHERE id_sede = $1", [id]);
+
+      // Then delete the coordinadora
+      await pool.query(
+        "DELETE FROM coordinadora WHERE id_coordinadora = $1 AND rol = 1",
+        [coordinadoraId],
+      );
+
+      // Commit transaction
+      await pool.query("COMMIT");
+
+      res.json({
+        success: true,
+        message: "Sede y coordinadora eliminados correctamente",
+      });
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Insufficient permissions",
+      });
+    }
+  } catch (error) {
+    // Rollback transaction in case of error
+    await pool.query("ROLLBACK");
+
+    console.error("Error eliminando sede y coordinadora:", error);
+
+    // Check if error is from JWT verification
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token",
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Error al eliminar los datos",
       error: error.message,
     });
   }

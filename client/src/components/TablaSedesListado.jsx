@@ -57,10 +57,13 @@ export default function Tabla({
             <td>{sede.nombre_sede}</td>
             <td>{new Date(sede.fecha_inicio).toLocaleDateString("es-MX", { day: "2-digit", month: "2-digit", year: "numeric" })}</td>
             <td>
-              <button
-                className="tabla__botonGris"
+            <button
+                className="tabla__botonMorado"
+                onClick={() =>
+                  navigate(`/admin/sedes/${sede.id_sede}`)
+                }
               >
-                Ver archivo
+                Ver detalles
               </button>
             </td>
             <td>
