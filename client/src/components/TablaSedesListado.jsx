@@ -48,19 +48,20 @@ export default function Tabla({
       <tbody>
         {sedes.map((sede) => (
           <tr key={sede.id_sedes}>
-            <td>
-              {sede.nombre_completo_coordinadora}
-            </td>
-            <td>
-              {sede.correo}
-            </td>
+            <td>{sede.nombre_completo_coordinadora}</td>
+            <td>{sede.correo}</td>
             <td>{sede.nombre_sede}</td>
             <td>
-            <button
+              {new Date(sede.fecha_inicio).toLocaleDateString("es-MX", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
+            </td>
+            <td>
+              <button
                 className="tabla__botonMorado"
-                onClick={() =>
-                  navigate(`/admin/sedes/${sede.id_sede}`)
-                }
+                onClick={() => navigate(`/admin/sedes/${sede.id_sede}`)}
               >
                 Ver detalles
               </button>
