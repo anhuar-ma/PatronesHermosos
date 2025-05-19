@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import useSedes from "../hooks/useSedes";
 import { SlidersHorizontal } from "lucide-react";
 import Tabla from "./TablaSedesListado";
@@ -6,7 +6,12 @@ import LoadingCard from "./LoadingCard";
 import FiltroTabla from "./FiltroTabla";
 
 export default function TablaSedes() {
-  const { sedes, loading, error } = useSedes();
+  const { sedes: sedesOriginales, loading, error } = useSedes();
+  const [sedes, setSedes] = useState([]);
+    
+  useEffect(() => {
+    setSedes(sedesOriginales);
+  }, [sedesOriginales]);
 
   const [busqueda, setBusqueda] = useState("");
   const containerRef = useRef(null);
@@ -62,6 +67,34 @@ export default function TablaSedes() {
     }
   };
 
+  const handleStatusChange = async (id_sede, nuevoEstado) => {
+    try {
+      const token = localStorage.getItem("token"); // Asegúrate de que el token esté aquí
+  
+      const response = await fetch(`/api/sedes/estado/${id_sede}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` // Incluye el token JWT aquí
+        },
+        body: JSON.stringify({ estado: nuevoEstado }),
+      });
+  
+      if (response.ok) {
+        setSedes((prev) =>
+          prev.map((p) =>
+            p.id_sede === id_sede ? { ...p, estado: nuevoEstado } : p
+          )
+        );
+      } else {
+        console.error("Error al actualizar el estado:", await response.text());
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+    }
+  };
+  
+
   return (
     <div className="tabla__containerBlanco">
       <div className="tabla__container__tituloBusqueda">
@@ -95,7 +128,7 @@ export default function TablaSedes() {
       )}
 
       <div className="table_container" ref={containerRef}>
-        <Tabla sedes={sedesOrdenadas} onSort={handleSort} statusOptions={statusOptions} sortField={sortField} sortOrder={sortOrder} />
+        <Tabla sedes={sedesOrdenadas} onSort={handleSort} statusOptions={statusOptions} sortField={sortField} sortOrder={sortOrder} onStatusChange={handleStatusChange}/>
       </div>
     </div>
   );

@@ -180,3 +180,12 @@
       gap: 1rem;
     }
   }
+
+  .registro__botonDeshabilitado {
+    background-color: #d3d3d3; /* Color gris claro */
+    color: #777777; /* Texto más claro */
+    cursor: not-allowed;
+    pointer-events: none; /* Evita cualquier interacción */
+    opacity: 0.6;
+  }
+  

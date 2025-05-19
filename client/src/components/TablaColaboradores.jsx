@@ -18,13 +18,13 @@ export default function TablaColaboradores() {
 
 
   // Obtiene datos, estado de carga y posibles errores
-  const { colaboradores, loading, error } = useColaboradores();
+  const { colaboradores: colaboradoresOriginales, loading, error } = useColaboradores();
 
    // 1. Copia local para poder mutar el estado en cliente
-   const [colabList, setColabList] = useState([]);
+   const [colaboradores, setColaboradores] = useState([]);
    useEffect(() => {
-     setColabList(colaboradores);
-   }, [colaboradores]);
+     setColaboradores(colaboradoresOriginales);
+   }, [colaboradoresOriginales]);
  
    // 2. Opciones de estado dinámicas
    const statusOptions = useMemo(() => {
@@ -38,17 +38,6 @@ export default function TablaColaboradores() {
   //   return [...new Set(roles)].sort();
   // }, [colaboradores]);
 
-   // 3. Handler para cambiar estado
-   const handleStatusChange = (id, newStatus) => {
-     // Actualización local
-     setColabList((prev) =>
-       prev.map((c) =>
-         c.id_colaborador === id ? { ...c, estado: newStatus } : c
-       )
-     );
-     // TODO: aquí disparar tu llamada al backend, p.ej:
-     // axios.patch(`/api/colaboradores/${id}`, { estado: newStatus });
-   };
 
   // Estado para el texto de búsqueda
   const [busqueda, setBusqueda] = useState("");
@@ -152,6 +141,42 @@ export default function TablaColaboradores() {
     } else {
       setSortField(field);
       setSortOrder("asc");
+    }
+  };
+
+
+  //Funcion para manejo de cambio de estado en colaboradores
+  const handleStatusChange = async (id_colaborador, nuevoEstado) => {
+    try {
+      // Actualiza el estado del colaborador
+      const response = await fetch(`/api/colaboradores/estado/${id_colaborador}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: nuevoEstado }),
+      });
+  
+      if (response.ok) {
+        setColaboradores((prev) =>
+          prev.map((c) =>
+            c.id_colaborador === id_colaborador ? { ...c, estado: nuevoEstado } : c
+          )
+        );
+  
+        // Si el estado es "Aceptado", envía el correo
+        if (nuevoEstado === "Aceptado") {
+          const emailResponse = await fetch(`/api/colaboradores/email/${id_colaborador}`, {
+            method: "POST",
+          });
+  
+          if (!emailResponse.ok) {
+            console.error("Error al enviar el correo");
+          }
+        }
+      } else {
+        console.error("Error al actualizar el estado");
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
     }
   };
 

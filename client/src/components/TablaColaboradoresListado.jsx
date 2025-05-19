@@ -1,5 +1,6 @@
 import { getSedeNombre } from "../utils/sedeUtils";
 import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Tabla({
   colaboradores,
@@ -9,6 +10,8 @@ export default function Tabla({
   statusOptions = [], // Array of possible estados
   onStatusChange,
 }) {
+
+  const navigate = useNavigate();
   const renderSortArrow = (field) => {
     if (sortField !== field) return <ArrowDownUp size={14} />;
     return sortOrder === "asc" ? (
@@ -57,13 +60,20 @@ export default function Tabla({
       <tbody>
         {colaboradores.map((colaborador) => (
           <tr key={colaborador.id_colaborador}>
-            <td>{`${colaborador.nombre} ${colaborador.apellido_paterno} ${colaborador.apellido_materno}`}</td>
+            <td>{colaborador.nombre_completo_colaborador}</td>
             <td>{colaborador.rol}</td>
-            <td>{getSedeNombre(colaborador.id_sede)}</td>
+            <td>{colaborador.nombre_sede}</td>
             <td>{colaborador.correo}</td>
             {/* <td>{colaborador.universidad}</td> */}
             <td>
-              <button className="tabla__botonMorado">Ver detalles</button>
+            <button
+                className="tabla__botonMorado"
+                onClick={() =>
+                  navigate(`/admin/colaboradores/${colaborador.id_colaborador}`)
+                }
+              >
+                Ver detalles
+              </button>
             </td>
 
             {/* <td>{colaborador.estado}</td>

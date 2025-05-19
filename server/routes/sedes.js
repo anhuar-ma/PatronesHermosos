@@ -3,11 +3,7 @@ import { pool } from "../server.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
-import {
-  authenticateToken,
-  checkSedeAccess,
-  requireAdmin,
-} from "../middleware/auth.js";
+import { authenticateToken, checkSedeAccess, requireAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 

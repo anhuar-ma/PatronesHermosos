@@ -2,47 +2,34 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingCard from "../../components/LoadingCard";
+import { useEditParticipante } from "../../hooks/useEditParticipante";
+import { useFetchParticipante } from "../../hooks/useFetchParticipante";
 import "../../styles/ViewDetails.css";
 
 export default function DetalleParticipante() {
   const { id } = useParams();
-  const [participante, setParticipante] = useState(null);
-  const [editableData, setEditableData] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  const { participante, loading, error, setParticipante } = useFetchParticipante(id);
+  const {
+    editableData,
+    setEditableData,
+    handleChange,
+    handleSave,
+    editMode,
+    setEditMode,
+  } = useEditParticipante(participante);
 
-  useEffect(() => {
-    axios
-      .get(`/api/participantes/parents/${id}`)
-      .then((res) => {
-        setParticipante(res.data);
-        setEditableData(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.response?.data?.message || err.message);
-        setLoading(false);
-      });
-  }, [id]);
+// DetalleParticipante.jsx
+  const saveChanges = async () => {
+    try {
+      const updatedData = await handleSave(id);
+      setParticipante(updatedData); // Actualiza la información en pantalla
+      setEditableData(updatedData); // Actualiza el editableData también
+      setEditMode(false);
+    } catch (err) {
+      alert("Error al guardar: " + err.message);
+    }
+};
 
-  const handleChange = (field, value) => {
-    setEditableData({ ...editableData, [field]: value });
-  };
-
-  const handleSave = () => {
-    axios
-      .put(`/api/participantes/${id}`, editableData)
-      .then(() => {
-        setParticipante(editableData);
-        setEditMode(false);
-      })
-      .catch((err) => {
-        alert(
-          "Error al guardar: " + (err.response?.data?.message || err.message)
-        );
-      });
-  };
 
   if (loading) return <LoadingCard mensaje="Cargando participante..." />;
   if (error) return <LoadingCard mensaje={error} />;
@@ -66,7 +53,7 @@ export default function DetalleParticipante() {
               {editMode ? "Cancelar edición" : "Editar registro"}
             </button>
             {editMode && (
-              <button className="registroEdicion__botonGuardar" onClick={handleSave}>
+              <button className="registroEdicion__botonGuardar" onClick={saveChanges}>
                 Guardar cambios
               </button>
             )}
@@ -130,15 +117,9 @@ export default function DetalleParticipante() {
               <p className="info__colaborator">{participante.escolaridad}</p>
             )}
 
-            <h5 className="label__colaborator">Grupo asignado:</h5>
-            {editMode ? (
-              <input
-                value={editableData.id_grupo || ""}
-                onChange={(e) => handleChange("id_grupo", e.target.value)}
-              />
-            ) : (
+              <h5 className="label__colaborator">Grupo asignado:</h5>
               <p className="info__colaborator">{participante.id_grupo}</p>
-            )}
+
           </div>
 
           <div className="info-column">
@@ -172,11 +153,15 @@ export default function DetalleParticipante() {
 
             <h5 className="label__colaborator">Idioma de preferencia:</h5>
             {editMode ? (
-              <input
+              <select
                 className="registroEdicion__input"
                 value={editableData.idioma || ""}
                 onChange={(e) => handleChange("idioma", e.target.value)}
-              />
+              >
+                <option value="Español">Español</option>
+                <option value="Ingles">Inglés</option>
+
+              </select>  
             ) : (
               <p className="info__colaborator">{participante.idioma}</p>
             )}
@@ -240,14 +225,14 @@ export default function DetalleParticipante() {
             {editMode ? (
               <input
                 className="registroEdicion__input"
-                value={editableData.apellido_materno || ""}
+                value={editableData.apellido_materno_tutor || ""}
                 onChange={(e) =>
                   handleChange("apellido_materno_tutor", e.target.value)
                 }
               />
             ) : (
               <p className="info__colaborator">
-                {participante.apellido_materno}
+                {participante.apellido_materno_tutor}
               </p>
             )}
 
@@ -284,6 +269,16 @@ export default function DetalleParticipante() {
             >
               {participante.permiso_padre_tutor ? 'Descargar archivo' : 'No hay archivo disponible'}
             </button>
+              <h5 className="label__colaborator">Permiso firmado tutor:</h5>
+              <button 
+                className={`registro__botonGrisArchivos ${
+                  editMode ? "registro__botonDeshabilitado" : ""
+                }`} 
+                disabled={editMode}
+              >
+                Descargar archivo
+              </button>
+
 
             <h5 className="label__colaborator">Teléfono del tutor:</h5>
             {editMode ? (
