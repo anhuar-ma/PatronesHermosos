@@ -3,7 +3,11 @@ import { pool } from "../server.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
-import { authenticateToken, checkSedeAccess, requireAdmin } from "../middleware/auth.js";
+import {
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+} from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -36,7 +40,7 @@ router.post("/", async (req, res) => {
         nombre_sede,
         fecha_inicio,
         //archivo convocatorias es null
-        null,
+        archivo_convocatoria,
       ],
     );
 
@@ -210,73 +214,80 @@ WHERE coordinadora.rol = 1
   }
 });
 
-router.put("/:id",authenticateToken,checkSedeAccess,requireAdmin, async (req, res) => {
-  const { id } = req.params;
-  try {
+router.put(
+  "/:id",
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      const {
+        id_coordinadora,
+        nombre,
+        apellido_paterno,
+        apellido_materno,
+        correo,
+        nombre_sede,
+        fecha_inicio,
+        convocatoria,
+      } = req.body;
 
-    const {
-      id_coordinadora,
-      nombre,
-      apellido_paterno,
-      apellido_materno,
-      correo,
-      nombre_sede,
-      fecha_inicio,
-      convocatoria,
-    } = req.body;
+      // Begin transaction
+      await pool.query("BEGIN");
 
-    // Begin transaction
-    await pool.query('BEGIN');
-
-    // Update coordinadora table
-    await pool.query(
-      `UPDATE coordinadora
+      // Update coordinadora table
+      await pool.query(
+        `UPDATE coordinadora
        SET nombre = $1,
            apellido_paterno = $2,
            apellido_materno = $3,
            correo = $4
        WHERE id_coordinadora = $5`,
-      [nombre, apellido_paterno, apellido_materno, correo, id_coordinadora]
-    );
+        [nombre, apellido_paterno, apellido_materno, correo, id_coordinadora],
+      );
 
-    // Update sede table
-    await pool.query(
-      `UPDATE sede
+      // Update sede table
+      await pool.query(
+        `UPDATE sede
        SET nombre = $1,
            fecha_inicio = $2,
            convocatoria = $3
        WHERE id_sede = $4`,
-      [nombre_sede, fecha_inicio, convocatoria, id]
-    );
+        [nombre_sede, fecha_inicio, convocatoria, id],
+      );
 
-    // Commit transaction
-    await pool.query('COMMIT');
+      // Commit transaction
+      await pool.query("COMMIT");
 
       res.status(200).json({
         success: true,
         message: "Sede y coordinadora actualizada correctamente",
       });
+    } catch (error) {
+      console.error("Error updating coordinadora y sede:", error);
 
-  } catch (error) {
-    console.error("Error updating coordinadora y sede:", error);
-
-
-    res.status(500).json({
-      success: false,
-      message: "Error al actualizar los datos",
-      error: error.message,
-    });
-  }
-});
+      res.status(500).json({
+        success: false,
+        message: "Error al actualizar los datos",
+        error: error.message,
+      });
+    }
+  },
+);
 
 // Update estado
-router.put("/estado/:id",authenticateToken,checkSedeAccess,requireAdmin, async (req, res) => {
-  const { id } = req.params;
-  const { estado } = req.body;
+router.put(
+  "/estado/:id",
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    const { estado } = req.body;
 
-  try {
-
-    //cambiar a simplemente coreo
+    try {
+      //cambiar a simplemente coreo
       // Actualizar participante
       await pool.query(
         `UPDATE sede SET
@@ -285,44 +296,44 @@ router.put("/estado/:id",authenticateToken,checkSedeAccess,requireAdmin, async (
         [estado, id],
       );
 
-    res.json({
-      success: true,
-      message: "Sede y coordinadora actualizado correctamente",
-    });
-  } catch (error) {
-    console.error("Error actualizando coordinadora y sede:", error);
+      res.json({
+        success: true,
+        message: "Sede y coordinadora actualizado correctamente",
+      });
+    } catch (error) {
+      console.error("Error actualizando coordinadora y sede:", error);
 
-
-    res.status(500).json({
-      success: false,
-      message: "Error al obtener los datos",
-      error: error.message,
-    });
-  }
-});
+      res.status(500).json({
+        success: false,
+        message: "Error al obtener los datos",
+        error: error.message,
+      });
+    }
+  },
+);
 
 // Delete sede and coordinadora by sede ID
 router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
-      // First get the coordinadora ID associated with this sede
-      const sedeResult = await pool.query(
-        "SELECT id_coordinadora FROM sede WHERE id_sede = $1",
-        [id],
-      );
+    // First get the coordinadora ID associated with this sede
+    const sedeResult = await pool.query(
+      "SELECT id_coordinadora FROM sede WHERE id_sede = $1",
+      [id],
+    );
 
-      if (sedeResult.rows.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Sede not found",
-        });
-      }
+    if (sedeResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Sede not found",
+      });
+    }
 
-      const coordinadoraId = sedeResult.rows[0].id_coordinadora;
+    const coordinadoraId = sedeResult.rows[0].id_coordinadora;
 
-      // Begin transaction
-      await pool.query("BEGIN");
+    // Begin transaction
+    await pool.query("BEGIN");
 
     // Delete mentoras
     await pool.query("DELETE FROM mentora WHERE id_sede = $1", [id]);
@@ -330,12 +341,11 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
     // Delete colaboradores
     await pool.query("DELETE FROM colaborador WHERE id_sede = $1", [id]);
 
-
     //Remove group assignments first - mentora_grupo relationships
     await pool.query(
       `DELETE FROM mentora_grupo
        WHERE id_grupo IN (SELECT id_grupo FROM grupo WHERE id_sede = $1)`,
-      [id]
+      [id],
     );
 
     //Delete grupos from this sede
@@ -345,7 +355,7 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
     // First get all tutor IDs
     const tutoresResult = await pool.query(
       `SELECT id_padre_o_tutor FROM participante WHERE id_sede = $1`,
-      [id]
+      [id],
     );
 
     // Delete participantes
@@ -353,15 +363,17 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
 
     // Delete tutors
     if (tutoresResult.rows.length > 0) {
-      const tutorIds = tutoresResult.rows.map(row => row.id_padre_o_tutor);
+      const tutorIds = tutoresResult.rows.map((row) => row.id_padre_o_tutor);
       await pool.query(
         `DELETE FROM padre_o_tutor WHERE id_padre_o_tutor = ANY($1)`,
-        [tutorIds]
+        [tutorIds],
       );
     }
 
     //Delete coordinadoras_asociadas
-    await pool.query("DELETE FROM coordinadora_asociada WHERE id_sede = $1", [id]);
+    await pool.query("DELETE FROM coordinadora_asociada WHERE id_sede = $1", [
+      id,
+    ]);
 
     // Delete sede
     await pool.query("DELETE FROM sede WHERE id_sede = $1", [id]);
@@ -372,16 +384,13 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
       [coordinadoraId],
     );
 
+    // Commit transaction
+    await pool.query("COMMIT");
 
-
-      // Commit transaction
-      await pool.query("COMMIT");
-
-      res.json({
-        success: true,
-        message: "Sede y coordinadora eliminados correctamente",
-      });
-
+    res.json({
+      success: true,
+      message: "Sede y coordinadora eliminados correctamente",
+    });
   } catch (error) {
     // Rollback transaction in case of error
     await pool.query("ROLLBACK");

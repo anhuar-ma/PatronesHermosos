@@ -4,14 +4,19 @@ import { SlidersHorizontal } from "lucide-react";
 import Tabla from "./TablaParticipantesListado";
 import LoadingCard from "./LoadingCard";
 import FiltroTabla from "./FiltroTabla";
+import axios from "axios";
 
 export default function TablaParticipantes() {
-    const { participantes: participantesOriginales, loading, error } = useParticipantesParents();
-    const [participantes, setParticipantes] = useState([]);
-  
-    useEffect(() => {
-      setParticipantes(participantesOriginales);
-    }, [participantesOriginales]);
+  const {
+    participantes: participantesOriginales,
+    loading,
+    error,
+  } = useParticipantesParents();
+  const [participantes, setParticipantes] = useState([]);
+
+  useEffect(() => {
+    setParticipantes(participantesOriginales);
+  }, [participantesOriginales]);
 
   const [busqueda, setBusqueda] = useState("");
   const containerRef = useRef(null);
@@ -20,7 +25,6 @@ export default function TablaParticipantes() {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
-
 
   // ✅ useMemo deben estar antes de cualquier return
   const gruposDisponibles = useMemo(() => {
@@ -47,14 +51,18 @@ export default function TablaParticipantes() {
   };
 
   const participantesFiltrados = participantes.filter((p) => {
-    const nombreCompleto = `${p.nombre} ${p.apellido_paterno} ${p.apellido_materno || ""}`.toLowerCase();
+    const nombreCompleto =
+      `${p.nombre} ${p.apellido_paterno} ${p.apellido_materno || ""}`.toLowerCase();
     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
-    const coincideGrupo = gruposSeleccionados.length === 0 || gruposSeleccionados.includes(p.id_grupo);
-    const coincideEstado = estadosSeleccionados.length === 0 || estadosSeleccionados.includes(p.estado);
+    const coincideGrupo =
+      gruposSeleccionados.length === 0 ||
+      gruposSeleccionados.includes(p.id_grupo);
+    const coincideEstado =
+      estadosSeleccionados.length === 0 ||
+      estadosSeleccionados.includes(p.estado);
 
     return coincideBusqueda && coincideGrupo && coincideEstado;
   });
-  
 
   const participantesOrdenados = ordenarParticipantes(participantesFiltrados);
 
@@ -72,28 +80,38 @@ export default function TablaParticipantes() {
 
   const handleStatusChange = async (id_participante, nuevoEstado) => {
     try {
-      const response = await fetch(`/api/participantes/estado/${id_participante}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ estado: nuevoEstado }),
-      });
+      const response = await axios.put(
+        `/api/participantes/estado/${id_participante}`,
+        {
+          estado: nuevoEstado,
+        },
+      );
 
-      if (response.ok) {
+      if (response.data.success) {
         setParticipantes((prev) =>
           prev.map((p) =>
-            p.id_participante === id_participante ? { ...p, estado: nuevoEstado } : p
-          )
+            p.id_participante === id_participante
+              ? { ...p, estado: nuevoEstado }
+              : p,
+          ),
         );
       } else {
         console.error("Error al actualizar el estado");
       }
     } catch (error) {
+      // Display the specific error message from the server
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        alert(error.response.data.message);
+      } else {
+        alert("Error al actualizar el estado del participante");
+      }
       console.error("Error en la solicitud:", error);
     }
   };
-
-  
-  
 
   return (
     <div className="tabla__containerBlanco">
@@ -121,24 +139,25 @@ export default function TablaParticipantes() {
           className="tabla__overlay-filtros"
           onClick={() => setMostrarFiltros(false)}
         >
-          <div className="tabla__panel-filtros" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="tabla__panel-filtros"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3>Filtros avanzados</h3>
 
             <FiltroTabla
-                titulo="Estado"
-                opciones={statusOptions}
-                seleccionados={estadosSeleccionados}
-                setSeleccionados={setEstadosSeleccionados}
+              titulo="Estado"
+              opciones={statusOptions}
+              seleccionados={estadosSeleccionados}
+              setSeleccionados={setEstadosSeleccionados}
             />
-
-
 
             <button
               className="tabla_boton-limpiar-filtros"
               onClick={() => {
                 setBusqueda("");
                 setGruposSeleccionados([]);
-                setEstadosSeleccionados([])
+                setEstadosSeleccionados([]);
                 setMostrarFiltros(false);
               }}
             >
@@ -161,3 +180,4 @@ export default function TablaParticipantes() {
     </div>
   );
 }
+
