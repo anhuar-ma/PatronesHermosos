@@ -37,6 +37,7 @@ export default function Tabla({
               {renderSortArrow("correo")}
             </div>
           </th>
+          <th>Ver detalles</th>
         </tr>
       </thead>
 
@@ -45,6 +46,16 @@ export default function Tabla({
           <tr key={mentora.id_mentora}>
             <td>{mentora.nombre_completo_mentora}</td>
             <td>{mentora.correo}</td>
+            <td>
+              <button
+                className="tabla__botonMorado"
+                onClick={() =>
+                  navigate(`/admin/mentoras/${mentora.id_mentora}`)
+                }
+              >
+                Ver detalles
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>

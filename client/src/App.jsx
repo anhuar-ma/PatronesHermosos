@@ -15,6 +15,8 @@ import ListadoGrupos from "./pages/admin/ViewGrupos.jsx";
 import ListadoMentoras from "./pages/admin/ViewMentoras.jsx";
 import AdminNavbar from "./components/AdminNavBar";
 import AdminNavbarSede from "./components/AdminNavBarSede";
+import RegistroMentoras from "./pages/admin/RegistroMentora.jsx";
+import RegistroCoordinadoraAsociada from "./pages/admin/RegistroCoordinadoraAsociada.jsx";
 
 import AdminDashboard from "./pages/admin/adminHome";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
@@ -93,9 +95,6 @@ function App() {
             element={<GenerateDiplomas/>}
           />
 
-
-
-
           <Route
             path="/admin/colaboradores/:id"
             element={<DetalleColaborador />}
@@ -109,6 +108,14 @@ function App() {
             <Route
             path="/admin/mentoras"
             element={<ListadoMentoras />}
+          />
+          <Route
+            path="/admin/registro-mentoras"
+            element={<RegistroMentoras />}
+          />
+          <Route
+            path="/admin/registro-coordinadora-asociada"
+            element={<RegistroCoordinadoraAsociada />}
           />
 
           <Route

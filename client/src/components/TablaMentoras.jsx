@@ -1,4 +1,5 @@
 import { useMemo, useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import useMentoras from "../hooks/useMentoras";
 import { SlidersHorizontal } from "lucide-react";
 import Tabla from "./TablaMentorasListado";
@@ -119,7 +120,10 @@ export default function TablaMentoras() {
 
         />
       </div>
-      <button className="btn-agregarMentora">Agregar mentora</button>
+      <Link to="/admin/registro-mentoras" className="btn-agregarMentora">
+        Agregar mentora
+      </Link>
+
     </div>
   );
 }

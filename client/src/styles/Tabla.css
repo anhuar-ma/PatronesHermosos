@@ -430,13 +430,21 @@
     /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   }
 
-  .btn-agregarMentora{
-    background-color: #b084c4;
-    color: white;
-    border: none;
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: auto;
-    width: 20%;
-  }
+  .btn-agregarMentora {
+  text-decoration: none;
+  background-color: #b084c4;
+  color: white;
+  border: none;
+  padding: 0.8rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: auto;
+  width: 20%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+}
+
+.btn-agregarMentora:hover {
+  background-color: #9e629a; /* tono más oscuro */
+  transform: scale(1.05);    /* pequeño “zoom” */
+}

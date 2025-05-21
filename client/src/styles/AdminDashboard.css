@@ -106,61 +106,6 @@
   font-weight: bold;
 }
 
-/* Alertas */
-/* .alert-section {
-  margin-bottom: 2rem;
-} */
-
-/* .alert-list {
-  list-style: none;
-  padding: 0;
-} */
-/* 
-.alert {
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-} */
-
-/* .alert-red {
-  background-color: #ffe5e5;
-  color: #b30000;
-} */
-
-/* .alert-yellow {
-  background-color: #fff9e6;
-  color: #b38f00;
-} */
-
-/* .alert-green {
-  background-color: #e6ffe6;
-  color: #267300;
-} */
-
-/* Botones de descarga */
-/* .download-section {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-} */
-
-/* .btn-download {
-  background-color: #007bff;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-} */
-
-/* .btn-download:hover {
-  background-color: #0056b3;
-} */
-
 /* Responsive */
 @media (max-width: 768px) {
 
@@ -212,4 +157,86 @@
   font-weight: 400;
   white-space: nowrap;
   font-weight: bold;
+}
+
+
+/* Tabla comparativa */
+.adminDashboard__tableSection {
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+
+.adminDashboard__coodinadoraAsociacionTable{
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  table-layout: fixed;
+}
+
+.adminDashboard__coodinadoraAsociacionTable th,
+.adminDashboard__coodinadoraAsociacionTable td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.adminDashboard__coodinadoraAsociacionTable th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+/* ajusta estos % o píxeles a tu gusto */
+.adminDashboard__coodinadoraAsociacionTable th:nth-child(1),
+.adminDashboard__coodinadoraAsociacionTable td:nth-child(1) {
+  width: 40%;
+}
+.adminDashboard__coodinadoraAsociacionTable th:nth-child(2),
+.adminDashboard__coodinadoraAsociacionTable td:nth-child(2) {
+  width: 30%;
+}
+.adminDashboard__coodinadoraAsociacionTable th:nth-child(3),
+.adminDashboard__coodinadoraAsociacionTable td:nth-child(3) {
+  width: 30%;
+}
+
+.btn-agregarCoordinadora {
+  text-decoration: none;
+  background-color: #b084c4;
+  color: white;
+  border: none;
+  padding: 0.8rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: auto;
+  width: 50%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+}
+
+.btn-agregarCoordinadora:hover {
+  background-color: #9e629a; /* tono más oscuro */
+  transform: scale(1.05);    /* pequeño “zoom” */
+}
+
+.btn_eliminarCoordinadora {
+  text-decoration: none;
+  background-color: #e57373;
+  color: white;
+  border: none;
+  padding: 0.8rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: auto;
+  width: 50%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+}
+
+.btn_eliminarCoordinadora:hover {
+  background-color: #ef5350; /* tono más oscuro */
+  transform: scale(1.05);    /* pequeño “zoom” */
 }

@@ -6,12 +6,18 @@ import DistribucionPoblacion from "../../components/DistribucionPoblacion";
 import KPICards from "../../components/KPICards";
 import TablaComparativa from "../../components/TablaComparativa";
 import TablaEstadoSedes from "../../components/TablaEstadosSedes.jsx";
+import TablaCoodinadoraAsociada from "../../components/TablaCoordinadoraAsociada.jsx";
+import useCurrentRol from "../../hooks/useCurrentRol";
+
 
 const AdminDashboard = () => {
+  const currentRol  = useCurrentRol();
   return (
     <div className="admin-dashboard-content">
       <h1 className="adminDashboard__tituloBienvenida">Bienvenida de nuevo, Rosa</h1>
       <p>Visión general del estado de las sedes, cursos y alumnas.</p>
+
+      {currentRol === 1 && <TablaCoodinadoraAsociada />}
 
       <KPICards />
 
