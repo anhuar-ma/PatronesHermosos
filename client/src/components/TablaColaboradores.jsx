@@ -58,6 +58,9 @@ export default function TablaColaboradores() {
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
   const [sedesSeleccionadas, setSedesSeleccionadas] = useState([]);
 
+  //Filtro para tener siempre los estados que se requieren
+  const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
+
   /**
    * Lista de roles únicos extraídos de los colaboradores.
    * Se memoriza para no recalcular en cada render si 'colaboradores' no cambia.
@@ -297,7 +300,7 @@ export default function TablaColaboradores() {
           sortField={sortField}
           sortOrder={sortOrder}
           // 6. Pasamos las props nuevas al componente Tabla
-          statusOptions={statusOptions}
+          statusOptions={estadosFijos}
           onStatusChange={handleStatusChange}
         />
       </div>

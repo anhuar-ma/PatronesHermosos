@@ -162,7 +162,7 @@ router.get(
 
       // Query the database to get the file path
       const result = await pool.query(
-        "SELECT convocatoria, nombre_sede FROM sede WHERE id_sede = $1",
+        "SELECT convocatoria, nombre FROM sede WHERE id_sede = $1",
         [id],
       );
 

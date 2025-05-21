@@ -1,4 +1,5 @@
 import { getSedeNombre } from "../utils/sedeUtils";
+import useCurrentRol from "../hooks/useCurrentRol";
 import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,6 +22,9 @@ export default function Tabla({
     );
   };
 
+  const currentRol = useCurrentRol();
+  console.log(currentRol);
+
   return (
     <table className="colaboradores-table">
       <thead>
@@ -38,7 +42,7 @@ export default function Tabla({
               {renderSortArrow("universidad")}
             </div>
           </th>
-          <th>Sede</th>
+          {currentRol === 0 ? <th>Sede</th> : <th>Grupo</th>}
 
           {/* <th onClick={() => onSort("universidad")}>
             <div className="tablas__thContainer">
@@ -62,7 +66,11 @@ export default function Tabla({
           <tr key={colaborador.id_colaborador}>
             <td>{colaborador.nombre_completo_colaborador}</td>
             <td>{colaborador.rol}</td>
-            <td>{colaborador.nombre_sede}</td>
+            {currentRol === 0 ? (
+              <td>{colaborador.nombre_sede || "Sin asignar"}</td>
+            ): (
+              <td>{colaborador.id_grupo || "Sin asignar"}</td>
+            )}
             <td>{colaborador.correo}</td>
             {/* <td>{colaborador.universidad}</td> */}
             <td>

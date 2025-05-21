@@ -182,19 +182,47 @@ if (error) return <LoadingCard mensaje={error} />;
           <div className="info-column">
 
               <h5 className="label__colaborator">Convocatoria de sede:</h5>
-              <button 
+              <button
                 className={`registro__botonGrisArchivos ${
                   editMode ? "registro__botonDeshabilitado" : ""
-                }`} 
-                disabled={editMode}
-              >
-                Descargar archivo
-              </button>
+                }`}
+                disabled={editMode || !sede.convocatoria}
+                onClick={async () => {
+                  try {
+                    // // Method 1: Direct download if the file URL is available
+                    // if (participante.permiso_padre_tutor) {
+                    //   window.open(participante.permiso_padre_tutor, '_blank');
+                    // }
+
+                    // Method 2: Using the download endpoint
+                    const response = await axios.get(`/api/sedes/download/${id}`, {
+                      responseType: 'blob'
+                    });
+
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', sede.archivo_nombre || 'permiso.pdf');
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                  } catch (error) {
+                    console.error("Error downloading file:", error);
+                    alert("Error al descargar el archivo");
+                  }
+                }}
+            >
+              {sede.convocatoria ? 'Descargar archivo' : 'No hay archivo disponible'}
+            </button>
           </div>
         </div>
 
         <div className="delete-button-container">
-          <button className="btn-delete" onClick={handleDelete}>
+          <button
+            className={`btn-delete ${editMode ? "btn-delete-disabled" : ""}`}
+            disabled={editMode}
+            onClick={handleDelete}
+          >
             Eliminar registro
           </button>
         </div>

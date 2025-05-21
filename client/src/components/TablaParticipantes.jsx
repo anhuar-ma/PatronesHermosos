@@ -25,6 +25,7 @@ export default function TablaParticipantes() {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
+  const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
 
   // ✅ useMemo deben estar antes de cualquier return
   const gruposDisponibles = useMemo(() => {
@@ -174,7 +175,7 @@ export default function TablaParticipantes() {
           sortField={sortField}
           sortOrder={sortOrder}
           onStatusChange={handleStatusChange}
-          statusOptions={statusOptions}
+          statusOptions={estadosFijos}
         />
       </div>
     </div>

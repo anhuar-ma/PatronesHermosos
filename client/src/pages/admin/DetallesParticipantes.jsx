@@ -6,6 +6,9 @@ import { useEditParticipante } from "../../hooks/useEditParticipante";
 import { useNavigate } from "react-router-dom";
 import { useFetchParticipante } from "../../hooks/useFetchParticipante";
 import "../../styles/ViewDetails.css";
+import useCurrentRol from "../../hooks/useCurrentRol";
+import CambiarGrupo from "../../components/CambiarGrupo";
+import useGrupos from "../../hooks/useGrupos";
 
 export default function DetalleParticipante() {
   const { id } = useParams();
@@ -20,6 +23,9 @@ export default function DetalleParticipante() {
   } = useEditParticipante(participante);
 
   const navigate = useNavigate();
+  const [mostrarCambiarGrupo, setMostrarCambiarGrupo] = useState(false);
+  const { grupos, loading: gruposLoading, error: gruposError } = useGrupos();
+  const currentRol = useCurrentRol();
 
 
   const handleDelete = async () => {
@@ -60,7 +66,40 @@ export default function DetalleParticipante() {
         <div className="header-actions">
           <h2 className="title__view">Vista detallada de participantes</h2>
           <div className="actions">
-            <button className="btn-change-group">Cambiar grupo</button>
+            {currentRol === 1 && (
+                <>
+                  <button
+                    className={`btn-edit ${editMode ? "btn-delete-disabled" : ""}`}
+                    onClick={() => setMostrarCambiarGrupo(true)}
+                  >
+                    Cambiar grupo
+                  </button>
+                  {mostrarCambiarGrupo && (
+                    <CambiarGrupo
+                      onClose={() => setMostrarCambiarGrupo(false)}
+                      onConfirm={async (grupoSeleccionado) => {
+                        try {
+                          await axios.post(
+                            `/api/grupos/${grupoSeleccionado}/participantes`,
+                            { id_participante: participante.id_participante }
+                          );
+                          alert("Grupo actualizado correctamente");
+                          setMostrarCambiarGrupo(false);
+                          window.location.reload(); // Recarga la página o actualiza los datos
+                        } catch (err) {
+                          alert(
+                            "Error al actualizar el grupo: " +
+                            (err.response?.data?.message || err.message)
+                          );
+                        }
+                      }}
+                      grupos={grupos}
+                      gruposLoading={gruposLoading}
+                      gruposError={gruposError}
+                    />
+                  )}
+                </>
+              )}
             {/* <button className="btn-edit" onClick={() => setEditMode(!editMode)}>
               {editMode ? "Cancelar edición" : "Editar registro"}
             </button> */}
@@ -289,15 +328,6 @@ export default function DetalleParticipante() {
             >
               {participante.permiso_padre_tutor ? 'Descargar archivo' : 'No hay archivo disponible'}
             </button>
-              <h5 className="label__colaborator">Permiso firmado tutor:</h5>
-              <button 
-                className={`registro__botonGrisArchivos ${
-                  editMode ? "registro__botonDeshabilitado" : ""
-                }`} 
-                disabled={editMode}
-              >
-                Descargar archivo
-              </button>
 
 
             <h5 className="label__colaborator">Teléfono del tutor:</h5>
@@ -314,7 +344,11 @@ export default function DetalleParticipante() {
         </div>
 
         <div className="delete-button-container">
-          <button className="btn-delete" onClick={handleDelete}>
+          <button
+            className={`btn-delete ${editMode ? "btn-delete-disabled" : ""}`}
+            disabled={editMode}
+            onClick={handleDelete}
+          >
             Eliminar registro
           </button>
         </div>

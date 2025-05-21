@@ -58,7 +58,7 @@ export default function Tabla({
             <td>{participante.nombre_completo_tutor}</td>
             <td>{participante.telefono_tutor}</td>
             {currentRol === 0 ? (
-              <td>{participante.nombre_sede}</td>
+              <td>{participante.nombre_sede || "Sin asignar" }</td>
             ) : (
               <td>{participante.id_grupo || "Sin asignar"}</td>
             )}

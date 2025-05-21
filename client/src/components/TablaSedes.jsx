@@ -21,6 +21,7 @@ export default function TablaSedes() {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [tiposSeleccionados, setTiposSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
+  const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
 
   const tiposDisponibles = useMemo(() => {
     const tipos = sedes.map((s) => s.tipo);
@@ -137,7 +138,7 @@ export default function TablaSedes() {
       )}
 
       <div className="table_container" ref={containerRef}>
-        <Tabla sedes={sedesOrdenadas} onSort={handleSort} statusOptions={statusOptions} sortField={sortField} sortOrder={sortOrder} onStatusChange={handleStatusChange}/>
+        <Tabla sedes={sedesOrdenadas} onSort={handleSort} statusOptions={estadosFijos} sortField={sortField} sortOrder={sortOrder} onStatusChange={handleStatusChange}/>
       </div>
     </div>
   );
