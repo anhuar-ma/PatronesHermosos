@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingCard from "../../components/LoadingCard";
 import { useEditParticipante } from "../../hooks/useEditParticipante";
+import { useNavigate } from "react-router-dom";
 import { useFetchParticipante } from "../../hooks/useFetchParticipante";
 import "../../styles/ViewDetails.css";
 
@@ -17,6 +18,25 @@ export default function DetalleParticipante() {
     editMode,
     setEditMode,
   } = useEditParticipante(participante);
+
+  const navigate = useNavigate();
+
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este participante?");
+    if (!confirmDelete) return;
+  
+    try {
+      await axios.delete(`/api/participantes/${participante.id_participante}`); // Ajusta esta ruta si es necesario
+      alert("Participante eliminado correctamente");
+      navigate("/admin/participantes/"); // Redirige a la tabla de participantes
+    } catch (err) {
+      alert(
+        "Error al eliminar al participante: " +
+        (err.response?.data?.message || err.message)
+      );
+    }
+  };
 
 // DetalleParticipante.jsx
   const saveChanges = async () => {
@@ -294,7 +314,9 @@ export default function DetalleParticipante() {
         </div>
 
         <div className="delete-button-container">
-          <button className="btn-delete">Eliminar registro</button>
+          <button className="btn-delete" onClick={handleDelete}>
+            Eliminar registro
+          </button>
         </div>
       </div>
     </div>

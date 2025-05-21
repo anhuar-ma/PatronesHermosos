@@ -480,13 +480,15 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 
     // Begin transaction
     await pool.query("BEGIN");
+
+    //then Delete participant first (due to foreign key constraints)
+    await pool.query("DELETE FROM participante WHERE id_participante = $1", [
+       id,
+    ]);
+
     //  delete the tutor
     await pool.query("DELETE FROM padre_o_tutor WHERE id_padre_o_tutor = $1", [
       tutorId,
-    ]);
-    //then Delete participant first (due to foreign key constraints)
-    await pool.query("DELETE FROM participante WHERE id_participante = $1", [
-      id,
     ]);
 
     // Commit transaction

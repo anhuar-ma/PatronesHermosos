@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
         correo,
         universidad,
         idioma,
-        null, // Fixing the issue from original code where id_sede was set to null
+        id_sede, // Fixing the issue from original code where id_sede was set to null
         nivel,
         id_grupo,
         carrera,

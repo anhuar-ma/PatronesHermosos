@@ -5,13 +5,21 @@ import LoadingCard from "../../components/LoadingCard";
 import { useEditColaborador } from "../../hooks/useEditColaborador";
 import useCurrentRol from "../../hooks/useCurrentRol";
 import { useFetchColaborador } from "../../hooks/useFetchColaborador";
+import { useNavigate } from "react-router-dom";
 import useSedesNames from "../../hooks/useSedesNombres";
+import useGrupos from "../../hooks/useGrupos";
 import "../../styles/ViewDetails.css";
 
 export default function DetalleColaborador() {
   const { id } = useParams();
   const { colaborador, loading, error, setColaborador } = useFetchColaborador(id);
   const { sedes, loading: sedesLoading, error: sedesError } = useSedesNames();
+  const [mostrarSelectGrupo, setMostrarSelectGrupo] = useState(false);
+  const [grupoSeleccionado, setGrupoSeleccionado] = useState(null);
+  const { grupos, loading: gruposLoading, error: gruposError } = useGrupos();
+  const navigate = useNavigate();
+
+
 
   console.log(`Sedes ${sedes}`);
   const {
@@ -22,6 +30,25 @@ export default function DetalleColaborador() {
     editMode,
     setEditMode,
   } = useEditColaborador(colaborador);
+
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este colaborador?");
+    if (!confirmDelete) return;
+  
+    try {
+      await axios.delete(`/api/colaboradores/${colaborador.id_colaborador}`); // Ajusta esta ruta si es necesario
+      alert("Colaborador eliminado correctamente");
+      navigate("/admin/colaboradores/"); // Redirige a la tabla de colaboradores
+    } catch (err) {
+      alert(
+        "Error al eliminar al colaborador: " +
+        (err.response?.data?.message || err.message)
+      );
+    }
+  };
+  
+
 
 
   const saveChanges = async () => {
@@ -51,10 +78,62 @@ export default function DetalleColaborador() {
           <div className="actions">
 
           {currentRol === 1 && (
-            <>
-              <button className="btn-change-group">Cambiar grupo</button>
-            </>
-          )}
+  <>
+    <button
+      className="btn-change-group"
+      onClick={() => setMostrarSelectGrupo(!mostrarSelectGrupo)}
+    >
+      {mostrarSelectGrupo ? "Cancelar" : "Cambiar grupo"}
+    </button>
+    {mostrarSelectGrupo && (
+      <>
+        {gruposLoading ? (
+          <p>Cargando grupos...</p>
+        ) : gruposError ? (
+          <p>{gruposError}</p>
+        ) : (
+          <select
+            className="registroEdicion__input"
+            value={grupoSeleccionado || colaborador.id_grupo}
+            onChange={(e) => setGrupoSeleccionado(e.target.value)}
+          >
+            <option value="">Selecciona un grupo</option>
+            {grupos.map((grupo) => (
+              <option key={grupo.id_grupo} value={grupo.id_grupo}>
+                {grupo.nivel} - {grupo.idioma}
+              </option>
+            ))}
+          </select>
+        )}
+
+          <button
+            className="btn-edit"
+            onClick={async () => {
+              try {
+                await axios.post(`/api/grupos/${grupoSeleccionado}/colaboradoresDisponibles`, {
+                  id_colaborador: colaborador.id_colaborador, // o como tengas ese ID
+                });
+
+                alert("Grupo actualizado correctamente");
+                window.location.reload(); // o usa una función para recargar los datos sin recargar la página
+              } catch (err) {
+                alert(
+                  "Error al actualizar el grupo: " +
+                    (err.response?.data?.message || err.message)
+                );
+              }
+            }}
+            disabled={!grupoSeleccionado}
+          >
+            Confirmar cambio
+          </button>
+
+      </>
+    )}
+  </>
+)}
+
+
             {/* <button className="btn-edit" onClick={() => setEditMode(!editMode)}>
               {editMode ? "Cancelar edición" : "Editar registro"}
             </button> */}
@@ -228,7 +307,9 @@ export default function DetalleColaborador() {
 
 
         <div className="delete-button-container">
-          <button className="btn-delete">Eliminar registro</button>
+        <button className="btn-delete" onClick={handleDelete}>
+          Eliminar registro
+        </button>
         </div>
       </div>
     </div>
