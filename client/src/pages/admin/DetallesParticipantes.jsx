@@ -31,7 +31,7 @@ export default function DetalleParticipante() {
   const handleDelete = async () => {
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este participante?");
     if (!confirmDelete) return;
-  
+
     try {
       await axios.delete(`/api/participantes/${participante.id_participante}`); // Ajusta esta ruta si es necesario
       alert("Participante eliminado correctamente");
@@ -220,7 +220,7 @@ export default function DetalleParticipante() {
                 <option value="Español">Español</option>
                 <option value="Ingles">Inglés</option>
 
-              </select>  
+              </select>
             ) : (
               <p className="info__colaborator">{participante.idioma}</p>
             )}
@@ -316,7 +316,7 @@ export default function DetalleParticipante() {
                   const url = window.URL.createObjectURL(new Blob([response.data]));
                   const link = document.createElement('a');
                   link.href = url;
-                  link.setAttribute('download', participante.archivo_nombre || 'permiso.pdf');
+                  link.setAttribute('download', 'permiso.pdf');
                   document.body.appendChild(link);
                   link.click();
                   link.remove();

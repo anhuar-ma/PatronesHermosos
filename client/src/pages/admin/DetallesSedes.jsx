@@ -23,7 +23,7 @@ export default function DetalleSede() {
   const handleDelete = async () => {
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta sede?");
     if (!confirmDelete) return;
-  
+
     try {
       await axios.delete(`/api/sedes/${sede.id_sede}`); // Ajusta esta ruta si es necesario
       alert("Sede eliminado correctamente");
@@ -35,7 +35,7 @@ export default function DetalleSede() {
       );
     }
   };
-  
+
 
 // DetalleParticipante.jsx
   const saveChanges = async () => {
@@ -172,7 +172,7 @@ if (error) return <LoadingCard mensaje={error} />;
                 <option value="30/06/25">30/06/25</option>
                 <option value="07/07/25">07/07/25</option>
                 <option value="14/07/25">14/07/25</option>
-              </select>  
+              </select>
             ) : (
               <p className="info__colaborator">{sede.fecha_inicio}</p>
             )}
@@ -202,7 +202,7 @@ if (error) return <LoadingCard mensaje={error} />;
                     const url = window.URL.createObjectURL(new Blob([response.data]));
                     const link = document.createElement('a');
                     link.href = url;
-                    link.setAttribute('download', sede.archivo_nombre || 'permiso.pdf');
+                    link.setAttribute('download', 'convocatoria.pdf');
                     document.body.appendChild(link);
                     link.click();
                     link.remove();

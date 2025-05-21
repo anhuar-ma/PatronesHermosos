@@ -49,6 +49,8 @@ export default function RegistroSedes() {
         formData.append("convocatoria", fileInput.files[0]);
       }
 
+      // Send the FormData with file to the server
+      const response = await axios.post("/api/sedes", formData, {});
 
       setSubmitResult({
         success: true,
@@ -56,6 +58,7 @@ export default function RegistroSedes() {
           "¡Registro exitoso! La sede ha sido registrada correctamente.",
       });
       alert("Formulario enviado correctamente ✅"); // Moved success alert here
+      console.log("Server success response:", response.data);
       console.log("Submitted data:", data); // Log data from react-hook-form
 
       // Clear errors only on success
@@ -65,7 +68,11 @@ export default function RegistroSedes() {
       window.alert("Error en el registro");
       console.error("Error submitting form:", error);
       let errorMessage = "Error desconocido durante el registro.";
-       if (error.request) {
+      if (error.response) {
+        console.error("Server response data:", error.response.data);
+        console.error("Server response status:", error.response.status);
+        errorMessage = `Error del servidor: ${error.response.data.message || error.response.statusText || 'Error desconocido'}`;
+      } else if (error.request) {
         console.error("No response received:", error.request);
         errorMessage = "No se recibió respuesta del servidor. Verifique su conexión.";
       } else {

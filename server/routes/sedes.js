@@ -27,6 +27,7 @@ router.post("/", upload.single("convocatoria"), async (req, res) => {
       fecha_inicio,
     } = req.body;
 
+
     // File path to store in the database (or null if no file)
     const convocatoria = req.file
       ? `/uploads/convocatorias/${req.file.filename}`
@@ -42,7 +43,6 @@ router.post("/", upload.single("convocatoria"), async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
     const result = await pool.query(
       `CALL registro_sede_con_coordinadora(
        $1, $2, $3, $4, $5, $6, $7, $8)`,
@@ -162,7 +162,7 @@ router.get(
 
       // Query the database to get the file path
       const result = await pool.query(
-        "SELECT convocatoria, nombre_sede FROM sede WHERE id_sede = $1",
+        "SELECT convocatoria, nombre FROM sede WHERE id_sede = $1",
         [id],
       );
 
@@ -192,7 +192,7 @@ router.get(
 
       // Generate a user-friendly filename
       const originalFilename = path.basename(filePath);
-      const safeFilename = `convocatoria_${result.rows[0].nombre_sede || id}_${originalFilename}`;
+      const safeFilename = `convocatoria_${result.rows[0].nombre || id}_${originalFilename}`;
 
       // Send file with proper error handling
       res.download(filePath, safeFilename, (err) => {

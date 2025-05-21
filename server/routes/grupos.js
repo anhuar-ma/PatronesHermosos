@@ -147,12 +147,12 @@ router.get("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 
     // Get detailed info excluding id_grupo and id_sede
     const result = await pool.query(
-      `SELECT 
-        idioma, 
-        nivel, 
+      `SELECT
+        idioma,
+        nivel,
         cupo,
         estado
-      FROM grupo 
+      FROM grupo
       WHERE id_grupo = $1`,
       [id],
     );
@@ -278,6 +278,77 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
     });
   }
 });
+
+//Lista los participantes, colaboradores
+router.get("/:id/listado",
+  authenticateToken,
+  checkSedeAccess,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Get the group first to check permissions
+      const groupCheck = await pool.query(
+        "SELECT id_sede FROM grupo WHERE id_grupo = $1",
+        [id]
+      );
+
+      if (groupCheck.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Group not found",
+        });
+      }
+
+      // Check if the user has access to this group
+      const groupSedeId = groupCheck.rows[0].id_sede;
+      if (req.user.rol !== 0 && req.user.id_sede !== groupSedeId) {
+        return res.status(403).json({
+          success: false,
+          message: "Insufficient permissions to access this group's data",
+        });
+      }
+
+      // Get all participantes and colaboradores for this group
+      const result = await pool.query(
+    `
+    SELECT
+        CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo,
+        'Participante' AS rol,
+        p.id_participante AS id
+    FROM
+        participante p
+    WHERE
+        p.id_grupo = $1 -- Replace 1 with the specific id_grupo you are querying for
+
+    UNION ALL
+
+    SELECT
+        CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_completo,
+        c.rol AS rol, -- Assumes the 'colaborador' table has a 'rol' column
+        c.id_colaborador AS id
+    FROM
+        colaborador c
+    WHERE
+        c.id_grupo = $1; -- Replace 1 with the specific id_grupo you are querying for
+      `
+        [id],
+      );
+
+      res.status(200).json({
+        success: true,
+        data: result.rows,
+      });
+    } catch (error) {
+      console.error("Error fetching group participantes y colaboradores:", error);
+      res.status(500).json({
+        success: false,
+        message: "Error al obtener colaboradores del grupo",
+        error: error.message,
+      });
+    }
+  },
+)
 
 //Lista de colaboradores en el grupo
 router.get(
@@ -510,9 +581,9 @@ router.delete(
 
       // Update the colaborador's group to NULL
       const result = await pool.query(
-        `UPDATE colaborador 
-       SET id_grupo = NULL 
-       WHERE id_colaborador = $1 AND id_grupo = $2 
+        `UPDATE colaborador
+       SET id_grupo = NULL
+       WHERE id_colaborador = $1 AND id_grupo = $2
        RETURNING *`,
         [id_colaborador, id],
       );
@@ -572,12 +643,12 @@ router.get(
 
       // Get all mentoras for this sede that aren't assigned to this group
       const result = await pool.query(
-        `SELECT 
+        `SELECT
         m.*,
         CONCAT(m.nombre, ' ', m.apellido_paterno, ' ', m.apellido_materno) AS nombre_mentora
-      FROM 
+      FROM
         mentora m
-      WHERE 
+      WHERE
         m.id_sede = $1
         AND m.id_mentora NOT IN (
           SELECT id_mentora FROM mentora_grupo WHERE id_grupo = $2
@@ -594,6 +665,78 @@ router.get(
       res.status(500).json({
         success: false,
         message: "Error al obtener mentoras disponibles",
+        error: error.message,
+      });
+    }
+  },
+);
+
+// Get the mentora of a group
+router.get(
+  "/:id/mentoras",
+  authenticateToken,
+  checkSedeAccess,
+  async (req, res) => {
+    try {
+      const { id } = req.params; // Group ID
+
+
+      // Get the group first to check permissions
+      const groupCheck = await pool.query(
+        "SELECT id_sede FROM grupo WHERE id_grupo = $1",
+        [id],
+      );
+
+      if (groupCheck.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Grupo no encontrado",
+        });
+      }
+
+      // Check if the user has access to this group
+      const groupSedeId = groupCheck.rows[0].id_sede;
+      if (req.user.rol !== 0 && req.user.id_sede !== groupSedeId) {
+        return res.status(403).json({
+          success: false,
+          message: "Permisos insuficientes para ver este grupo",
+        });
+      }
+
+      // get mentora
+      const mentora = await pool.query(
+        "SELECT id_mentora  FROM mentora_grupo WHERE id_grupo = $1",
+        [id],
+      );
+
+      // Get mentora(s) assigned to the group with their details
+      const mentoraResult = await pool.query(
+        `SELECT
+           m.id_mentora,
+           m.nombre,
+           m.apellido_paterno,
+           m.apellido_materno,
+           CONCAT(m.nombre, ' ', m.apellido_paterno, ' ', m.apellido_materno) AS nombre_completo,
+           m.correo,
+           m.id_sede
+        FROM mentora m
+         WHERE id_mentora = $1`,
+        [mentora.id_mentora],
+      );
+
+      // If a group is expected to have only one mentora, you might send mentoraResult.rows[0]
+      // If multiple, send mentoraResult.rows
+
+     res.status(200).json({
+        success: true,
+        message: "Mentora(s) del grupo obtenida(s) exitosamente",
+        data:mentoraResult.rows,
+      });
+    } catch (error) {
+      console.error("Error al ver mentora to group:", error);
+      res.status(500).json({
+        success: false,
+        message: "Error al obtener la(s) mentora(s) del grupo",
         error: error.message,
       });
     }
@@ -729,8 +872,8 @@ router.delete(
 
       // Delete the record from mentora_grupo junction table
       const result = await pool.query(
-        `DELETE FROM mentora_grupo 
-       WHERE id_mentora = $1 AND id_grupo = $2 
+        `DELETE FROM mentora_grupo
+       WHERE id_mentora = $1 AND id_grupo = $2
        RETURNING *`,
         [id_mentora, id],
       );
@@ -939,9 +1082,9 @@ router.delete(
 
       // Update the participante's group to NULL
       const result = await pool.query(
-        `UPDATE participante 
-       SET id_grupo = NULL 
-       WHERE id_participante = $1 AND id_grupo = $2 
+        `UPDATE participante
+       SET id_grupo = NULL
+       WHERE id_participante = $1 AND id_grupo = $2
        RETURNING *`,
         [id_participante, id],
       );
