@@ -1,6 +1,7 @@
 import "../styles/registros.css";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import useSedesNames from "../hooks/useSedesNombres";
 import axios from "axios";
 
 export default function RegistroColaboradores() {
@@ -11,6 +12,7 @@ export default function RegistroColaboradores() {
   } = useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
+  const { sedes, loading: sedesLoading, error: sedesError } = useSedesNames();
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -23,11 +25,11 @@ export default function RegistroColaboradores() {
         correo: data.correo_colaborador,
         universidad: data.universidad,
         idioma: data.idioma_preferencia,
-        id_sede: data.sede_participar === "ITESM Puebla" ? 1 : 2, // Example mapping
+        id_sede: data.sede_participar, // Example mapping
         nivel: data.nivel_dominio,
         carrera: data.carrera,
         rol: data.rol,
-        estado: "Activo", // Default value
+        estado: "Pendiente", // Default value
         id_grupo: null, // Optional value
       };
 
@@ -180,9 +182,12 @@ export default function RegistroColaboradores() {
                     required: "Este campo es obligatorio",
                   })}
                 >
-                  <option value="">Seleccionar</option>
-                  <option value="ITESM Puebla">ITESM Puebla</option>
-                  <option value="ITESM Monterrey">ITESM Monterrey</option>
+                <option value="">Seleccionar</option>
+                {sedes.map((sede) => (
+                  <option key={sede.id_sede} value={sede.id_sede}>
+                    {sede.nombre}
+                  </option>
+                ))}
                 </select>
                 {errors.sede_participar && (
                   <p className="registro__error">{errors.sede_participar.message}</p>

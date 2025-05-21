@@ -5,6 +5,7 @@ import { SlidersHorizontal } from "lucide-react"; // Ícono para el botón de fi
 import Tabla from "./TablaColaboradoresListado"; // Componente de tabla donde se renderizan los colaboradores
 import LoadingCard from "./LoadingCard"; // Componente de carga y errores
 import FiltroTabla from "./FiltroTabla"; // Componente para filtros avanzados
+import axios from "axios"; // Librería para hacer peticiones HTTP
 
 /**
  * Componente que muestra un listado de colaboradores con:
@@ -144,41 +145,75 @@ export default function TablaColaboradores() {
     }
   };
 
-
-  //Funcion para manejo de cambio de estado en colaboradores
   const handleStatusChange = async (id_colaborador, nuevoEstado) => {
     try {
-      // Actualiza el estado del colaborador
-      const response = await fetch(`/api/colaboradores/estado/${id_colaborador}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ estado: nuevoEstado }),
-      });
-  
-      if (response.ok) {
+      const response = await axios.put(
+        `/api/colaboradores/estado/${id_colaborador}`,
+        {
+          estado: nuevoEstado,
+        },
+      );
+
+      if (response.data.success) {
         setColaboradores((prev) =>
           prev.map((c) =>
-            c.id_colaborador === id_colaborador ? { ...c, estado: nuevoEstado } : c
-          )
+            c.id_colaborador === id_colaborador
+              ? { ...c, estado: nuevoEstado }
+              : c,
+          ),
         );
-  
-        // Si el estado es "Aceptado", envía el correo
-        if (nuevoEstado === "Aceptado") {
-          const emailResponse = await fetch(`/api/colaboradores/email/${id_colaborador}`, {
-            method: "POST",
-          });
-  
-          if (!emailResponse.ok) {
-            console.error("Error al enviar el correo");
-          }
-        }
       } else {
         console.error("Error al actualizar el estado");
       }
     } catch (error) {
+      // Display the specific error message from the server
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        alert(error.response.data.message);
+      } else {
+        alert("Error al actualizar el estado del participante");
+      }
       console.error("Error en la solicitud:", error);
     }
   };
+
+  // //Funcion para manejo de cambio de estado en colaboradores
+  // const handleStatusChange = async (id_colaborador, nuevoEstado) => {
+  //   try {
+  //     // Actualiza el estado del colaborador
+  //     const response = await fetch(`/api/colaboradores/estado/${id_colaborador}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ estado: nuevoEstado }),
+  //     });
+  
+  //     if (response.ok) {
+  //       setColaboradores((prev) =>
+  //         prev.map((c) =>
+  //           c.id_colaborador === id_colaborador ? { ...c, estado: nuevoEstado } : c
+  //         )
+  //       );
+  
+  //       // Si el estado es "Aceptado", envía el correo
+  //       if (nuevoEstado === "Aceptado") {
+  //         const emailResponse = await fetch(`/api/colaboradores/email/${id_colaborador}`, {
+  //           method: "POST",
+  //         });
+  
+  //         if (!emailResponse.ok) {
+  //           console.error("Error al enviar el correo");
+  //         }
+  //       }
+  //     } else {
+  //       console.error("Error al actualizar el estado");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error en la solicitud:", error);
+  //   }
+  // };
 
   return (
     <div className="tabla__containerBlanco">

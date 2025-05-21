@@ -4,6 +4,7 @@ import axios from "axios";
 import LoadingCard from "../../components/LoadingCard";
 import { useEditSede } from "../../hooks/useEditSede";
 import { useFetchSede } from "../../hooks/useFetchSede";
+import { useNavigate } from "react-router-dom";
 import "../../styles/ViewDetails.css";
 
 export default function DetalleSede() {
@@ -17,6 +18,24 @@ export default function DetalleSede() {
     editMode,
     setEditMode,
   } = useEditSede(sede);
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta sede?");
+    if (!confirmDelete) return;
+  
+    try {
+      await axios.delete(`/api/sedes/${sede.id_sede}`); // Ajusta esta ruta si es necesario
+      alert("Sede eliminado correctamente");
+      navigate("/admin/sedes/"); // Redirige a la tabla de sedes
+    } catch (err) {
+      alert(
+        "Error al eliminar la sede: " +
+        (err.response?.data?.message || err.message)
+      );
+    }
+  };
+  
 
 // DetalleParticipante.jsx
   const saveChanges = async () => {
@@ -175,7 +194,9 @@ if (error) return <LoadingCard mensaje={error} />;
         </div>
 
         <div className="delete-button-container">
-          <button className="btn-delete">Eliminar registro</button>
+          <button className="btn-delete" onClick={handleDelete}>
+            Eliminar registro
+          </button>
         </div>
       </div>
     </div>
