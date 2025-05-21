@@ -477,16 +477,26 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
     }
 
     const tutorId = participanteResult.rows[0].id_padre_o_tutor;
+    const filePath = participanteResult.rows[0].permiso_padre_tutor;
+
+    // Delete the file if it exists
+    if (filePath) {
+      const fullPath = path.join(process.cwd(), filePath.substring(1));
+      if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath);
+      }
+    }
 
     // Begin transaction
     await pool.query("BEGIN");
-    //  delete the tutor
-    await pool.query("DELETE FROM padre_o_tutor WHERE id_padre_o_tutor = $1", [
-      tutorId,
-    ]);
     //then Delete participant first (due to foreign key constraints)
     await pool.query("DELETE FROM participante WHERE id_participante = $1", [
       id,
+    ]);
+
+    //  delete the tutor
+    await pool.query("DELETE FROM padre_o_tutor WHERE id_padre_o_tutor = $1", [
+      tutorId,
     ]);
 
     // Commit transaction

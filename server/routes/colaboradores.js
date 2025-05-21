@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
         correo,
         universidad,
         idioma,
-        null, // Fixing the issue from original code where id_sede was set to null
+        id_sede, // Fixing the issue from original code where id_sede was set to null
         nivel,
         id_grupo,
         carrera,
@@ -337,7 +337,7 @@ router.post("/email/:id", async (req, res) => {
     // Obtén los datos del colaborador desde la base de datos
     const result = await pool.query(
       `SELECT nombre, correo FROM colaborador WHERE id_colaborador = $1`,
-      [id]
+      [id],
     );
 
     if (result.rows.length === 0) {

@@ -3,26 +3,45 @@ import { pool } from "../server.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
-import { authenticateToken, checkSedeAccess, requireAdmin } from "../middleware/auth.js";
+import {
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+} from "../middleware/auth.js";
+import { upload } from "../uploadManager.js";
 
+import path from "path";
+import fs from "fs";
 const router = express.Router();
 
 // Handle sedes registration
-router.post("/", async (req, res) => {
+router.post("/", upload.single("convocatoria"), async (req, res) => {
   try {
     const {
       nombre_coordinadora,
       apellido_paterno_coordinadora,
       apellido_materno_coordinadora,
       correo_coordinadora,
-      contraseña,
+      password,
       nombre_sede,
       fecha_inicio,
-      archivo_convocatoria,
     } = req.body;
 
+    // File path to store in the database (or null if no file)
+    const convocatoria = req.file
+      ? `/uploads/convocatorias/${req.file.filename}`
+      : null;
+
+    // Validate password is provided
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Contraseña is required",
+      });
+    }
+
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(contraseña, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const result = await pool.query(
       `CALL registro_sede_con_coordinadora(
@@ -35,16 +54,30 @@ router.post("/", async (req, res) => {
         hashedPassword,
         nombre_sede,
         fecha_inicio,
-        //archivo convocatorias es null
-        archivo_convocatoria,
+        convocatoria,
       ],
     );
 
     res.status(201).json({
       success: true,
       data: result.rows[0],
+      file: req.file
+        ? {
+            filename: req.file.filename,
+            path: convocatoria,
+          }
+        : null,
     });
   } catch (error) {
+    // If there was a file uploaded but an error occurred, delete the file
+    if (req.file) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (unlinkError) {
+        console.error("Error deleting file:", unlinkError);
+      }
+    }
+
     console.error("Error saving participant:", error);
     res.status(500).json({
       success: false,
@@ -118,6 +151,78 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
+router.get(
+  "/download/:id",
+  authenticateToken,
+  checkSedeAccess,
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // Query the database to get the file path
+      const result = await pool.query(
+        "SELECT convocatoria, nombre_sede FROM sede WHERE id_sede = $1",
+        [id],
+      );
+
+      if (result.rows.length === 0 || !result.rows[0].convocatoria) {
+        return res.status(404).json({
+          success: false,
+          message: "Archivo no encontrado",
+        });
+      }
+
+      // Safely handle path construction
+      let storedPath = result.rows[0].convocatoria;
+      storedPath = storedPath.startsWith("/")
+        ? storedPath.substring(1)
+        : storedPath;
+
+      // Normalize and resolve path to prevent directory traversal
+      const filePath = path.normalize(path.resolve(process.cwd(), storedPath));
+
+      // Ensure the path is within the allowed directory
+      if (!filePath.startsWith(process.cwd())) {
+        return res.status(403).json({
+          success: false,
+          message: "Acceso denegado al archivo solicitado",
+        });
+      }
+
+      // Generate a user-friendly filename
+      const originalFilename = path.basename(filePath);
+      const safeFilename = `convocatoria_${result.rows[0].nombre_sede || id}_${originalFilename}`;
+
+      // Send file with proper error handling
+      res.download(filePath, safeFilename, (err) => {
+        if (err) {
+          // This handles if the file disappears between check and download
+          if (err.code === "ENOENT") {
+            return res.status(404).json({
+              success: false,
+              message: "Archivo no encontrado en el servidor",
+            });
+          }
+
+          console.error("Error downloading file:", err);
+          return res.status(500).json({
+            success: false,
+            message: "Error al descargar el archivo",
+            error: err.message,
+          });
+        }
+      });
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      res.status(500).json({
+        success: false,
+        message: "Error al descargar el archivo",
+        error: error.message,
+      });
+    }
+  },
+);
 
 // Get the names from sedes that are accepeted
 router.get("/nombres", async (req, res) => {
@@ -327,6 +432,15 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
     }
 
     const coordinadoraId = sedeResult.rows[0].id_coordinadora;
+    const filePath = sedeResult.rows[0].convocatoria;
+
+    // Delete the file if it exists
+    if (filePath) {
+      const fullPath = path.join(process.cwd(), filePath.substring(1));
+      if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath);
+      }
+    }
 
     // Begin transaction
     await pool.query("BEGIN");

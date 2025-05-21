@@ -7,6 +7,7 @@ export default function RegistroSedes() {
   const [fileName, setFileName] = useState("");
   const [fileError, setFileError] = useState("");
   const [error, setError] = useState("");
+  const [submitResult, setSubmitResult] = useState(null);
 
   const {
     register,
@@ -14,7 +15,6 @@ export default function RegistroSedes() {
     watch,
     formState: { errors },
   } = useForm();
-  
 
   const onSubmit = async (data) => {
     if (!fileName) {
@@ -23,33 +23,85 @@ export default function RegistroSedes() {
     }
 
     try {
-      const sedeData = {
-        // Coordinatora
-        nombre_coordinadora: data.nombre_coordinadora,
-        apellido_paterno_coordinadora: data.apellido_paterno_coordinadora,
-        apellido_materno_coordinadora: data.apellido_materno_coordinadora,
-        correo_coordinadora: data.correo_coordinadora,
-        contraseña: data.contraseña,
+      const formData = new FormData();
 
-        // Sede
-        nombre_sede: data.nombre_sede,
-        fecha_inicio: data.fecha_inicio,
-        archivo_convocatoria: fileName, // The file name, you might need to handle the actual file upload separately
-      };
+      // Coordinatora
+      formData.append("nombre_coordinadora", data.nombre_coordinadora);
+      formData.append(
+        "apellido_paterno_coordinadora",
+        data.apellido_paterno_coordinadora,
+      );
+      formData.append(
+        "apellido_materno_coordinadora",
+        data.apellido_materno_coordinadora,
+      );
+      formData.append("correo_coordinadora", data.correo_coordinadora);
+      // Correctly append the password using the key from react-hook-form
+      formData.append("password", data.password); // Changed from data.contraseña
 
-      await axios.post("/api/sedes", sedeData);
+      // Sede
+      formData.append("nombre_sede", data.nombre_sede);
+      formData.append("fecha_inicio", data.fecha_inicio);
 
+      // Add the file to FormData
+      const fileInput = document.getElementById("convocatoria");
+      if (fileInput.files[0]) {
+        formData.append("convocatoria", fileInput.files[0]);
+      }
+
+      // Retrieve the token from localStorage (or your auth context/store)
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Error de autenticación: No se encontró el token.");
+        setSubmitResult({
+          success: false,
+          message: "Error de autenticación. Por favor, inicie sesión de nuevo.",
+        });
+        return;
+      }
+
+      // Send the FormData with file to the server
+      const response = await axios.post("/api/sedes", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`, // Added Authorization header
+        },
+      });
+
+      setSubmitResult({
+        success: true,
+        message:
+          "¡Registro exitoso! La sede ha sido registrada correctamente.",
+      });
+      alert("Formulario enviado correctamente ✅"); // Moved success alert here
+      console.log("Server success response:", response.data);
+      console.log("Submitted data:", data); // Log data from react-hook-form
+
+      // Clear errors only on success
       setError("");
       setFileError("");
     } catch (error) {
       window.alert("Error en el registro");
-      console.error("Error:", error);
+      console.error("Error submitting form:", error);
+      let errorMessage = "Error desconocido durante el registro.";
+      if (error.response) {
+        console.error("Server response data:", error.response.data);
+        console.error("Server response status:", error.response.status);
+        errorMessage = `Error del servidor: ${error.response.data.message || error.response.statusText || 'Error desconocido'}`;
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+        errorMessage = "No se recibió respuesta del servidor. Verifique su conexión.";
+      } else {
+        console.error("Error setting up request:", error.message);
+        errorMessage = `Error al enviar la solicitud: ${error.message}`;
+      }
+      setSubmitResult({
+        success: false,
+        message: errorMessage,
+      });
+      // Do not clear errors or show general success alert here
     }
-
-    setError("");
-    setFileError("");
-    alert("Formulario enviado correctamente ✅");
-    console.log(data);
+    // Removed general success alert and error clearing from here
   };
 
   const handleFileChange = (e) => {
@@ -68,18 +120,19 @@ export default function RegistroSedes() {
   return (
     <div className="registro__fondoMorado">
       <div className="register-container">
-      <div className="registro_containerForm">
-      <h2 className="registro__titulo">Registro para sedes</h2>
-        <form
-          className="registro__formulario"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <h4 className="registro__tituloSeccion">Información personal</h4>
+        <div className="registro_containerForm">
+          <h2 className="registro__titulo">Registro para sedes</h2>
+          <form
+            className="registro__formulario"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <h4 className="registro__tituloSeccion">Información personal</h4>
             <p className="registro__instrucciones">
               Llenar con datos como aparecen en un documento oficial.
             </p>
             <label>
-              Nombre(s) de la alumna&nbsp;<span className="registro__obligatorio">*</span>
+              Nombre(s) de la alumna&nbsp;
+              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -99,7 +152,9 @@ export default function RegistroSedes() {
               <br />
               <input
                 className={`registro__input ${
-                  errors.apellido_paterno_coordinadora ? "registro__input-error" : ""
+                  errors.apellido_paterno_coordinadora
+                    ? "registro__input-error"
+                    : ""
                 }`}
                 {...register("apellido_paterno_coordinadora", {
                   required: true,
@@ -144,16 +199,15 @@ export default function RegistroSedes() {
                   className="registro__input"
                   type="password"
                   autoComplete="new-password"
-                  {...register("contraseña", { required: true })}
+                  {...register("password", { required: true })}
                 />
-                {errors.contraseña && (
+                {errors.password && (
                   <p className="registro__error">Este campo es obligatorio</p>
                 )}
               </label>
-
-
               <label>
-                Verificar contraseña <span className="registro__obligatorio">*</span>
+                Verificar contraseña{" "}
+                <span className="registro__obligatorio">*</span>
                 <br />
                 <input
                   className="registro__input"
@@ -162,26 +216,30 @@ export default function RegistroSedes() {
                   {...register("verificar_contraseña", {
                     required: true,
                     validate: (value) =>
-                      value === watch("contraseña") || "Las contraseñas no coinciden",
+                      value === watch("password") ||
+                      "Las contraseñas no coinciden",
                   })}
                 />
                 {errors.verificar_contraseña && (
-                  <p className="registro__error">{errors.verificar_contraseña.message}</p>
+                  <p className="registro__error">
+                    {errors.verificar_contraseña.message}
+                  </p>
                 )}
               </label>
             </div>
 
             {error && <p className="error">{error}</p>}
 
-          <h4 className="registro__tituloSeccion">Información de la sede</h4>
+            <h4 className="registro__tituloSeccion">Información de la sede</h4>
             <p className="registro__instrucciones">
-            Llenar con datos de la sede.
+              Llenar con datos de la sede.
             </p>
 
             <label>
               Nombre de Sede (Con este nombre los alumnos seleccionarán la sede){" "}
               <span className="registro__obligatorio">*</span>
-              <input id="nombre_sede"
+              <input
+                id="nombre_sede"
                 className={`registro__input ${
                   errors.nombre_sede ? "registro__input-error" : ""
                 }`}
@@ -194,15 +252,16 @@ export default function RegistroSedes() {
             </label>
 
             <label>
-              Convocatoria de la sede <span className="registro__obligatorio">*</span>
+              Convocatoria de la sede{" "}
+              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
                   errors.correo_coordinadora ? "registro__input-error" : ""
                 }`}
                 type="file"
-                name="archivo_convocatoria"
-                id="archivo_tutor"
+                name="convocatoria"
+                id="convocatoria"
                 accept="application/pdf"
                 style={{ display: "none" }}
                 onChange={handleFileChange}
@@ -210,14 +269,22 @@ export default function RegistroSedes() {
               <button
                 type="button"
                 className="registro__botonGrisArchivos"
-                onClick={() => document.getElementById("archivo_tutor").click()}
+                onClick={() => document.getElementById("convocatoria").click()}
               >
                 Subir archivo
               </button>
               {fileName && <p className="archivo-nombre">{fileName}</p>}
               {fileError && <p className="registro__error">{fileError}</p>}
             </label>
-
+            {submitResult && (
+              <div
+                className={
+                  submitResult.success ? "success-message" : "error-message"
+                }
+              >
+                {submitResult.message}
+              </div>
+            )}
             <label>
               Fecha de inicio <span className="registro__obligatorio">*</span>
               <br />
@@ -236,14 +303,14 @@ export default function RegistroSedes() {
               )}
             </label>
 
-          <div className="registro__contenedor__botonSubmit">
-            <input
-              type="submit"
-              className="registro__botonMorado"
-              value="Enviar Registro"
-            />
-          </div>
-        </form>
+            <div className="registro__contenedor__botonSubmit">
+              <input
+                type="submit"
+                className="registro__botonMorado"
+                value="Enviar Registro"
+              />
+            </div>
+          </form>
         </div>
       </div>
     </div>

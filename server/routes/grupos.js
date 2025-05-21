@@ -175,7 +175,7 @@ router.get("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 router.put("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
     const { id } = req.params;
-    const { idioma, nivel, cupo, estado } = req.body;
+    const { idioma, nivel, cupo } = req.body;
 
     // Get the group first to check permissions
     const groupCheck = await pool.query(
@@ -204,10 +204,9 @@ router.put("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
         idioma = $1,
         nivel = $2,
         cupo = $3,
-        estado = $4
-      WHERE id_grupo = $5
+      WHERE id_grupo = $4
       RETURNING *`,
-      [idioma, nivel, cupo, estado, id],
+      [idioma, nivel, cupo, id],
     );
 
     res.status(200).json({
