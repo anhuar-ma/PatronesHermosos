@@ -64,8 +64,8 @@ export default function Tabla({
             <td>{grupo.id_grupo}</td>
             <td>{grupo.idioma}</td>
             <td>{grupo.nivel}</td>
-            <td>h</td>
-            <td>h</td>
+            <td>{grupo.nombre_mentora}</td>
+            <td>{grupo.nombre_instructora}</td>
             <td style={{ textAlign: 'center', verticalAlign: 'middle' }} >{grupo.cupo}</td>
             <td>
               <button

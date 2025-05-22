@@ -5,6 +5,7 @@ export default function Tabla({
   onSort,
   sortField,
   sortOrder,
+  onDelete,
 }) {
   const renderSortArrow = (field) => {
     if (sortField !== field) return <ArrowDownUp size={14} />;
@@ -43,7 +44,13 @@ export default function Tabla({
             <td>{grupo.nombre_completo}</td>
             <td>{grupo.rol}</td>
             <td>
-              <button className="tabla__botonMorado">Eliminar</button>
+              <button className="tabla__botonMorado"
+                onClick={() => {
+                  onDelete(grupo.id, grupo.rol);
+                }}
+              >
+                Eliminar
+              </button>
             </td>
           </tr>
         ))}

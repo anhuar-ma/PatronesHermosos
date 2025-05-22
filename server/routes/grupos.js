@@ -150,8 +150,7 @@ router.get("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
       `SELECT
         idioma,
         nivel,
-        cupo,
-        estado
+        cupo
       FROM grupo
       WHERE id_grupo = $1`,
       [id],
@@ -332,7 +331,7 @@ router.get(
         colaborador c
     WHERE
         c.id_grupo = $1; -- Replace 1 with the specific id_grupo you are querying for
-      `[id],
+      `,[id],
       );
 
       res.status(200).json({
@@ -354,7 +353,7 @@ router.get(
 );
 
 //delete an integrante of the group
-router.delete(
+router.put(
   "/:id/listado/:id_integrante",
   authenticateToken,
   checkSedeAccess,
@@ -367,6 +366,8 @@ router.delete(
         "SELECT id_sede FROM grupo WHERE id_grupo = $1",
         [id],
       );
+
+      console.log("ROOOL",rol);
 
       if (groupCheck.rows.length === 0) {
         return res.status(404).json({
@@ -385,25 +386,19 @@ router.delete(
       }
       // Begin transaction
       await pool.query("BEGIN");
-      //mentora
-      if (rol === "mentora") {
-        await pool.query(
-          "DELETE FROM mentora_grupo WHERE id_grupo = $1 AND id_mentora = $2",
-          [id, id_integrante],
-        );
-      }
-
       //participante
-      else if (rol === "participante") {
+      
+      if (rol === "Participante") {
         await pool.query(
-          "DELETE FROM participante WHERE id_participante = $1",
+          "UPDATE participante SET id_grupo = NULL WHERE id_participante = $1",
           [id_integrante],
         );
 
         //colaboradores
       } else {
         await pool.query(
-          "DELETE FROM colaboradores WHERE id_colaborador = $1"[id_integrante],
+          "UPDATE colaborador SET id_grupo = NULL WHERE id_colaborador = $1",
+          [id_integrante],
         );
       }
 
@@ -795,7 +790,7 @@ router.get(
            m.id_sede
         FROM mentora m
          WHERE id_mentora = $1`,
-        [mentora.id_mentora],
+        [mentora.rows[0].id_mentora],
       );
 
       // If a group is expected to have only one mentora, you might send mentoraResult.rows[0]
@@ -1104,13 +1099,13 @@ router.post(
         });
       }
 
-      // Check if participante is already in a group
-      if (participanteCheck.rows[0].id_grupo !== null) {
-        return res.status(400).json({
-          success: false,
-          message: "El participante ya está asignado a un grupo",
-        });
-      }
+      // // Check if participante is already in a group
+      // if (participanteCheck.rows[0].id_grupo !== null) {
+      //   return res.status(400).json({
+      //     success: false,
+      //     message: "El participante ya está asignado a un grupo",
+      //   });
+      // }
 
       // Update the participante's group
       const result = await pool.query(
