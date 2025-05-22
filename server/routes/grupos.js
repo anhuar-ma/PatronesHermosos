@@ -279,8 +279,9 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   }
 });
 
-//Lista los participantes, colaboradores
-router.get("/:id/listado",
+//Lista los participantes, colaboradores actuales
+router.get(
+  "/:id/listado",
   authenticateToken,
   checkSedeAccess,
   async (req, res) => {
@@ -290,7 +291,7 @@ router.get("/:id/listado",
       // Get the group first to check permissions
       const groupCheck = await pool.query(
         "SELECT id_sede FROM grupo WHERE id_grupo = $1",
-        [id]
+        [id],
       );
 
       if (groupCheck.rows.length === 0) {
@@ -311,7 +312,7 @@ router.get("/:id/listado",
 
       // Get all participantes and colaboradores for this group
       const result = await pool.query(
-    `
+        `
     SELECT
         CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo,
         'Participante' AS rol,
@@ -331,8 +332,7 @@ router.get("/:id/listado",
         colaborador c
     WHERE
         c.id_grupo = $1; -- Replace 1 with the specific id_grupo you are querying for
-      `
-        [id],
+      `[id],
       );
 
       res.status(200).json({
@@ -340,7 +340,10 @@ router.get("/:id/listado",
         data: result.rows,
       });
     } catch (error) {
-      console.error("Error fetching group participantes y colaboradores:", error);
+      console.error(
+        "Error fetching group participantes y colaboradores:",
+        error,
+      );
       res.status(500).json({
         success: false,
         message: "Error al obtener colaboradores del grupo",
@@ -348,7 +351,80 @@ router.get("/:id/listado",
       });
     }
   },
-)
+);
+
+//delete an integrante of the group
+router.delete(
+  "/:id/listado/:id_integrante",
+  authenticateToken,
+  checkSedeAccess,
+  async (req, res) => {
+    try {
+      const { id, id_integrante } = req.params;
+      const { rol } = req.body;
+      // Check if the group exists
+      const groupCheck = await pool.query(
+        "SELECT id_sede FROM grupo WHERE id_grupo = $1",
+        [id],
+      );
+
+      if (groupCheck.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Grupo no encontrado",
+        });
+      }
+
+      // Check if the user has access to this group
+      const groupSedeId = groupCheck.rows[0].id_sede;
+      if (req.user.rol !== 0 && req.user.id_sede !== groupSedeId) {
+        return res.status(403).json({
+          success: false,
+          message: "Permisos insuficientes para modificar este grupo",
+        });
+      }
+      // Begin transaction
+      await pool.query("BEGIN");
+      //mentora
+      if (rol === "mentora") {
+        await pool.query(
+          "DELETE FROM mentora_grupo WHERE id_grupo = $1 AND id_mentora = $2",
+          [id, id_integrante],
+        );
+      }
+
+      //participante
+      else if (rol === "participante") {
+        await pool.query(
+          "DELETE FROM participante WHERE id_participante = $1",
+          [id_integrante],
+        );
+
+        //colaboradores
+      } else {
+        await pool.query(
+          "DELETE FROM colaboradores WHERE id_colaborador = $1"[id_integrante],
+        );
+      }
+
+      // Commit transaction
+      await pool.query("COMMIT");
+
+      res.json({
+        success: true,
+        message: "Integrante eliminado",
+      });
+    } catch (error) {
+      await pool.query("ROLLBACK");
+      console.error("Error eliminando el integrante :", error);
+      res.status(500).json({
+        success: false,
+        message: "Error al obtener integrantes del grupo",
+        error: error.message,
+      });
+    }
+  },
+);
 
 //Lista de colaboradores en el grupo
 router.get(
@@ -679,8 +755,6 @@ router.get(
   async (req, res) => {
     try {
       const { id } = req.params; // Group ID
-
-
       // Get the group first to check permissions
       const groupCheck = await pool.query(
         "SELECT id_sede FROM grupo WHERE id_grupo = $1",
@@ -727,10 +801,10 @@ router.get(
       // If a group is expected to have only one mentora, you might send mentoraResult.rows[0]
       // If multiple, send mentoraResult.rows
 
-     res.status(200).json({
+      res.status(200).json({
         success: true,
         message: "Mentora(s) del grupo obtenida(s) exitosamente",
-        data:mentoraResult.rows,
+        data: mentoraResult.rows,
       });
     } catch (error) {
       console.error("Error al ver mentora to group:", error);
@@ -984,6 +1058,17 @@ router.post(
         return res.status(404).json({
           success: false,
           message: "Grupo no encontrado",
+        });
+      }
+
+      const capacity = await pool.query("SELECT check_group_capacity($1)", [
+        id,
+      ]);
+
+      if (capacity.rows[0].check_group_capacity === false) {
+        return res.status(404).json({
+          success: false,
+          message: "Cupo de grupo lleno",
         });
       }
 
