@@ -18,6 +18,7 @@ import AdminNavbarSede from "./components/AdminNavBarSede";
 import RegistroMentoras from "./pages/admin/RegistroMentora.jsx";
 import RegistroCoordinadoraAsociada from "./pages/admin/RegistroCoordinadoraAsociada.jsx";
 import RegistroGrupos from "./pages/admin/RegistroGrupo";
+import DetallesGrupo from "./pages/admin/DetallesGrupo";
 
 import AdminDashboard from "./pages/admin/adminHome";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
@@ -132,6 +133,10 @@ function App() {
           <Route
             path="/admin/grupos"
             element={<ListadoGrupos />}
+          />
+          <Route
+            path="/admin/grupos/:id/listado"
+            element={<DetallesGrupo />}
           />
 
         </Route>
