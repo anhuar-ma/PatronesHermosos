@@ -26,16 +26,16 @@ export default function Tabla({
     <table className="colaboradores-table">
       <thead>
         <tr>
-          <th onClick={() => onSort("nombre")}>
+          <th onClick={() => onSort("nombre_completo_coordinadora")}>
             <div className="tablas__thContainer">
               <span>Nombre de la coordinadora</span>
-              {renderSortArrow("nombre")}
+              {renderSortArrow("nombre_completo_coordinadora")}
             </div>
           </th>
-          <th onClick={() => onSort("apellido_paterno")}>
+          <th onClick={() => onSort("correo")}>
             <div className="tablas__thContainer">
               <span>Email</span>
-              {renderSortArrow("apellido_paterno")}
+              {renderSortArrow("correo")}
             </div>
           </th>
           <th>Nombre de sede</th>

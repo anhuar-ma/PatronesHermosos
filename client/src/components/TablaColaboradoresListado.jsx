@@ -29,17 +29,17 @@ export default function Tabla({
     <table className="colaboradores-table">
       <thead>
         <tr>
-          <th onClick={() => onSort("nombre")}>
+          <th onClick={() => onSort("nombre_completo_colaborador")}>
             {" "}
             <div className="tablas__thContainer">
               <span>Nombre</span>
-              {renderSortArrow("nombre")}
+              {renderSortArrow("nombre_completo_colaborador")}
             </div>
           </th>
           <th onClick={() => onSort("rol")}>
             <div className="tablas__thContainer">
               <span> Rol</span>
-              {renderSortArrow("universidad")}
+              {renderSortArrow("rol")}
             </div>
           </th>
           {currentRol === 0 ? <th>Sede</th> : <th>Grupo</th>}
