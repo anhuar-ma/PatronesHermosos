@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import "../../styles/registros.css/";
 import axios from "axios";
 
-export default function RegistroMentoras() {
+export default function RegistroGrupos() {
   const {
     register,
     handleSubmit,
@@ -17,28 +17,27 @@ export default function RegistroMentoras() {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     try {
-      const mentoraData = {
-        nombre: data.nombre_mentora,
-        apellido_paterno: data.apellido_paterno_mentora,
-        apellido_materno: data.apellido_materno_coordinadora,
-        correo: data.correo_mentora,
+      const grupoData = {
+        idioma: data.idioma_grupo,
+        nivel: data.nivel_grupo,
+        cupo: data.cupo,
       };
 
-      const response = await axios.post("/api/mentoras", mentoraData);
+      const response = await axios.post("/api/grupos", grupoData);
 
       setSubmitResult({
         success: true,
-        message: "Mentora registrada correctamente ✅",
+        message: "Grupo registrado correctamente ✅",
       });
 
-      window.alert("Mentora registrada correctamente ✅");
+      window.alert("Grupo registrado correctamente ✅");
       console.log(response.data);
 
-      navigate("/admin/mentoras");
+      navigate("/admin/grupos");
     } catch (error) {
       setSubmitResult({
         success: false,
-        message: "Error al registrar la mentora",
+        message: "Error al registrar el Grupo",
       });
 
       window.alert("Error en el registro");
@@ -126,8 +125,7 @@ export default function RegistroMentoras() {
             <input
               type="submit"
               className="registro__botonMorado"
-              value="Registrar mentora"
-              navigate={navigate}
+              value="Registrar grupo"
             />
           </div>
         </form>
