@@ -1,93 +1,32 @@
 import { useState, useRef, useEffect } from "react";
-import useGrupos from "../hooks/useGrupos"; // Hook personalizado para obtener datos de grupos
+import useGrupoListado from "../hooks/useGrupoListado"; // Hook para obtener datos de grupos
+import useGrupoDetalles from "../hooks/useGruposDetalles";
+import useGrupoMentora from "../hooks/useGrupoMentora"; // Hook para obtener datos de mentoras
 import { SlidersHorizontal } from "lucide-react"; // Ícono para el botón de filtros
 import Tabla from "./TablaDetallesGrupoListado"; // Componente de tabla donde se renderizan los grupos
 import LoadingCard from "./LoadingCard"; // Componente de carga y errores
 import FiltroTabla from "./FiltroTabla"; // Componente para filtros avanzados
-import { Link } from "react-router-dom";
+import useEliminarIntegrante from "../hooks/useEliminarIntegrante"; // Hook para eliminar integrantes
+import { Link, useParams } from "react-router-dom"; // Hook para obtener parámetros de la URL
 
-// 1. Creamos datos de prueba hardcodeados:
-// const dummyGrupos = [
-//   {
-//     id_grupo: 101,
-//     idioma: "Inglés",
-//     nivel: "Básico",
-//     mentora:  "Ana López García" ,
-//     instructora:  "María Pérez Sánchez" ,
-//     cupo: 12,
-//   },
-//   {
-//     id_grupo: 102,
-//     idioma: "Español",
-//     nivel: "Avanzado",
-//     mentora:  "Jorge Martínez" ,
-//     instructora:  "Lucía Rodríguez Ruiz" ,
-//     cupo: 8,
-//   },
-//   {
-//     id_grupo: 103,
-//     idioma: "Inglés",
-//     nivel: "Avanzado",
-//     mentora:  "Carlos Díaz Vega" ,
-//     instructora:  "Sofía Mora Luna" ,
-//     cupo: 5,
-//   },
-//   {
-//     id_grupo: 104,
-//     idioma: "Español",
-//     nivel: "Básico",
-//     mentora:  "Elena Torres Méndez" ,
-//     instructora:  "Raúl Castillo" ,
-//     cupo: 15,
-//   },
-//   {
-//     id_grupo: 105,
-//     idioma: "Español",
-//     nivel: "Básico",
-//     mentora:  "Elena Torres Méndez" ,
-//     instructora:  "Raúl Castillo" ,
-//     cupo: 0,
-//   },
-//   // Casos con “no asignada”
-//   {
-//     id_grupo: 106,
-//     idioma: "Inglés",
-//     nivel: "Intermedio",
-//     mentora:  "***no asignada***" ,
-//     instructora:  "Gabriela Ruiz Hernández" ,
-//     cupo: 10,
-//   },
-//   {
-//     id_grupo: 107,
-//     idioma: "Español",
-//     nivel: "Avanzado",
-//     mentora:  "Pedro Gómez Santos" ,
-//     instructora:  "***no asignada***" ,
-//     cupo: 7,
-//   },
-// ];
+export default function TablaDetallesGrupos() {
+  const { id } = useParams(); // Obtiene el ID del grupo desde la URL
+  const { listado: grupos, loading, error } = useGrupoListado(id); // Usa el hook para obtener los datos
+  const { detalles, loading: loadingDetalles, error: errorDetalles } = useGrupoDetalles(id); // Hook para obtener detalles del grupo
+  const { mentora, loading: loadingMentora, error: errorMentora } = useGrupoMentora(id); // Hook para obtener mentoras
 
 
 
-/**
- * Componente que muestra un listado de Grupos con:
- * - Búsqueda por nombre
- * - Ordenamiento por campos
- * - Filtros avanzados (rol, estado, sede)
- *
- * @component
- */
-export default function TablaGrupos() {
-  // Obtiene datos, estado de carga y posibles errores
-  const { grupos, loading, error } = useGrupos();
+  // Copia local para poder mutar el estado en cliente
+  const [gruposList, setGruposList] = useState([]);
+  useEffect(() => {
+    setGruposList(grupos || []); // Asegúrate de que sea un array
+  }, [grupos]);
 
-  // 1. Copia local para poder mutar el estado en cliente
-   const [gruposList, setGruposList] = useState([]);
-   useEffect(() => {
-    setGruposList(grupos);
-   }, [grupos]);
-
-//   const [grupos, setGruposList] = useState(dummyGrupos);
+  // Extrae los detalles del grupo
+  const { idioma = "N/A", nivel = "N/A"} = detalles || {};
+  //Extrae la mentora
+  const nombreMentora = mentora ? mentora.nombre_completo : "Sin mentora asignada";
 
   // Estado para el texto de búsqueda
   const [busqueda, setBusqueda] = useState("");
@@ -102,34 +41,15 @@ export default function TablaGrupos() {
   // Control de visibilidad del panel de filtros
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
 
-  // Filtros seleccionados: idiomas, estados y sedes
+  // Filtros seleccionados: idiomas, niveles, cupo, mentora, instructora
   const [idiomasSeleccionados, setIdiomasSeleccionados] = useState([]);
   const [nivelesSeleccionados, setNivelesSeleccionados] = useState([]);
   const [cupoSeleccionados, setCupoSeleccionados] = useState([]);
   const [mentoraSeleccionadas, setMentoraSeleccionadas] = useState([]);
   const [instructoraSeleccionadas, setInstructoraSeleccionadas] = useState([]);
+  const { eliminarIntegrante, loading: loadingEliminar, error: errorEliminar } = useEliminarIntegrante(); // Usa el hook
 
-
-  /**
-   * Lista de idiomas únicos extraídos de los grupos.
-   * Se memoriza para no recalcular en cada render si 'grupos' no cambia.
-   */
-  // const idiomasDisponibles = useMemo(() => {
-  //   const idiomas = grupos.map((g) => g.idioma);
-  //   return [...new Set(idiomas)].sort();
-  // }, [grupos]);
-
-  /**
-   * Lista de idiomas únicos extraídos de los grupos.
-   * Se memoriza para no recalcular en cada render si 'grupos' no cambia.
-   */
-
-  /**
-   * Función para ordenar un array de grupos según el campo y el orden seleccionado.
-   *
-   * @param {Array} data - Array de grupos a ordenar.
-   * @returns {Array} - Nuevo array ordenado.
-   */
+  // Función para ordenar un array de grupos según el campo y el orden seleccionado
   const ordenarGrupos = (data) => {
     if (!sortField) return data; // Si no hay campo, devolver sin ordenar
 
@@ -143,52 +63,21 @@ export default function TablaGrupos() {
     });
   };
 
-  /**
-   * Filtrado combinado:
-   * - Coincidencia de idioma (si hay idiomas seleccionados)
-   * - Coincidencia de nivel (si hay niveles seleccionados)
-   */
-  const gruposFiltrados = grupos.filter(grupo => {
+  // Filtrado combinado
+  const gruposFiltrados = gruposList.filter((grupo) => {
     const coincideIdioma =
       idiomasSeleccionados.length === 0 ||
       idiomasSeleccionados.includes(grupo.idioma);
     const coincideNivel =
       nivelesSeleccionados.length === 0 ||
       nivelesSeleccionados.includes(grupo.nivel);
-  
-    // → Nuevo filtro de cupo
+
     const estadoCupo = grupo.cupo > 0 ? "Disponible" : "Lleno";
     const coincideCupo =
       cupoSeleccionados.length === 0 ||
       cupoSeleccionados.includes(estadoCupo);
 
-//       const estadoMentora =
-//     grupo.mentora.nombre === "***no asignada***"
-//       ? "No asignada"
-//       : "Asignada";
-
-//   const coincideMentora =
-//     mentoraSeleccionadas.length === 0 ||
-//     mentoraSeleccionadas.includes(estadoMentora);
-
-//     const estadoInstructora =
-//     grupo.instructora.nombre === "***no asignada***"
-//       ? "No asignada"
-//       : "Asignada";
-
-//   const coincideInstructora =
-//     instructoraSeleccionadas.length === 0 ||
-//     instructoraSeleccionadas.includes(estadoInstructora);
-
-    return (
-      coincideIdioma &&
-      coincideNivel &&
-      coincideCupo 
-    //   &&
-    //   coincideMentora &&
-    //   coincideInstructora
-    );
-  
+    return coincideIdioma && coincideNivel && coincideCupo;
   });
 
   // Aplica ordenamiento sobre los filtrados
@@ -200,13 +89,7 @@ export default function TablaGrupos() {
   // Si hay error, lo mostramos
   if (error) return <LoadingCard mensaje={error} />;
 
-  /**
-   * Manejador de clic en encabezados para ordenar:
-   * - Si ya estamos ordenando por el mismo campo, invierte la dirección
-   * - Si es un campo nuevo, fija orden ascendente
-   *
-   * @param {string} field - Nombre del campo por el que ordenar
-   */
+  // Manejador de clic en encabezados para ordenar
   const handleSort = (field) => {
     if (sortField === field) {
       setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -216,11 +99,24 @@ export default function TablaGrupos() {
     }
   };
 
+  //Manejo de eliminaciones en vista detallada
+    const handleDelete = async (idIntegrante, rol) => {
+      const result = await eliminarIntegrante(id, idIntegrante, rol);
+      if (result.success) {
+        // Actualizar la lista local después de eliminar
+        setGruposList((prev) => prev.filter((grupo) => grupo.id !== idIntegrante));
+        alert(result.message);
+      } else {
+        alert(result.message);
+      }
+    };
+
+  console.log("Mentora:", mentora);
   return (
     <div className="tabla__containerBlancoMentora">
       {/* Encabezado y búsqueda */}
       <div className="tabla__container__tituloBusqueda">
-        <h2 className="tabla__titulo">Detalles de grupo</h2>
+        <h2 className="tabla__titulo">Detalles de grupo {id} - Idioma: {idioma} - Nivel: {nivel} - Mentora: {nombreMentora}</h2>
         <div className="tabla__contenedor_busquedaFiltros">
           <button
             className="tabla__botonFiltros"
@@ -228,15 +124,6 @@ export default function TablaGrupos() {
           >
             Filtrar <SlidersHorizontal size={16} />
           </button>
-          {/* <input
-            type="text"
-            placeholder="Buscar nombre de mentora/instructora..."
-            value={busqueda}
-            onChange={(e) => {
-              setBusqueda(e.target.value);
-            }}
-            className="tabla__input-busqueda"
-          /> */}
         </div>
       </div>
 
@@ -255,7 +142,6 @@ export default function TablaGrupos() {
             {/* Filtro por idioma */}
             <FiltroTabla
               titulo="Idioma de grupo"
-              // opciones={idiomasDisponibles}
               opciones={["Inglés", "Español"]}
               seleccionados={idiomasSeleccionados}
               setSeleccionados={setIdiomasSeleccionados}
@@ -268,26 +154,13 @@ export default function TablaGrupos() {
               seleccionados={nivelesSeleccionados}
               setSeleccionados={setNivelesSeleccionados}
             />
-            {/* Filtro por nivel */}
+
+            {/* Filtro por estado de cupo */}
             <FiltroTabla
               titulo="Estado de cupo"
               opciones={["Disponible", "Lleno"]}
               seleccionados={cupoSeleccionados}
               setSeleccionados={setCupoSeleccionados}
-            />
-            {/* Filtro por mentora */}
-            <FiltroTabla
-              titulo="Mentora"
-              opciones={["Asignada", "No asignada"]}
-              seleccionados={mentoraSeleccionadas}
-              setSeleccionados={setMentoraSeleccionadas}
-            />
-            {/* Filtro por instructora */}
-            <FiltroTabla
-              titulo="Instructora"
-              opciones={["Asignada", "No asignada"]}
-              seleccionados={instructoraSeleccionadas}
-              setSeleccionados={setInstructoraSeleccionadas}
             />
 
             {/* Botón para limpiar todos los filtros */}
@@ -316,9 +189,10 @@ export default function TablaGrupos() {
           onSort={handleSort}
           sortField={sortField}
           sortOrder={sortOrder}
+          onDelete={handleDelete}
         />
       </div>
-       <Link to="/admin/registro-grupos" className="btn-agregar">
+      <Link to="/admin/registro-grupos" className="btn-agregar">
         Agregar grupo
       </Link>
     </div>

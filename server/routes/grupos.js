@@ -151,8 +151,7 @@ router.get("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
       `SELECT
         idioma,
         nivel,
-        cupo,
-        estado
+        cupo
       FROM grupo
       WHERE id_grupo = $1`,
       [id],
@@ -369,6 +368,8 @@ router.put(
         "SELECT id_sede FROM grupo WHERE id_grupo = $1",
         [id],
       );
+
+      console.log("ROOOL",rol);
 
       if (groupCheck.rows.length === 0) {
         return res.status(404).json({
