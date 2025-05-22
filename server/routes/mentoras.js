@@ -157,7 +157,7 @@ router.get("/:id", async (req, res) => {
       ON
           m.id_sede = s.id_sede
       WHERE
-          m.id_colaborador = $1;
+          m.id_mentora = $1;
       `,
       [id],
     );
@@ -185,7 +185,7 @@ router.put("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
         apellido_paterno = $2,
         apellido_materno = $3,
         correo = $4
-      WHERE id_mentora = $5,
+      WHERE id_mentora = $5
       RETURNING *`,
       [nombre, apellido_paterno, apellido_materno, correo, id],
     );

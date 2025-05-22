@@ -29,6 +29,7 @@ import DetalleParticipante from "./pages/admin/DetallesParticipantes";
 import GenerateDiplomas from "./pages/admin/GenerateDiplomas.jsx";
 import DetalleColaborador from "./pages/admin/DetallesColaborador.jsx";
 import DetalleSede from "./pages/admin/DetallesSedes.jsx";
+import DetalleMentora from "./pages/admin/DetallesMentora.jsx";
 // impor/t AdminSedeDashboard from "./pages/adminSede/adminHome";
 
 function App() {
@@ -103,6 +104,11 @@ function App() {
           <Route
             path="/admin/sedes/:id"
             element={<DetalleSede />}
+          />
+
+          <Route
+            path="/admin/mentoras/:id"
+            element={<DetalleMentora />}
           />
 
             <Route
