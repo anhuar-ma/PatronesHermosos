@@ -1,59 +1,50 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import {useNavigate} from "react-router-dom";
 import "../../styles/registros.css/";
 import axios from "axios";
 
-export default function RegistroSedes() {
-  const [error, setError] = useState("");
-
+export default function RegistroMentoras() {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
-  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState(null);
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-
+    setIsSubmitting(true);
     try {
-      const sedeData = {
-        // Coordinatora
-        nombre_coordinadora: data.nombre_coordinadora,
-        apellido_paterno_coordinadora: data.apellido_paterno_coordinadora,
-        apellido_materno_coordinadora: data.apellido_materno_coordinadora,
-        correo_coordinadora: data.correo_coordinadora,
-        contraseña: data.contraseña,
-
-        // Sede
-        nombre_sede: data.nombre_sede,
-        fecha_inicio: data.fecha_inicio,
-        archivo_convocatoria: fileName, // The file name, you might need to handle the actual file upload separately
+      const mentoraData = {
+        nombre: data.nombre_mentora,
+        apellido_paterno: data.apellido_paterno_mentora,
+        apellido_materno: data.apellido_materno_coordinadora,
+        correo: data.correo_mentora,
       };
 
-      await axios.post("/api/sedes", sedeData);
+      const response = await axios.post("/api/mentoras", mentoraData);
 
-      setError("");
+      setSubmitResult({
+        success: true,
+        message: "Mentora registrada correctamente ✅",
+      });
+
+      window.alert("Mentora registrada correctamente ✅");
+      console.log(response.data);
+
+      navigate("/admin/mentoras");
     } catch (error) {
+      setSubmitResult({
+        success: false,
+        message: "Error al registrar la mentora",
+      });
+
       window.alert("Error en el registro");
       console.error("Error:", error);
-    }
-
-    setError("");
-    alert("Formulario enviado correctamente ✅");
-    console.log(data);
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.type !== "application/pdf") {
-        setFileError("Solo se permiten archivos PDF");
-        setFileName("");
-        return;
-      }
-      setFileName(file.name);
-      setFileError("");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -133,6 +124,7 @@ export default function RegistroSedes() {
               type="submit"
               className="registro__botonMorado"
               value="Registrar mentora"
+              navigate={navigate}
             />
           </div>
         </form>
