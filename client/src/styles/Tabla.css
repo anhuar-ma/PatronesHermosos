@@ -430,7 +430,7 @@
     /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   }
 
-  .btn-agregarMentora {
+  .btn-agregar {
   text-decoration: none;
   background-color: #b084c4;
   color: white;
@@ -444,7 +444,7 @@
   text-align: center;
 }
 
-.btn-agregarMentora:hover {
+.btn-agregar:hover {
   background-color: #9e629a; /* tono más oscuro */
   transform: scale(1.05);    /* pequeño “zoom” */
 }

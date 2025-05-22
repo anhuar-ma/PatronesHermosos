@@ -120,7 +120,7 @@ export default function TablaMentoras() {
 
         />
       </div>
-      <Link to="/admin/registro-mentoras" className="btn-agregarMentora">
+      <Link to="/admin/registro-mentoras" className="btn-agregar">
         Agregar mentora
       </Link>
 

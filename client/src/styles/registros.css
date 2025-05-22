@@ -71,6 +71,11 @@ body {
   margin-left: -2rem;
   margin-bottom: 0rem;
 }
+registro__tituloSeccionGrupo {
+  font-size: 1.5rem;
+  margin-left: -2rem;
+  margin-bottom: 2rem;
+}
 .registro__instrucciones {
   font-weight: normal;
   font-size: 1rem;

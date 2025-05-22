@@ -4,6 +4,8 @@ import { SlidersHorizontal } from "lucide-react"; // Ícono para el botón de fi
 import Tabla from "./TablaGruposListado"; // Componente de tabla donde se renderizan los grupos
 import LoadingCard from "./LoadingCard"; // Componente de carga y errores
 import FiltroTabla from "./FiltroTabla"; // Componente para filtros avanzados
+import { Link } from "react-router-dom";
+
 // 1. Creamos datos de prueba hardcodeados:
 // const dummyGrupos = [
 //   {
@@ -215,7 +217,7 @@ export default function TablaGrupos() {
   };
 
   return (
-    <div className="tabla__containerBlanco">
+    <div className="tabla__containerBlancoMentora">
       {/* Encabezado y búsqueda */}
       <div className="tabla__container__tituloBusqueda">
         <h2 className="tabla__titulo">Listado de grupos</h2>
@@ -308,7 +310,7 @@ export default function TablaGrupos() {
       )}
 
       {/* Renderizado de la tabla con datos filtrados y ordenados */}
-      <div className="table_container" ref={containerRef}>
+      <div className="table_containerMentora" ref={containerRef}>
         <Tabla
           grupos={gruposOrdenados}
           onSort={handleSort}
@@ -316,6 +318,9 @@ export default function TablaGrupos() {
           sortOrder={sortOrder}
         />
       </div>
+       <Link to="/admin/registro-grupos" className="btn-agregar">
+        Agregar grupo
+      </Link>
     </div>
   );
 }
