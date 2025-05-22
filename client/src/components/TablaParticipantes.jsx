@@ -39,8 +39,8 @@ export default function TablaParticipantes() {
   }, [participantes]);
 
   const ordenarParticipantes = (data) => {
+    
     if (!sortField) return data;
-
     return [...data].sort((a, b) => {
       const aValue = a[sortField]?.toString().toLowerCase();
       const bValue = b[sortField]?.toString().toLowerCase();

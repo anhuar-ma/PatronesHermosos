@@ -9,8 +9,8 @@ export default function Tabla({
   onSort,
   sortField,
   sortOrder,
-  onStatusChange,
   statusOptions = [],
+  onStatusChange,
 }) {
   const navigate = useNavigate();
 
@@ -37,10 +37,10 @@ export default function Tabla({
               {renderSortArrow("nombre")}
             </div>
           </th>
-          <th onClick={() => onSort("nombre_tutor")}>
+          <th onClick={() => onSort("nombre_completo_tutor")}>
             <div className="tablas__thContainer">
               <span>Nombre del tutor</span>
-              {renderSortArrow("nombre_tutor")}
+              {renderSortArrow("nombre_completo_tutor")}
             </div>
           </th>
           <th>Teléfono de contacto</th>
