@@ -1,4 +1,5 @@
 import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Tabla({
   grupos,
@@ -14,6 +15,8 @@ export default function Tabla({
       <ArrowUpAZ size={14} />
     );
   };
+
+    const navigate = useNavigate();
 
   return (
     <table className="colaboradores-table">
@@ -65,7 +68,14 @@ export default function Tabla({
             <td>h</td>
             <td style={{ textAlign: 'center', verticalAlign: 'middle' }} >{grupo.cupo}</td>
             <td>
-              <button className="tabla__botonMorado">Editar grupo</button>
+              <button
+                className="tabla__botonMorado"
+                onClick={() =>
+                  navigate(`/admin/grupos/${grupo.id_grupo}/listado`)
+                }
+              >
+                Ver detalles
+              </button>
             </td>
           </tr>
         ))}
