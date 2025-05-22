@@ -7,6 +7,7 @@ import {
 } from "../middleware/auth.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
+import { MethodNotImplementedError } from "pdf-lib";
 
 const router = express.Router();
 
@@ -332,7 +333,8 @@ router.get(
         colaborador c
     WHERE
         c.id_grupo = $1; -- Replace 1 with the specific id_grupo you are querying for
-      `[id],
+      `,
+        [id],
       );
 
       res.status(200).json({
@@ -346,7 +348,7 @@ router.get(
       );
       res.status(500).json({
         success: false,
-        message: "Error al obtener colaboradores del grupo",
+        message: "Error al obtener participantes y colaboradores del grupo",
         error: error.message,
       });
     }
@@ -354,7 +356,7 @@ router.get(
 );
 
 //delete an integrante of the group
-router.delete(
+router.put(
   "/:id/listado/:id_integrante",
   authenticateToken,
   checkSedeAccess,
@@ -385,25 +387,18 @@ router.delete(
       }
       // Begin transaction
       await pool.query("BEGIN");
-      //mentora
-      if (rol === "mentora") {
-        await pool.query(
-          "DELETE FROM mentora_grupo WHERE id_grupo = $1 AND id_mentora = $2",
-          [id, id_integrante],
-        );
-      }
-
       //participante
-      else if (rol === "participante") {
+      if (rol === "Participante") {
         await pool.query(
-          "DELETE FROM participante WHERE id_participante = $1",
+          "UPDATE participante SET id_grupo = NULL WHERE id_participante = $1",
           [id_integrante],
         );
 
         //colaboradores
       } else {
         await pool.query(
-          "DELETE FROM colaboradores WHERE id_colaborador = $1"[id_integrante],
+          "UPDATE colaborador SET id_grupo = NULL WHERE id_colaborador = $1",
+          [id_integrante],
         );
       }
 
@@ -625,7 +620,7 @@ router.post(
 );
 
 // Remove a colaborador from a group
-router.delete(
+router.put(
   "/:id/colaboradores/:id_colaborador",
   authenticateToken,
   checkSedeAccess,
@@ -782,6 +777,18 @@ router.get(
         "SELECT id_mentora  FROM mentora_grupo WHERE id_grupo = $1",
         [id],
       );
+      // console.log("MENTORA");
+      // console.log(mentora);
+      // console.log(mentora.rows[0].id_mentora);
+
+      //check if the group has a mentora
+      if (!mentora.rows[0]) {
+        return res.status(200).json({
+          success: true,
+          message: "Mentora(s) del grupo obtenida(s) exitosamente",
+          data: null,
+        });
+      }
 
       // Get mentora(s) assigned to the group with their details
       const mentoraResult = await pool.query(
@@ -795,7 +802,7 @@ router.get(
            m.id_sede
         FROM mentora m
          WHERE id_mentora = $1`,
-        [mentora.id_mentora],
+        [mentora.rows[0].id_mentora],
       );
 
       // If a group is expected to have only one mentora, you might send mentoraResult.rows[0]
@@ -804,7 +811,7 @@ router.get(
       res.status(200).json({
         success: true,
         message: "Mentora(s) del grupo obtenida(s) exitosamente",
-        data: mentoraResult.rows,
+        data: mentoraResult.rows[0],
       });
     } catch (error) {
       console.error("Error al ver mentora to group:", error);
@@ -1104,13 +1111,13 @@ router.post(
         });
       }
 
-      // Check if participante is already in a group
-      if (participanteCheck.rows[0].id_grupo !== null) {
-        return res.status(400).json({
-          success: false,
-          message: "El participante ya está asignado a un grupo",
-        });
-      }
+      // // Check if participante is already in a group
+      // if (participanteCheck.rows[0].id_grupo !== null) {
+      //   return res.status(400).json({
+      //     success: false,
+      //     message: "El participante ya está asignado a un grupo",
+      //   });
+      // }
 
       // Update the participante's group
       const result = await pool.query(
@@ -1135,7 +1142,7 @@ router.post(
 );
 
 // Remove a participante from a group
-router.delete(
+router.update(
   "/:id/participantes/:id_participante",
   authenticateToken,
   checkSedeAccess,
