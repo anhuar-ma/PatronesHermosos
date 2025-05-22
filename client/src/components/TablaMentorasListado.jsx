@@ -25,10 +25,10 @@ export default function Tabla({
     <table className="colaboradores-table">
       <thead>
         <tr>
-          <th onClick={() => onSort("nombre")}>
+          <th onClick={() => onSort("nombre_completo_mentora")}>
             <div className="tablas__thContainer">
               <span>Nombre de la mentora</span>
-              {renderSortArrow("nombre")}
+              {renderSortArrow("nombre_completo_mentora")}
             </div>
           </th>
           <th onClick={() => onSort("correo")}>
