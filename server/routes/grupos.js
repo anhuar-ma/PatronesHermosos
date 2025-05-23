@@ -316,7 +316,7 @@ router.get(
     SELECT
         CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo,
         'Participante' AS rol,
-        p.id_participante AS id
+        p.id_participante AS id_integrante
     FROM
         participante p
     WHERE
@@ -327,7 +327,7 @@ router.get(
     SELECT
         CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_completo,
         c.rol AS rol, -- Assumes the 'colaborador' table has a 'rol' column
-        c.id_colaborador AS id
+        c.id_colaborador AS id_integrante
     FROM
         colaborador c
     WHERE
@@ -369,7 +369,7 @@ router.put(
         [id],
       );
 
-      console.log("ROOOL",rol);
+      console.log("ROOOL", rol);
 
       if (groupCheck.rows.length === 0) {
         return res.status(404).json({
@@ -1143,7 +1143,7 @@ router.post(
 );
 
 // Remove a participante from a group
-router.update(
+router.put(
   "/:id/participantes/:id_participante",
   authenticateToken,
   checkSedeAccess,

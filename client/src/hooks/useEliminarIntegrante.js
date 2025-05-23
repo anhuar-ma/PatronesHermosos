@@ -8,20 +8,27 @@ export default function useEliminarIntegrante() {
   const eliminarIntegrante = async (idGrupo, idIntegrante, rol) => {
     setLoading(true);
     setError(null);
+    console.log("ELIMINAR");
+    console.log("rol", rol);
 
     try {
       const token = localStorage.getItem("token"); // Obtén el token desde el almacenamiento local
-      await axios.put(`/api/grupos/${idGrupo}/listado/${idIntegrante}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Incluye el token en el encabezado
+      await axios.put(
+        `/api/grupos/${idGrupo}/listado/${idIntegrante}`,
+        { rol }, // Envía el rol en el cuerpo de la solicitud
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Incluye el token en el encabezado
+          },
         },
-        data: { rol }, // Envía el rol en el cuerpo de la solicitud
-      });
+      );
 
       return { success: true, message: "Integrante eliminado exitosamente." };
     } catch (err) {
       console.error("Error eliminando integrante:", err);
-      setError(err.response?.data?.message || "Error al eliminar el integrante.");
+      setError(
+        err.response?.data?.message || "Error al eliminar el integrante.",
+      );
       return { success: false, message: error };
     } finally {
       setLoading(false);

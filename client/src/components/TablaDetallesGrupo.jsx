@@ -12,10 +12,16 @@ import { Link, useParams } from "react-router-dom"; // Hook para obtener paráme
 export default function TablaDetallesGrupos() {
   const { id } = useParams(); // Obtiene el ID del grupo desde la URL
   const { listado: grupos, loading, error } = useGrupoListado(id); // Usa el hook para obtener los datos
-  const { detalles, loading: loadingDetalles, error: errorDetalles } = useGrupoDetalles(id); // Hook para obtener detalles del grupo
-  const { mentora, loading: loadingMentora, error: errorMentora } = useGrupoMentora(id); // Hook para obtener mentoras
-
-
+  const {
+    detalles,
+    loading: loadingDetalles,
+    error: errorDetalles,
+  } = useGrupoDetalles(id); // Hook para obtener detalles del grupo
+  const {
+    mentora,
+    loading: loadingMentora,
+    error: errorMentora,
+  } = useGrupoMentora(id); // Hook para obtener mentoras
 
   // Copia local para poder mutar el estado en cliente
   const [gruposList, setGruposList] = useState([]);
@@ -24,9 +30,11 @@ export default function TablaDetallesGrupos() {
   }, [grupos]);
 
   // Extrae los detalles del grupo
-  const { idioma = "N/A", nivel = "N/A"} = detalles || {};
+  const { idioma = "N/A", nivel = "N/A" } = detalles || {};
   //Extrae la mentora
-  const nombreMentora = mentora ? mentora.nombre_completo : "Sin mentora asignada";
+  const nombreMentora = mentora
+    ? mentora.nombre_completo
+    : "Sin mentora asignada";
 
   // Estado para el texto de búsqueda
   const [busqueda, setBusqueda] = useState("");
@@ -47,7 +55,11 @@ export default function TablaDetallesGrupos() {
   const [cupoSeleccionados, setCupoSeleccionados] = useState([]);
   const [mentoraSeleccionadas, setMentoraSeleccionadas] = useState([]);
   const [instructoraSeleccionadas, setInstructoraSeleccionadas] = useState([]);
-  const { eliminarIntegrante, loading: loadingEliminar, error: errorEliminar } = useEliminarIntegrante(); // Usa el hook
+  const {
+    eliminarIntegrante,
+    loading: loadingEliminar,
+    error: errorEliminar,
+  } = useEliminarIntegrante(); // Usa el hook
 
   // Función para ordenar un array de grupos según el campo y el orden seleccionado
   const ordenarGrupos = (data) => {
@@ -74,8 +86,7 @@ export default function TablaDetallesGrupos() {
 
     const estadoCupo = grupo.cupo > 0 ? "Disponible" : "Lleno";
     const coincideCupo =
-      cupoSeleccionados.length === 0 ||
-      cupoSeleccionados.includes(estadoCupo);
+      cupoSeleccionados.length === 0 || cupoSeleccionados.includes(estadoCupo);
 
     return coincideIdioma && coincideNivel && coincideCupo;
   });
@@ -100,23 +111,30 @@ export default function TablaDetallesGrupos() {
   };
 
   //Manejo de eliminaciones en vista detallada
-    const handleDelete = async (idIntegrante, rol) => {
-      const result = await eliminarIntegrante(id, idIntegrante, rol);
-      if (result.success) {
-        // Actualizar la lista local después de eliminar
-        setGruposList((prev) => prev.filter((grupo) => grupo.id !== idIntegrante));
-        alert(result.message);
-      } else {
-        alert(result.message);
-      }
-    };
+  const handleDelete = async (idIntegrante, rol) => {
+    console.log("idIntegrante", idIntegrante);
+    console.log("rol", rol);
+    const result = await eliminarIntegrante(id, idIntegrante, rol);
+    if (result.success) {
+      // Actualizar la lista local después de eliminar
+      setGruposList((prev) =>
+        prev.filter((grupo) => grupo.id !== idIntegrante),
+      );
+      alert(result.message);
+    } else {
+      alert(result.message);
+    }
+  };
 
   console.log("Mentora:", mentora);
   return (
     <div className="tabla__containerBlancoMentora">
       {/* Encabezado y búsqueda */}
       <div className="tabla__container__tituloBusqueda">
-        <h2 className="tabla__titulo">Detalles de grupo {id} - Idioma: {idioma} - Nivel: {nivel} - Mentora: {nombreMentora}</h2>
+        <h2 className="tabla__titulo">
+          Detalles de grupo {id} - Idioma: {idioma} - Nivel: {nivel} - Mentora:{" "}
+          {nombreMentora}
+        </h2>
         <div className="tabla__contenedor_busquedaFiltros">
           <button
             className="tabla__botonFiltros"
@@ -198,3 +216,4 @@ export default function TablaDetallesGrupos() {
     </div>
   );
 }
+
