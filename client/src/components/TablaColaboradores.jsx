@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef,useEffect } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { getSedeNombre } from "../utils/sedeUtils"; // Función auxiliar para obtener el nombre de la sede a partir de su ID
 import useColaboradores from "../hooks/useColaboradores"; // Hook personalizado para obtener datos de colaboradores
 import { SlidersHorizontal } from "lucide-react"; // Ícono para el botón de filtros
@@ -6,6 +6,7 @@ import Tabla from "./TablaColaboradoresListado"; // Componente de tabla donde se
 import LoadingCard from "./LoadingCard"; // Componente de carga y errores
 import FiltroTabla from "./FiltroTabla"; // Componente para filtros avanzados
 import axios from "axios"; // Librería para hacer peticiones HTTP
+import useCurrentRol from "../hooks/useCurrentRol";
 
 /**
  * Componente que muestra un listado de colaboradores con:
@@ -16,29 +17,31 @@ import axios from "axios"; // Librería para hacer peticiones HTTP
  * @component
  */
 export default function TablaColaboradores() {
-
-
   // Obtiene datos, estado de carga y posibles errores
-  const { colaboradores: colaboradoresOriginales, loading, error } = useColaboradores();
+  const {
+    colaboradores: colaboradoresOriginales,
+    loading,
+    error,
+  } = useColaboradores();
+    const currentRol = useCurrentRol();
+  
 
-   // 1. Copia local para poder mutar el estado en cliente
-   const [colaboradores, setColaboradores] = useState([]);
-   useEffect(() => {
-     setColaboradores(colaboradoresOriginales);
-   }, [colaboradoresOriginales]);
- 
-   // 2. Opciones de estado dinámicas
-   const statusOptions = useMemo(() => {
-      const estados = colaboradores.map((c) => c.estado);
-      return [...new Set(estados)].sort();
-   }, [colaboradores]);
- 
+  // 1. Copia local para poder mutar el estado en cliente
+  const [colaboradores, setColaboradores] = useState([]);
+  useEffect(() => {
+    setColaboradores(colaboradoresOriginales);
+  }, [colaboradoresOriginales]);
+
+  // 2. Opciones de estado dinámicas
+  const statusOptions = useMemo(() => {
+    const estados = colaboradores.map((c) => c.estado);
+    return [...new Set(estados)].sort();
+  }, [colaboradores]);
 
   //  const rolesDisponibles = useMemo(() => {
   //   const roles = colaboradores.map((c) => c.rol);
   //   return [...new Set(roles)].sort();
   // }, [colaboradores]);
-
 
   // Estado para el texto de búsqueda
   const [busqueda, setBusqueda] = useState("");
@@ -65,10 +68,7 @@ export default function TablaColaboradores() {
    * Lista de roles únicos extraídos de los colaboradores.
    * Se memoriza para no recalcular en cada render si 'colaboradores' no cambia.
    */
-  const rolesDisponibles = useMemo(() => {
-    const roles = colaboradores.map((c) => c.rol);
-    return [...new Set(roles)].sort();
-  }, [colaboradores]);
+  const rolesDisponibles = ["Staff", "Instructora", "Facilitadora"];
 
   /**
    * Lista de IDs de sede únicos de los colaboradores, ordenados alfabéticamente
@@ -108,7 +108,9 @@ export default function TablaColaboradores() {
    * - Coincidencia de sede (si hay sedes seleccionadas)
    */
   const colaboradoresFiltrados = colaboradores.filter((colaborador) => {
-    const nombreCompleto = `${colaborador.nombre} ${colaborador.apellido_paterno} ${colaborador.apellido_materno || ""}`.toLowerCase();
+    const nombreCompleto = `${colaborador.nombre} ${
+      colaborador.apellido_paterno
+    } ${colaborador.apellido_materno || ""}`.toLowerCase();
     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
     const coincideRol =
       rolesSeleccionados.length === 0 ||
@@ -154,7 +156,7 @@ export default function TablaColaboradores() {
         `/api/colaboradores/estado/${id_colaborador}`,
         {
           estado: nuevoEstado,
-        },
+        }
       );
 
       if (response.data.success) {
@@ -162,8 +164,8 @@ export default function TablaColaboradores() {
           prev.map((c) =>
             c.id_colaborador === id_colaborador
               ? { ...c, estado: nuevoEstado }
-              : c,
-          ),
+              : c
+          )
         );
       } else {
         console.error("Error al actualizar el estado");
@@ -192,20 +194,20 @@ export default function TablaColaboradores() {
   //       headers: { "Content-Type": "application/json" },
   //       body: JSON.stringify({ estado: nuevoEstado }),
   //     });
-  
+
   //     if (response.ok) {
   //       setColaboradores((prev) =>
   //         prev.map((c) =>
   //           c.id_colaborador === id_colaborador ? { ...c, estado: nuevoEstado } : c
   //         )
   //       );
-  
+
   //       // Si el estado es "Aceptado", envía el correo
   //       if (nuevoEstado === "Aceptado") {
   //         const emailResponse = await fetch(`/api/colaboradores/email/${id_colaborador}`, {
   //           method: "POST",
   //         });
-  
+
   //         if (!emailResponse.ok) {
   //           console.error("Error al enviar el correo");
   //         }
@@ -248,7 +250,10 @@ export default function TablaColaboradores() {
           className="tabla__overlay-filtros"
           onClick={() => setMostrarFiltros(false)}
         >
-          <div className="tabla__panel-filtros" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="tabla__panel-filtros"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3>Filtros avanzados</h3>
 
             {/* Filtro por rol */}
@@ -262,18 +267,21 @@ export default function TablaColaboradores() {
             {/* Filtro por estado */}
             <FiltroTabla
               titulo="Estado"
-              opciones={["Activo", "Inactivo"]}
+              opciones={estadosFijos}
               seleccionados={estadosSeleccionados}
               setSeleccionados={setEstadosSeleccionados}
             />
 
             {/* Filtro por sede */}
-            <FiltroTabla
-              titulo="Sede"
-              opciones={sedesDisponibles.map(getSedeNombre)}
-              seleccionados={sedesSeleccionadas}
-              setSeleccionados={setSedesSeleccionadas}
-            />
+
+            {currentRol === 0 ? (
+              <FiltroTabla
+                titulo="Sede"
+                opciones={sedesDisponibles.map(getSedeNombre)}
+                seleccionados={sedesSeleccionadas}
+                setSeleccionados={setSedesSeleccionadas}
+              />
+            ) : null}
 
             {/* Botón para limpiar todos los filtros */}
             <button
@@ -294,7 +302,7 @@ export default function TablaColaboradores() {
 
       {/* Renderizado de la tabla con datos filtrados y ordenados */}
       <div className="table_container" ref={containerRef}>
-         <Tabla
+        <Tabla
           colaboradores={colaboradoresOrdenados}
           onSort={handleSort}
           sortField={sortField}

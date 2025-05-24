@@ -20,15 +20,15 @@ export default function Tabla({
     <table className="colaboradores-table">
       <thead>
         <tr>
-          <th onClick={() => onSort("id_grupo")}>
+          <th onClick={() => onSort("nombre_completo")}>
             <div className="tablas__thContainer">
               <span>Nombre</span>
-              {renderSortArrow("id_grupo")}
+              {renderSortArrow("nombre_completo")}
             </div>
           </th>
           <th>
             <div className="tablas__thContainer">
-              <span>Rol</span>
+              <span>Rol</span> 
             </div>
           </th>
           <th>

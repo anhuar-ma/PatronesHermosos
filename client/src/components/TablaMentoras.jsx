@@ -5,6 +5,8 @@ import { SlidersHorizontal } from "lucide-react";
 import Tabla from "./TablaMentorasListado";
 import LoadingCard from "./LoadingCard";
 import FiltroTabla from "./FiltroTabla";
+import useCurrentRol from "../hooks/useCurrentRol";
+
 
 export default function TablaMentoras() {
     const { mentoras: mentorasOriginales, loading, error } = useMentoras();
@@ -22,6 +24,7 @@ export default function TablaMentoras() {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
+  const currentRol = useCurrentRol();
 
   const ordenarParticipantes = (data) => {
     if (!sortField) return data;
@@ -36,14 +39,12 @@ export default function TablaMentoras() {
     });
   };
 
-//   const participantesFiltrados = mentoras.filter((m) => {
-//     const nombreCompleto = `${m.nombre} ${m.apellido_paterno} ${m.apellido_materno}`.toLowerCase();
-//     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
-//     return coincideBusqueda;
-//   });
-  
+  const mentorasFiltradas = mentoras.filter((m) => {
+    const nombreCompleto = `${m.nombre} ${m.apellido_paterno} ${m.apellido_materno || ""}`.toLowerCase();
+    return nombreCompleto.includes(busqueda.toLowerCase());
+  });
 
-  const participantesOrdenados = ordenarParticipantes(mentoras);
+  const participantesOrdenados = ordenarParticipantes(mentorasFiltradas);
   console.log(participantesOrdenados);
 
   if (loading) return <LoadingCard mensaje="Cargando mentoras..." />;
@@ -63,12 +64,12 @@ export default function TablaMentoras() {
       <div className="tabla__container__tituloBusqueda">
         <h2 className="tabla__titulo">Listado de mentoras</h2>
         <div className="tabla__contenedor_busquedaFiltros">
-          <button
+           {currentRol === 0 ? <button
             className="tabla__botonFiltros"
             onClick={() => setMostrarFiltros(true)}
           >
             Filtrar <SlidersHorizontal size={16} />
-          </button>
+          </button> : null} 
           <input
             type="text"
             placeholder="Buscar por nombre..."
@@ -87,12 +88,6 @@ export default function TablaMentoras() {
           <div className="tabla__panel-filtros" onClick={(e) => e.stopPropagation()}>
             <h3>Filtros avanzados</h3>
 
-            <FiltroTabla
-                titulo="Estado"
-                opciones={statusOptions}
-                seleccionados={estadosSeleccionados}
-                setSeleccionados={setEstadosSeleccionados}
-            />
 
 
 

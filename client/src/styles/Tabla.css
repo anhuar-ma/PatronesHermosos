@@ -448,3 +448,70 @@
   background-color: #9e629a; /* tono más oscuro */
   transform: scale(1.05);    /* pequeño “zoom” */
 }
+
+.info__grupo{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: auto;
+  padding: 0 1rem;
+  /* width: 70%; */
+  margin: 0.6rem 0;
+}
+.tabla__container__tituloBusquedaGrupos{
+  display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    height: 8%;
+}
+.info__grupo__item{
+  margin: 0;;
+}
+.info__grupo__label{
+  color: #9E629A;
+}
+.tabla__container__botones{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50%;
+}
+
+.btn-agregarPersonaGrupo {
+  text-decoration: none;
+  background-color: #d791d2;
+  color: white;
+  border: none;
+  padding: 0.9rem 1.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: auto;
+  /* width: 20%; */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.btn-agregarPersonaGrupo:hover {
+  background-color: #9e629a; /* tono más oscuro */
+  transform: scale(1.05);    /* pequeño “zoom” */
+}
+.btn-eliminarMentora{
+  background-color: #ff4545;
+  color: white;
+  border: none;
+  padding: 0.9rem 1.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: auto;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.btn-eliminarMentora:hover {
+  background-color: red; /* tono más oscuro */
+  transform: scale(1.05);    /* pequeño “zoom” */
+}

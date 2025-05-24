@@ -23,7 +23,9 @@ export default function TablaParticipantes() {
   const [sortField, setSortField] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
+  const [grupoAsignadoSeleccionado, setGrupoAsignadoSeleccionado] = useState(
+    []
+  );
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
   const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
 
@@ -39,7 +41,6 @@ export default function TablaParticipantes() {
   }, [participantes]);
 
   const ordenarParticipantes = (data) => {
-    
     if (!sortField) return data;
     return [...data].sort((a, b) => {
       const aValue = a[sortField]?.toString().toLowerCase();
@@ -52,17 +53,23 @@ export default function TablaParticipantes() {
   };
 
   const participantesFiltrados = participantes.filter((p) => {
-    const nombreCompleto =
-      `${p.nombre} ${p.apellido_paterno} ${p.apellido_materno || ""}`.toLowerCase();
+    const nombreCompleto = `${p.nombre} ${p.apellido_paterno} ${
+      p.apellido_materno || ""
+    }`.toLowerCase();
     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
-    const coincideGrupo =
-      gruposSeleccionados.length === 0 ||
-      gruposSeleccionados.includes(p.id_grupo);
     const coincideEstado =
       estadosSeleccionados.length === 0 ||
       estadosSeleccionados.includes(p.estado);
+    const estadoGrupo = p.id_grupo ? "Asignado" : "Sin asignar";
+    const coincideGrupoAsignado =
+      grupoAsignadoSeleccionado.length === 0 ||
+      grupoAsignadoSeleccionado.includes(estadoGrupo);
 
-    return coincideBusqueda && coincideGrupo && coincideEstado;
+    return (
+      coincideBusqueda &&
+      coincideEstado &&
+      coincideGrupoAsignado
+    );
   });
 
   const participantesOrdenados = ordenarParticipantes(participantesFiltrados);
@@ -85,7 +92,7 @@ export default function TablaParticipantes() {
         `/api/participantes/estado/${id_participante}`,
         {
           estado: nuevoEstado,
-        },
+        }
       );
 
       if (response.data.success) {
@@ -93,8 +100,8 @@ export default function TablaParticipantes() {
           prev.map((p) =>
             p.id_participante === id_participante
               ? { ...p, estado: nuevoEstado }
-              : p,
-          ),
+              : p
+          )
         );
       } else {
         console.error("Error al actualizar el estado");
@@ -148,9 +155,15 @@ export default function TablaParticipantes() {
 
             <FiltroTabla
               titulo="Estado"
-              opciones={statusOptions}
+              opciones={estadosFijos}
               seleccionados={estadosSeleccionados}
               setSeleccionados={setEstadosSeleccionados}
+            />
+            <FiltroTabla
+              titulo="Grupo"
+              opciones={["Asignado", "Sin asignar"]}
+              seleccionados={grupoAsignadoSeleccionado}
+              setSeleccionados={setGrupoAsignadoSeleccionado}
             />
 
             <button
@@ -181,4 +194,3 @@ export default function TablaParticipantes() {
     </div>
   );
 }
-
