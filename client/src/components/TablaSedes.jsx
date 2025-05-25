@@ -71,26 +71,40 @@ export default function TablaSedes() {
 
   const handleStatusChange = async (id_sede, nuevoEstado) => {
     try {
+      // Actualiza el estado del colaborador
       const response = await axios.put(
         `/api/sedes/estado/${id_sede}`,
         {
           estado: nuevoEstado,
-        },
+        }
       );
-
+  
       if (response.data.success) {
+        // Actualiza el estado localmente
         setSedes((prev) =>
           prev.map((s) =>
             s.id_sede === id_sede
               ? { ...s, estado: nuevoEstado }
-              : s,
-          ),
+              : s
+          )
         );
+  
+        // Envía el correo según el estado
+        const emailResponse = await axios.post(
+          `/api/sedes/email/${id_sede}`,
+          { estado: nuevoEstado } // Enviar el estado al backend
+        );
+  
+        if (emailResponse.data.success) {
+          alert(emailResponse.data.message); // Muestra un mensaje de éxito
+        } else {
+          console.error("Error al enviar el correo");
+        }
       } else {
         console.error("Error al actualizar el estado");
       }
     } catch (error) {
-      // Display the specific error message from the server
+      // Manejo de errores
       if (
         error.response &&
         error.response.data &&
@@ -98,7 +112,7 @@ export default function TablaSedes() {
       ) {
         alert(error.response.data.message);
       } else {
-        alert("Error al actualizar el estado de la sede");
+        alert("Error al actualizar el estado del participante");
       }
       console.error("Error en la solicitud:", error);
     }

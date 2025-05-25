@@ -152,26 +152,43 @@ export default function TablaColaboradores() {
 
   const handleStatusChange = async (id_colaborador, nuevoEstado) => {
     try {
+      // Actualiza el estado del colaborador
       const response = await axios.put(
         `/api/colaboradores/estado/${id_colaborador}`,
         {
           estado: nuevoEstado,
         }
       );
-
+  
       if (response.data.success) {
+        // Actualiza el estado localmente
         setColaboradores((prev) =>
           prev.map((c) =>
             c.id_colaborador === id_colaborador
               ? { ...c, estado: nuevoEstado }
               : c
           )
+
+
         );
+  
+        // Envía el correo según el estado
+        const emailResponse = await axios.post(
+          `/api/colaboradores/email/${id_colaborador}`,
+          { estado: nuevoEstado } // Enviar el estado al backend
+
+        );
+  
+        if (emailResponse.data.success) {
+          alert(emailResponse.data.message); // Muestra un mensaje de éxito
+        } else {
+          console.error("Error al enviar el correo");
+        }
       } else {
         console.error("Error al actualizar el estado");
       }
     } catch (error) {
-      // Display the specific error message from the server
+      // Manejo de errores
       if (
         error.response &&
         error.response.data &&
@@ -184,6 +201,7 @@ export default function TablaColaboradores() {
       console.error("Error en la solicitud:", error);
     }
   };
+
 
   // //Funcion para manejo de cambio de estado en colaboradores
   // const handleStatusChange = async (id_colaborador, nuevoEstado) => {

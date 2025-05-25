@@ -44,9 +44,10 @@ export default function Tabla({
             <td>{grupo.nombre_completo}</td>
             <td>{grupo.rol}</td>
             <td>
-              <button className="tabla__botonMorado"
+              <button
+                className="tabla__botonMorado"
                 onClick={() => {
-                  onDelete(grupo.id, grupo.rol);
+                  onDelete(grupo.id_integrante, grupo.rol);
                 }}
               >
                 Eliminar
@@ -58,3 +59,4 @@ export default function Tabla({
     </table>
   );
 }
+

@@ -2,6 +2,7 @@ import express from "express";
 import { pool } from "../server.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../routes/emailservices.js";
 import { JWT_SECRET } from "../config/jwtConfig.js";
 import {
   authenticateToken,
@@ -518,6 +519,75 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error al eliminar los datos",
+      error: error.message,
+    });
+  }
+});
+
+router.post("/email/:id", authenticateToken, requireAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.body; // Recibe el estado desde el cuerpo de la solicitud
+
+  try {
+    // Obtén los datos de la sede y su coordinadora desde la base de datos
+    const result = await pool.query(
+      `SELECT 
+         s.nombre AS nombre_sede,
+         s.estado AS estado_sede,
+         CONCAT(coor.nombre, ' ', coor.apellido_paterno, ' ', coor.apellido_materno) AS nombre_completo_coordinadora,
+         coor.correo AS correo_coordinadora
+       FROM sede s
+       LEFT JOIN coordinadora coor ON s.id_coordinadora = coor.id_coordinadora
+       WHERE s.id_sede = $1`,
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Sede no encontrada" });
+    }
+
+    const sede = result.rows[0];
+
+    // Configura el contenido del correo según el estado
+    let subject;
+    let html;
+
+    if (estado === "Aceptado") {
+      subject = "¡Tu sede está activa en Patrones Hermosos!";
+      html = `
+        <p>Saludos cordiales,</p>
+        <p>Nos complace informarte que la sede <strong>${sede.nombre_sede}</strong> ha sido activada exitosamente.</p>
+        <p>Por favor ingresa sesion con las credenciales que proporcionaste en el registro</p>
+        <p>Saludos,</p>
+        <p>Equipo de Patrones Hermosos</p>
+      `;
+    } else if (estado === "Rechazado") {
+      subject = "Notificación: Tu sede está inactiva en Patrones Hermosos";
+      html = `
+        <p>Saludos cordiales,</p>
+        <p>Te informamos que la sede <strong>${sede.nombre_sede}</strong> fue rechazada.</p>
+        <p>Por favor verifica la información del formulario y vuelve a intentarlo</p>
+        <p>Saludos,</p>
+        <p>Equipo de Patrones Hermosos</p>
+      `;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Estado no válido. Debe ser 'Aceptado' o 'Rechazado'.",
+      });
+    }
+
+    // Envía el correo
+    await sendEmail(sede.correo_coordinadora, subject, html);
+
+    res.json({
+      success: true,
+      message: `Correo enviado a ${sede.correo_coordinadora}`,
+    });
+  } catch (error) {
+    console.error("Error al enviar el correo:", error);
+    res.status(500).json({
+      message: "Error al enviar el correo",
       error: error.message,
     });
   }
