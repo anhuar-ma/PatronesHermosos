@@ -30,12 +30,13 @@ const AdminDashboard = () => {
           <EvolucionAlumnasChart />
         </div>
       </div> */}
+       <div className="adminDashboard__chart-box">
       <TablaComparativa />
-
-      <div className="adminDashboard__chart-box">
+        </div>
+      {/* <div className="adminDashboard__chart-box">
         <h2>Inicio de Actividades por Sede</h2>
         <TablaEstadoSedes />
-      </div>
+      </div> */}
 
       {/* <div className="">
       <MiGrafica />

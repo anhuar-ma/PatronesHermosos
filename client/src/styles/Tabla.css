@@ -33,7 +33,7 @@
     width: 100%;
     max-height: 85%;
     /* background-color: #555; */
-    /* overflow-x: auto; */
+    overflow-x: auto;
     overflow-y: auto;
     margin: 20px 0;
     border-radius: 8px;
@@ -373,12 +373,29 @@
   opacity: 0.9;
 }
 
+.btn-agregar {
+  text-decoration: none;
+  background-color: #b084c4;
+  color: white;
+  border: none;
+  padding: 0.8rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: auto;
+  width: 20%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+}
+
 
   /* Media queries */
 
   @media (max-width: 1024px) and (min-width: 767px) {
     .fondo_tablas_admin{
       margin-left: 0;
+    }
+    .btn-agregar{
+      width: 33%;
     }
   
     /* .table_container{
@@ -397,13 +414,40 @@
       gap: 1rem;  
     }
     .table_container{
-      margin-top: 3.3rem;
+      margin-top: 3rem;
+    }
+    .btn-agregar{
+      width: 50%;
     }
    
   }
 
   @media (max-width: 409px) {
-
+    .fondo_tablas_admin{
+      margin-left: 0;
+    }
+    .tabla__container__tituloBusqueda{
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;  
+    }
+    .table_container{
+      margin-top: 6rem;
+      max-height: 75%;
+    }
+    .tabla__titulo{
+      margin-top: 0;
+      margin-bottom: 0rem;
+      font-size: 1.3rem;
+    }
+    .tabla__contenedor_busquedaFiltros{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    }
+    .btn-agregar{
+      width: 100%;
+    }
   }
 
 
@@ -430,19 +474,7 @@
     /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   }
 
-  .btn-agregar {
-  text-decoration: none;
-  background-color: #b084c4;
-  color: white;
-  border: none;
-  padding: 0.8rem 0.8rem;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: auto;
-  width: 20%;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  text-align: center;
-}
+  
 
 .btn-agregar:hover {
   background-color: #9e629a; /* tono más oscuro */

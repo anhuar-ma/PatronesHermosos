@@ -115,7 +115,7 @@ export default function RegistroSedes() {
               Llenar con datos como aparecen en un documento oficial.
             </p>
             <label>
-              Nombre(s) de la alumna&nbsp;
+              Nombre(s) de la coordinadora
               <span className="registro__obligatorio">*</span>
               <br />
               <input
