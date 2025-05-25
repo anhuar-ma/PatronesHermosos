@@ -332,11 +332,21 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 
 router.post("/email/:id", async (req, res) => {
   const { id } = req.params;
+  const { estado } = req.body; // Recibe el estado desde el cuerpo de la solicitud
 
   try {
-    // Obtén los datos del colaborador desde la base de datos
+    // Obtén los datos del colaborador, la sede y la coordinadora desde la base de datos
     const result = await pool.query(
-      `SELECT nombre, correo FROM colaborador WHERE id_colaborador = $1`,
+      `SELECT 
+         c.nombre AS nombre_colaborador, 
+         c.correo AS correo_colaborador, 
+         s.nombre AS nombre_sede,
+         CONCAT(coor.nombre, ' ', coor.apellido_paterno) AS nombre_completo_coordinadora,
+         coor.correo AS correo_coordinadora
+       FROM colaborador c
+       LEFT JOIN sede s ON c.id_sede = s.id_sede
+       LEFT JOIN coordinadora coor ON s.id_coordinadora = coor.id_coordinadora
+       WHERE c.id_colaborador = $1`,
       [id],
     );
 
@@ -346,21 +356,43 @@ router.post("/email/:id", async (req, res) => {
 
     const colaborador = result.rows[0];
 
-    // Configura el contenido del correo
-    const subject = "¡Felicidades!";
-    const html = `
-      <p>Hola ${colaborador.nombre},</p>
-      <p>¡Felicidades! Tu estado ha sido actualizado a "Aceptado".</p>
-      <p>Saludos,</p>
-      <p>El equipo</p>
-    `;
+    // Configura el contenido del correo según el estado
+    let subject;
+    let html;
+
+    if (estado === "Aceptado") {
+      subject = "¡Felicidades! has sido aceptada en Patrones Hermosos";
+      html = `
+        <p>Saludos cordiales: ${colaborador.nombre_colaborador},</p>
+        <p>¡Felicidades! Has sido seleccionada para la sede <strong>${colaborador.nombre_sede || "Sin sede asignada"}</strong>.</p>
+        <p>Si tienes alguna duda, ponte en comunicación con la coordinadora de sede:</p>
+        <p>${colaborador.nombre_completo_coordinadora || "Sin coordinadora asignada"}</p>
+        <p>Correo: ${colaborador.correo_coordinadora || "No disponible"}</p>
+        <p>Saludos,</p>
+        <p>Campamento Patrones Hermosos</p>
+      `;
+    } else if (estado === "Rechazado") {
+      subject = "Notificación sobre tu solicitud en Patrones Hermosos";
+      html = `
+        <p>Saludos cordiales: ${colaborador.nombre_colaborador},</p>
+        <p>Lamentamos informarte que no has sido seleccionada para participar en esta edición de Patrones Hermosos.</p>
+        <p>Agradecemos tu interés y te invitamos a seguir participando en futuras convocatorias.</p>
+        <p>Saludos,</p>
+        <p>Campamento Patrones Hermosos</p>
+      `;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Estado no válido. Debe ser 'Aceptado' o 'Rechazado'.",
+      });
+    }
 
     // Envía el correo
-    await sendEmail(colaborador.correo, subject, html);
+    await sendEmail(colaborador.correo_colaborador, subject, html);
 
     res.json({
       success: true,
-      message: `Correo enviado a ${colaborador.correo}`,
+      message: `Correo enviado a ${colaborador.correo_colaborador}`,
     });
   } catch (error) {
     console.error("Error al enviar el correo:", error);
