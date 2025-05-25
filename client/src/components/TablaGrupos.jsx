@@ -6,69 +6,6 @@ import LoadingCard from "./LoadingCard"; // Componente de carga y errores
 import FiltroTabla from "./FiltroTabla"; // Componente para filtros avanzados
 import { Link } from "react-router-dom";
 
-// 1. Creamos datos de prueba hardcodeados:
-// const dummyGrupos = [
-//   {
-//     id_grupo: 101,
-//     idioma: "Inglés",
-//     nivel: "Básico",
-//     mentora:  "Ana López García" ,
-//     instructora:  "María Pérez Sánchez" ,
-//     cupo: 12,
-//   },
-//   {
-//     id_grupo: 102,
-//     idioma: "Español",
-//     nivel: "Avanzado",
-//     mentora:  "Jorge Martínez" ,
-//     instructora:  "Lucía Rodríguez Ruiz" ,
-//     cupo: 8,
-//   },
-//   {
-//     id_grupo: 103,
-//     idioma: "Inglés",
-//     nivel: "Avanzado",
-//     mentora:  "Carlos Díaz Vega" ,
-//     instructora:  "Sofía Mora Luna" ,
-//     cupo: 5,
-//   },
-//   {
-//     id_grupo: 104,
-//     idioma: "Español",
-//     nivel: "Básico",
-//     mentora:  "Elena Torres Méndez" ,
-//     instructora:  "Raúl Castillo" ,
-//     cupo: 15,
-//   },
-//   {
-//     id_grupo: 105,
-//     idioma: "Español",
-//     nivel: "Básico",
-//     mentora:  "Elena Torres Méndez" ,
-//     instructora:  "Raúl Castillo" ,
-//     cupo: 0,
-//   },
-//   // Casos con “no asignada”
-//   {
-//     id_grupo: 106,
-//     idioma: "Inglés",
-//     nivel: "Intermedio",
-//     mentora:  "***no asignada***" ,
-//     instructora:  "Gabriela Ruiz Hernández" ,
-//     cupo: 10,
-//   },
-//   {
-//     id_grupo: 107,
-//     idioma: "Español",
-//     nivel: "Avanzado",
-//     mentora:  "Pedro Gómez Santos" ,
-//     instructora:  "***no asignada***" ,
-//     cupo: 7,
-//   },
-// ];
-
-
-
 /**
  * Componente que muestra un listado de Grupos con:
  * - Búsqueda por nombre
@@ -111,20 +48,6 @@ export default function TablaGrupos() {
 
 
   /**
-   * Lista de idiomas únicos extraídos de los grupos.
-   * Se memoriza para no recalcular en cada render si 'grupos' no cambia.
-   */
-  // const idiomasDisponibles = useMemo(() => {
-  //   const idiomas = grupos.map((g) => g.idioma);
-  //   return [...new Set(idiomas)].sort();
-  // }, [grupos]);
-
-  /**
-   * Lista de idiomas únicos extraídos de los grupos.
-   * Se memoriza para no recalcular en cada render si 'grupos' no cambia.
-   */
-
-  /**
    * Función para ordenar un array de grupos según el campo y el orden seleccionado.
    *
    * @param {Array} data - Array de grupos a ordenar.
@@ -134,6 +57,13 @@ export default function TablaGrupos() {
     if (!sortField) return data; // Si no hay campo, devolver sin ordenar
 
     return [...data].sort((a, b) => {
+      if (sortField === "id_grupo") {
+        // Ordenamiento numérico
+        return sortOrder === "asc"
+          ? a.id_grupo - b.id_grupo
+          : b.id_grupo - a.id_grupo;
+      }
+      // Ordenamiento lexicográfico para otros campos
       const aValue = a[sortField]?.toString().toLowerCase();
       const bValue = b[sortField]?.toString().toLowerCase();
 
@@ -162,6 +92,24 @@ export default function TablaGrupos() {
       cupoSeleccionados.length === 0 ||
       cupoSeleccionados.includes(estadoCupo);
 
+      // Filtro de mentora
+  const estadoMentora =
+    grupo.nombre_mentora && grupo.nombre_mentora.trim() !== ""
+      ? "Asignada"
+      : "No asignada";
+  const coincideMentora =
+    mentoraSeleccionadas.length === 0 ||
+    mentoraSeleccionadas.includes(estadoMentora);
+
+  // Filtro de instructora
+  const estadoInstructora =
+    grupo.nombre_instructora && grupo.nombre_instructora.trim() !== ""
+      ? "Asignada"
+      : "No asignada";
+  const coincideInstructora =
+    instructoraSeleccionadas.length === 0 ||
+    instructoraSeleccionadas.includes(estadoInstructora);
+
 //       const estadoMentora =
 //     grupo.mentora.nombre === "***no asignada***"
 //       ? "No asignada"
@@ -182,8 +130,10 @@ export default function TablaGrupos() {
 
     return (
       coincideIdioma &&
-      coincideNivel &&
-      coincideCupo 
+    coincideNivel &&
+    coincideCupo &&
+    coincideMentora &&
+    coincideInstructora
     //   &&
     //   coincideMentora &&
     //   coincideInstructora

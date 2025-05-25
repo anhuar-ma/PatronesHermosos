@@ -130,11 +130,9 @@ export default function TablaDetallesGrupos() {
   return (
     <div className="tabla__containerBlancoMentora">
       {/* Encabezado y búsqueda */}
-      <div className="tabla__container__tituloBusqueda">
-        <h2 className="tabla__titulo">
-          Detalles de grupo {id} - Idioma: {idioma} - Nivel: {nivel} - Mentora:{" "}
-          {nombreMentora}
-        </h2>
+
+      <div className="tabla__container__tituloBusquedaGrupos">
+        <h2 className="tabla__titulo">Grupo {id}</h2>
         <div className="tabla__contenedor_busquedaFiltros">
           <button
             className="tabla__botonFiltros"
@@ -142,8 +140,22 @@ export default function TablaDetallesGrupos() {
           >
             Filtrar <SlidersHorizontal size={16} />
           </button>
+          <input
+            type="text"
+            placeholder="Buscar por nombre..."
+            value={busqueda}
+            onChange={(e) => {
+              setBusqueda(e.target.value);
+            }}
+            className="tabla__input-busqueda"
+          />
         </div>
       </div>
+       <div className="info__grupo">
+          <p className="info__grupo__item"><span className="info__grupo__label">Idioma: </span>{idioma}</p>
+          <p className="info__grupo__item"><span className="info__grupo__label">Nivel: </span>{nivel}</p>
+          <p className="info__grupo__item"><span className="info__grupo__label">Mentora: </span>{nombreMentora}</p>
+        </div>
 
       {/* Panel de filtros avanzados (modal) */}
       {mostrarFiltros && (
@@ -210,9 +222,29 @@ export default function TablaDetallesGrupos() {
           onDelete={handleDelete}
         />
       </div>
-      <Link to="/admin/registro-grupos" className="btn-agregar">
-        Agregar grupo
-      </Link>
+       <div className="tabla__container__botones">
+        <button className="btn-agregarPersonaGrupo">
+          Agregar personal
+        </button>
+        
+        <button
+          className={mentora ? "btn-eliminarMentora" : "btn-agregarPersonaGrupo"}
+          onClick={() => {
+            if (mentora) {
+              // Acción para eliminar mentora
+              // handleDelete(mentora.id, "mentora");
+            } else {
+              // Acción para asignar mentora
+              // openAsignarMentoraModal();
+            }
+          }}
+        >
+          {mentora ? "Eliminar mentora" : "Asignar mentora"}
+        </button>
+        <button className="btn-agregarPersonaGrupo">
+          Agregar alumna
+        </button>
+      </div>
     </div>
   );
 }

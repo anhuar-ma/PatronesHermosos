@@ -36,10 +36,9 @@ export default function Tabla({
               {renderSortArrow("nombre_completo_colaborador")}
             </div>
           </th>
-          <th onClick={() => onSort("rol")}>
+          <th>
             <div className="tablas__thContainer">
               <span> Rol</span>
-              {renderSortArrow("rol")}
             </div>
           </th>
           {currentRol === 0 ? <th>Sede</th> : <th>Grupo</th>}
