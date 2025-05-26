@@ -12,19 +12,16 @@ import {
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AA00FF"];
 
 const dataAlumnas = [
-  { sede: "Buenos Aires", valor: 350 },
-  { sede: "Rosario", valor: 200 },
-  { sede: "Mendoza", valor: 150 },
-  { sede: "Córdoba", valor: 100 },
-  { sede: "Salta", valor: 50 },
+  { sede: "Aceptadas", valor: 350 },
+  { sede: "Rechazadas", valor: 200 },
+  { sede: "Pendientes", valor: 150 },
 ];
 
 const dataStaff = [
-  { sede: "Buenos Aires", valor: 25 },
-  { sede: "Rosario", valor: 18 },
-  { sede: "Mendoza", valor: 12 },
-  { sede: "Córdoba", valor: 10 },
-  { sede: "Salta", valor: 5 },
+  { sede: "Instructoras", valor: 25 },
+  { sede: "Mentoras", valor: 18 },
+  { sede: "Colaboradoras", valor: 12 },
+  { sede: "Staff", valor: 10 },
 ];
 
 const renderLabel = ({ percent }) =>
