@@ -428,8 +428,9 @@ router.put(
           "SELECT check_sede_capacity($1);",
           [id],
         );
-        const hasCapacity = capacityResult.rows[0].has_capacity;
-        if (!hasCapacity) {
+        const hasCapacity = capacityResult.rows[0];
+        console.log(hasCapacity.check_sede_capacity);
+        if (hasCapacity === "false") {
           return res.status(400).json({
             success: false,
             message: "No hay lugares disponibles en esta sede",
@@ -492,7 +493,7 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 
     //then Delete participant first (due to foreign key constraints)
     await pool.query("DELETE FROM participante WHERE id_participante = $1", [
-       id,
+      id,
     ]);
 
     //  delete the tutor
