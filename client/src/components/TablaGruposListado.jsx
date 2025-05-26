@@ -16,7 +16,7 @@ export default function Tabla({
     );
   };
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <table className="colaboradores-table">
@@ -66,7 +66,7 @@ export default function Tabla({
             <td>{grupo.nivel}</td>
             <td>{grupo.nombre_mentora}</td>
             <td>{grupo.nombre_instructora}</td>
-            <td style={{ textAlign: 'center', verticalAlign: 'middle' }} >{grupo.cupo}</td>
+            <td style={{ textAlign: 'center', verticalAlign: 'middle' }} >{grupo.cupo - grupo.current_cupo}</td>
             <td>
               <button
                 className="tabla__botonMorado"

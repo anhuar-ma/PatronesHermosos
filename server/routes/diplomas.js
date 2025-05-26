@@ -171,6 +171,28 @@ router.get(
               coordAsoc.nombre_completo,
             );
           }
+
+          // In case the mentora is needed
+          // Get mentoras
+          // const mentoraResult = await pool.query(
+          //   `SELECT id_mentora, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
+          //  FROM mentora
+          //  WHERE id_sede = $1`,
+          //   [sede.id_sede],
+          // );
+          //
+          // // Generate diplomas for mentoras
+          // for (const mentora of mentoraResult.rows) {
+          //   const diplomaPath = path.join(
+          //     sedeDir,
+          //     `mentora_${coordAsoc.id_coordinadora_asociada}.pdf`,
+          //   );
+          //   await generateDiploma(
+          //     path.join(process.cwd(), "/diplomas/mentoras.pdf"),
+          //     diplomaPath,
+          //     coordAsoc.nombre_completo,
+          //   );
+          // }
         }
 
         // Create ZIP archive
@@ -217,12 +239,10 @@ router.get(
         const participantesDir = path.join(tempDir, "participantes");
         const mentorasDir = path.join(tempDir, "mentoras");
         const colaboradoresDir = path.join(tempDir, "colaboradores");
-        const staffDir = path.join(tempDir, "staff");
 
         await fs.ensureDir(participantesDir);
         await fs.ensureDir(mentorasDir);
         await fs.ensureDir(colaboradoresDir);
-        await fs.ensureDir(staffDir);
 
         // Get participantes for this sede with accepted status
         const participantesResult = await pool.query(
@@ -274,19 +294,10 @@ router.get(
           );
         }
 
-        // Generate diplomas for colaboradores and staff
+        // Generate diplomas for colaboradores
         for (const colaborador of colaboradoresResult.rows) {
-          let outputDir;
-          let templateFile;
-
-          if (colaborador.rol === "Instructora") {
-            outputDir = colaboradoresDir;
-            templateFile = "colaboradora.pdf";
-          } else {
-            // Staff (Instructora, Facilitadora, etc.)
-            outputDir = staffDir;
-            templateFile = "colaboradora.pdf"; // Using same template but different directory
-          }
+          const outputDir = colaboradoresDir;
+          const templateFile = "colaboradora.pdf";
 
           const diplomaPath = path.join(
             outputDir,

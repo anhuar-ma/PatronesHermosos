@@ -224,6 +224,7 @@ router.get(
   },
 );
 
+
 // Get the names from sedes that are accepeted
 router.get("/nombres", async (req, res) => {
   try {
@@ -243,6 +244,8 @@ router.get("/nombres", async (req, res) => {
     });
   }
 });
+
+
 
 // vista detallada sede y coordinadora
 router.get("/:id", async (req, res) => {
