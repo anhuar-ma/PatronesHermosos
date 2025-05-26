@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import axios from "axios";
 import "../styles/registros.css";
 import useSedesNames from "../hooks/useSedesNombres";
@@ -11,7 +12,7 @@ export default function RegistroParticipantes() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
   const { sedes, loading: sedesLoading, error: sedesError } = useSedesNames();
-
+   const navigate = useNavigate();
   console.log(sedes);
 
   const {
@@ -69,6 +70,8 @@ export default function RegistroParticipantes() {
       });
       setError("");
       setFileError("");
+      window.alert("Registro exitoso!");
+      navigate("/envioExitoso");
     } catch (error) {
       window.alert("Error en el registro");
       console.error("Error:", error);
