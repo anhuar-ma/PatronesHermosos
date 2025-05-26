@@ -20,15 +20,14 @@ const KPICards = () => {
     { label: "Grupos en español", value: "1,250" },
   ];
   const kpisNacional = [
-    { label: "Sedes aceptadas", value: "1,250" },
-    { label: "Sedes pendientes", value: "1,250" },
-    { label: "Alumnas pendientes a nivel nacional", value: "1,250" },
-    { label: "Alumnas registradas a nivel nacional", value: "1,250" },
-    { label: "Mentoras registradas a nivel nacional", value: "1,250" },
-    { label: "Staff registrado a nivel nacional", value: "1,250" },
-    { label: "Instructoras registradas a nivel nacional", value: "1,250" },
+    { label: "Alumnas aceptadas a nivel nacional", value: "1,250" },
+    { label: "Mentoras aceptadas a nivel nacional", value: "1,250" },
+    { label: "Staff aceptado a nivel nacional", value: "1,250" },
+    { label: "Instructoras aceptadas a nivel nacional", value: "1,250" },
     { label: "Grupos en inglés a nivel nacional", value: "1,250" },
     { label: "Grupos en español a nivel nacional", value: "1,250" },
+     { label: "Sedes aceptadas", value: "1,250" },
+    { label: "Sedes pendientes", value: "1,250" },
   ];
 
   // Selecciona el array de KPIs según el rol
