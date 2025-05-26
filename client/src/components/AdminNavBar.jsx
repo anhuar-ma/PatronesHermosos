@@ -7,6 +7,8 @@ import {
   House,
   MapPinHouse,
   Settings,
+  Users,
+  Compass,
   User,
   BookMarked,
   ChevronRight,
