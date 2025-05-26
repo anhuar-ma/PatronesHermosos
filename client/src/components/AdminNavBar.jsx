@@ -44,6 +44,11 @@ export default function AdminNavbar() {
       icon: <MapPinHouse size={20} className="AdminNavBar__icon" />,
       path: "/admin/sedes",
     },
+     {
+      name: "Grupos",
+      icon: <Users size={20} className="AdminNavBar__icon" />,
+      path: "/admin/grupos",
+    },
     {
       name: "Participantes",
       icon: <User size={20} className="AdminNavBar__icon " />,
@@ -53,6 +58,11 @@ export default function AdminNavbar() {
       name: "Colaboradores",
       icon: <Contact size={20} className="AdminNavBar__icon" />,
       path: "/admin/colaboradores",
+    },
+     {
+      name: "Mentoras",
+      icon: <Compass size={20} className="AdminNavBar__icon " />,
+      path: "/admin/mentoras",
     },
     {
       name: "Diplomas",
