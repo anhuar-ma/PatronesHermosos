@@ -7,7 +7,14 @@ import Tabla from "./TablaDetallesGrupoListado"; // Componente de tabla donde se
 import LoadingCard from "./LoadingCard"; // Componente de carga y errores
 import FiltroTabla from "./FiltroTabla"; // Componente para filtros avanzados
 import useEliminarIntegrante from "../hooks/useEliminarIntegrante"; // Hook para eliminar integrantes
+import AgregarColaborador from "./AgregarColaboradores"; // Importar el componente del pop-up
+import AgregarParticipantes from "./AgregarParticipantes";
+import AgregarMentoras from "./AgregarMentora";
 import { Link, useParams } from "react-router-dom"; // Hook para obtener parámetros de la URL
+import useColaboradores from "../hooks/useAddColaboradores"; // Hook para obtener colaboradores
+import useParticipantes from "../hooks/useAddParticipantes";
+import useMentoras from "../hooks/useAddMentora"; // Hook para obtener mentoras
+import axios from "axios";
 
 export default function TablaDetallesGrupos() {
   const { id } = useParams(); // Obtiene el ID del grupo desde la URL
@@ -22,6 +29,36 @@ export default function TablaDetallesGrupos() {
     loading: loadingMentora,
     error: errorMentora,
   } = useGrupoMentora(id); // Hook para obtener mentoras
+
+    // Hook para obtener colaboradores disponibles
+    const {
+      colaboradores,
+      colaboradoresLoading,
+      colaboradoresError,
+      fetchColaboradores,
+      assignColaborador,
+    } = useColaboradores(id);
+    //Hook para obtener participantes disponibles
+    const {
+      participantes,
+      participantesLoading,
+      participantesError,
+      fetchParticipantes,
+      assignParticipante,
+    } = useParticipantes(id);
+    // Hook para obtener mentoras disponibles
+    const {
+      mentoras,
+      mentorasLoading,
+      mentorasError,
+      fetchMentoras,
+      assignMentora,
+    } = useMentoras(id);
+  
+    //Hook para mantener el pop-up abierto
+    const [isColaboradorPopupOpen, setIsColaboradorPopupOpen] = useState(false); // Estado para el pop-up de colaboradores
+    const [isParticipantePopupOpen, setIsParticipantePopupOpen] = useState(false); // Estado para el pop-up de participantes
+    const [isMentoraPopupOpen, setIsMentoraPopupOpen] = useState(false); // Estado para el pop-up de mentoras
 
   // Copia local para poder mutar el estado en cliente
   const [gruposList, setGruposList] = useState([]);
@@ -118,13 +155,35 @@ export default function TablaDetallesGrupos() {
     if (result.success) {
       // Actualizar la lista local después de eliminar
       setGruposList((prev) =>
-        prev.filter((grupo) => grupo.id !== idIntegrante),
+        prev.filter((grupo) => grupo.id_integrante !== idIntegrante),
       );
       alert(result.message);
     } else {
       alert(result.message);
     }
   };
+
+  // Función para refrescar la tabla de grupos
+  const fetchGrupos = async () => {
+    try {
+      const response = await axios.get(`/api/grupos/${id}/listado`);
+      setGruposList(response.data.data); // Actualiza la lista de grupos
+      } catch (error) {
+        console.error("Error al refrescar los grupos:", error);
+      }
+  };
+    
+    
+  // Función para refrescar la informacion de las mentoras
+  const actualizacionMentoras = async () => {
+    try {
+      const response = await axios.get(`/api/grupos/${id}/mentoras`);
+        setMentoraSeleccionadas(response.data.data); // Actualiza la lista de mentoras
+      } catch (error) {
+          console.error("Error al refrescar las mentoras:", error);
+        }
+  };
+  
 
   console.log("Mentora:", mentora);
   return (
@@ -223,9 +282,29 @@ export default function TablaDetallesGrupos() {
         />
       </div>
        <div className="tabla__container__botones">
-        <button className="btn-agregarPersonaGrupo">
-          Agregar personal
+       <button
+          className="btn-agregarPersonaGrupo"
+          onClick={() => {
+            fetchColaboradores(); // Cargar colaboradores disponibles
+            setIsColaboradorPopupOpen(true); // Abrir el pop-up
+          }}
+        >
+          Agregar colaborador
         </button>
+
+      {/* Pop-up de selección de colaborador */}
+      {isColaboradorPopupOpen && (
+        <AgregarColaborador
+          onClose={() => setIsColaboradorPopupOpen(false)} // Cerrar el pop-up
+          onConfirm={(idColaborador) => {
+            assignColaborador(idColaborador, fetchGrupos); // Asignar colaborador y refrescar grupos
+            setIsColaboradorPopupOpen(false); // Cerrar el pop-up
+          }}
+          colaboradores={colaboradores}
+          colaboradoresLoading={colaboradoresLoading}
+          colaboradoresError={colaboradoresError}
+        />
+      )}
         
         <button
           className={mentora ? "btn-eliminarMentora" : "btn-agregarPersonaGrupo"}
@@ -236,14 +315,51 @@ export default function TablaDetallesGrupos() {
             } else {
               // Acción para asignar mentora
               // openAsignarMentoraModal();
+              fetchMentoras(); // Cargar mentoras disponibles
+              setIsMentoraPopupOpen(true); // Abrir el pop-up de mentoras
             }
           }}
         >
           {mentora ? "Eliminar mentora" : "Asignar mentora"}
         </button>
-        <button className="btn-agregarPersonaGrupo">
-          Agregar alumna
+        {/* Pop-up de selección de mentora */}
+        {isMentoraPopupOpen && (
+          <AgregarMentoras
+            onClose={() => setIsMentoraPopupOpen(false)} // Cerrar el pop-up
+            onConfirm={async(idMentora) => {
+              await assignMentora(idMentora, actualizacionMentoras); // Asignar mentora y refrescar la tabla
+              setIsMentoraPopupOpen(false); // Cerrar el pop-up
+              window.location.reload(); // Recargar toda la página
+            }}
+            mentoras={mentoras}
+            mentorasLoading={mentorasLoading}
+            mentorasError={mentorasError}
+          />
+        )}
+
+        <button
+          className="btn-agregarPersonaGrupo"
+          onClick={() => {
+            fetchParticipantes(); // Cargar colaboradores disponibles
+            setIsParticipantePopupOpen(true); // Abrir el pop-up
+          }}
+        >
+          Agregar participante
         </button>
+
+        {/* Pop-up de selección de participante */}
+      {isParticipantePopupOpen && (
+        <AgregarParticipantes
+          onClose={() => setIsParticipantePopupOpen(false)} // Cerrar el pop-up
+          onConfirm={(id_participante) => {
+            assignParticipante(id_participante, fetchGrupos); // Asignar colaborador y refrescar grupos
+            setIsParticipantePopupOpen(false); // Cerrar el pop-up
+          }}
+          participantes={participantes}
+          participantesLoading={participantesLoading}
+          participantesError={participantesError}
+        />
+      )}
       </div>
     </div>
   );

@@ -20,15 +20,15 @@ export default function Tabla({
     <table className="colaboradores-table">
       <thead>
         <tr>
-          <th onClick={() => onSort("nombre_completo")}>
+          <th onClick={() => onSort("id_grupo")}>
             <div className="tablas__thContainer">
               <span>Nombre</span>
-              {renderSortArrow("nombre_completo")}
+              {renderSortArrow("id_grupo")}
             </div>
           </th>
           <th>
             <div className="tablas__thContainer">
-              <span>Rol</span> 
+              <span>Rol</span>
             </div>
           </th>
           <th>
@@ -44,8 +44,7 @@ export default function Tabla({
             <td>{grupo.nombre_completo}</td>
             <td>{grupo.rol}</td>
             <td>
-              <button
-                className="tabla__botonMorado"
+              <button className="tabla__botonMorado"
                 onClick={() => {
                   onDelete(grupo.id_integrante, grupo.rol);
                 }}
@@ -59,4 +58,3 @@ export default function Tabla({
     </table>
   );
 }
-
