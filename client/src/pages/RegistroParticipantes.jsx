@@ -70,7 +70,7 @@ export default function RegistroParticipantes() {
       });
       setError("");
       setFileError("");
-      window.alert("Registro exitoso!");
+      // window.alert("Registro exitoso!");
       navigate("/envioExitoso");
     } catch (error) {
       window.alert("Error en el registro");

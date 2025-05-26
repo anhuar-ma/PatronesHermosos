@@ -17,7 +17,10 @@ const AdminDashboard = () => {
       <h1 className="adminDashboard__tituloBienvenida">Bienvenida de nuevo, Rosa</h1>
       <p>Visión general del estado de las sedes, cursos y alumnas.</p>
 
-      {currentRol === 1 && <TablaCoodinadoraAsociada />}
+      {currentRol === 1 && 
+      <div className="adminDashboard__chart-box">
+        <TablaCoodinadoraAsociada />
+      </div>}
 
       <KPICards />
 
