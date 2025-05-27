@@ -2,7 +2,7 @@ body {
   font-family: "Commissioner", sans-serif;
 }
 .registro__fondoMorado {
-  width: 100vw;
+  width: 100%;
   height: 50vh;
   background-color: var(--color-primario);
   position: absolute;
@@ -264,6 +264,12 @@ registro__tituloSeccionGrupo {
 	/* .registro__tituloSeccion h4 {
 		font-size: 4rem;
 	} */
+
+  .registro__formulario label {
+    display: block;
+    margin-bottom: 2.3rem;
+    font-size: 1.1rem;
+  }
 	.registro__instrucciones {
 		font-weight: normal;
 		font-size: 1rem;
@@ -336,7 +342,7 @@ registro__tituloSeccionGrupo {
   .registro__formulario label {
     display: block;
     margin-bottom: 2.3rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
   .registro__botonGrisArchivos {
     margin-top: 0.5rem;

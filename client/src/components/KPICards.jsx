@@ -1,18 +1,41 @@
 import React from "react";
+import useCurrentRol from "../hooks/useCurrentRol";
 
 const KPICards = () => {
+  const currentRol = useCurrentRol();
+
+  // Cambia el título según el rol
+  if (currentRol === 0) {
+    document.title = "Dashboard Admin";
+  } else {
+    document.title = "Dashboard Sede";
+  }
+
   const kpis = [
-    { label: "Alumnas aceptadas a nivel nacional", value: "1,250" },
-    { label: "Sedes aceptadas", value: "8" },
-    { label: "Sedes pendientes de aprobar", value: "2" },
-    { label: "Staff aceptado a nivel nacional", value: "50" },
-    { label: "Sedes activas", value: "6" },
-    { label: "Sedes pendientes por iniciar actividades", value: "4" },
+    { label: "Alumnas registradas", value: "1,250" },
+    { label: "Mentoras registradas", value: "1,250" },
+    { label: "Staff registrado", value: "1,250" },
+    { label: "Instructoras registradas", value: "1,250" },
+    { label: "Grupos en inglés", value: "1,250" },
+    { label: "Grupos en español", value: "1,250" },
   ];
+  const kpisNacional = [
+    { label: "Alumnas aceptadas a nivel nacional", value: "1,250" },
+    { label: "Mentoras aceptadas a nivel nacional", value: "1,250" },
+    { label: "Staff aceptado a nivel nacional", value: "1,250" },
+    { label: "Instructoras aceptadas a nivel nacional", value: "1,250" },
+    { label: "Grupos en inglés a nivel nacional", value: "1,250" },
+    { label: "Grupos en español a nivel nacional", value: "1,250" },
+     { label: "Sedes aceptadas", value: "1,250" },
+    { label: "Sedes pendientes", value: "1,250" },
+  ];
+
+  // Selecciona el array de KPIs según el rol
+  const kpisToShow = currentRol === 0 ? kpisNacional : kpis;
 
   return (
     <div className="adminDashboard__cards">
-      {kpis.map((kpi, index) => (
+      {kpisToShow.map((kpi, index) => (
         <div key={index} className="adminDashboard__card">
           <h3>{kpi.label}</h3>
           <p>{kpi.value}</p>

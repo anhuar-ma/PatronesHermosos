@@ -90,7 +90,7 @@ export default function AdminNavbar() {
               {item.icon}
               <span className="AdminNavbar__buttonLabel">{item.name}</span>
             </div>
-            <ChevronRight size={20} />
+            <ChevronRight />
           </Link>
         ))}
 

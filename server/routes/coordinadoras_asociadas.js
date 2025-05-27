@@ -56,7 +56,7 @@ router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
     let result;
 
-    if (req.user.rol == 0) {
+    if (req.user.rol === 0) {
       result = await pool.query(
         `
       SELECT
@@ -66,7 +66,7 @@ router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
           coordinadora_asociada c
       `,
       );
-    } else if (req.user.rol == 1) {
+    } else if (req.user.rol === 1) {
       result = await pool.query(
         `
       SELECT

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import "../../styles/registros.css/";
 import axios from "axios";
 
 export default function RegistroSedes() {
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const {
     register,
@@ -19,43 +21,27 @@ export default function RegistroSedes() {
     try {
       const sedeData = {
         // Coordinatora
-        nombre_coordinadora: data.nombre_coordinadora,
-        apellido_paterno_coordinadora: data.apellido_paterno_coordinadora,
-        apellido_materno_coordinadora: data.apellido_materno_coordinadora,
-        correo_coordinadora: data.correo_coordinadora,
-        contraseña: data.contraseña,
-
-        // Sede
-        nombre_sede: data.nombre_sede,
-        fecha_inicio: data.fecha_inicio,
-        archivo_convocatoria: fileName, // The file name, you might need to handle the actual file upload separately
+        nombre: data.nombre_coordinadora,
+        apellido_paterno: data.apellido_paterno_coordinadora,
+        apellido_materno: data.apellido_materno_coordinadora,
+        correo: data.correo_coordinadora,
       };
 
-      await axios.post("/api/sedes", sedeData);
+      await axios.post("/api/coordinadoras_asociadas", sedeData);
 
       setError("");
+
+      // Redirigir a la tabla y forzar actualización
+      navigate("/admin/inicio", { state: { refresh: true } });
     } catch (error) {
       window.alert("Error en el registro");
       console.error("Error:", error);
     }
 
     setError("");
-    alert("Formulario enviado correctamente ✅");
     console.log(data);
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.type !== "application/pdf") {
-        setFileError("Solo se permiten archivos PDF");
-        setFileName("");
-        return;
-      }
-      setFileName(file.name);
-      setFileError("");
-    }
-  };
 
   return (
     <div className="registroMentora__fondoMorado">
@@ -75,12 +61,12 @@ export default function RegistroSedes() {
               <br />
               <input
                 className={`registro__input ${
-                  errors.nombre_coordinadoraA ? "registro__input-error" : ""
+                  errors.nombre_coordinadora ? "registro__input-error" : ""
                 }`}
-                {...register("nombre_coordinadoraA", { required: true })}
+                {...register("nombre_coordinadora", { required: true })}
                 type="text"
               />
-              {errors.nombre_coordinadoraA && (
+              {errors.nombre_coordinadora && (
                 <p className="registro__error">Este campo es obligatorio</p>
               )}
             </label>
@@ -91,14 +77,14 @@ export default function RegistroSedes() {
               <br />
               <input
                 className={`registro__input ${
-                  errors.apellido_paterno_coordinadoraA ? "registro__input-error" : ""
+                  errors.apellido_paterno_coordinadora ? "registro__input-error" : ""
                 }`}
-                {...register("apellido_paterno_coordinadoraA", {
+                {...register("apellido_paterno_coordinadora", {
                   required: true,
                 })}
                 type="text"
               />
-              {errors.apellido_paterno_coordinadoraA && (
+              {errors.apellido_paterno_coordinadora && (
                 <p className="registro__error">Este campo es obligatorio</p>
               )}
             </label>
@@ -118,12 +104,12 @@ export default function RegistroSedes() {
               <br />
               <input
                 className={`registro__input ${
-                  errors.correo_coordinadoraA ? "registro__input-error" : ""
+                  errors.correo_coordinadora ? "registro__input-error" : ""
                 }`}
-                {...register("correo_coordinadoraA", { required: true })}
+                {...register("correo_coordinadora", { required: true })}
                 type="email"
               />
-              {errors.correo_coordinadoraA && (
+              {errors.correo_coordinadora && (
                 <p className="registro__error">Correo inválido o vacío</p>
               )}
             </label>
@@ -133,6 +119,7 @@ export default function RegistroSedes() {
               type="submit"
               className="registro__botonMorado"
               value="Registrar coordinadora"
+              onClick={() => navigate(`/admin/inicio`)}
             />
           </div>
         </form>

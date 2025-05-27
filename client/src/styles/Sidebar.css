@@ -1,4 +1,4 @@
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .AdminNavbar {
     width: 18%;
     background-color: white;
@@ -59,6 +59,9 @@
 .AdminNavbar__button.active {
   background-color: #9e629a;
   color: white;
+}
+.AdminNavbar__button.active span {
+  color: white; 
 }
 .AdminNavbar__imgLogoNav {
   width: auto;

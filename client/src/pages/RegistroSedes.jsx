@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import "../styles/registros.css/";
 import axios from "axios";
 
@@ -8,6 +9,7 @@ export default function RegistroSedes() {
   const [fileError, setFileError] = useState("");
   const [error, setError] = useState("");
   const [submitResult, setSubmitResult] = useState(null);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -29,11 +31,11 @@ export default function RegistroSedes() {
       formData.append("nombre_coordinadora", data.nombre_coordinadora);
       formData.append(
         "apellido_paterno_coordinadora",
-        data.apellido_paterno_coordinadora,
+        data.apellido_paterno_coordinadora
       );
       formData.append(
         "apellido_materno_coordinadora",
-        data.apellido_materno_coordinadora,
+        data.apellido_materno_coordinadora
       );
       formData.append("correo_coordinadora", data.correo_coordinadora);
       // Correctly append the password using the key from react-hook-form
@@ -54,16 +56,16 @@ export default function RegistroSedes() {
 
       setSubmitResult({
         success: true,
-        message:
-          "¡Registro exitoso! La sede ha sido registrada correctamente.",
+        message: "¡Registro exitoso! La sede ha sido registrada correctamente.",
       });
-      alert("Formulario enviado correctamente ✅"); // Moved success alert here
+      // alert("Formulario enviado correctamente ✅"); // Moved success alert here
       console.log("Server success response:", response.data);
       console.log("Submitted data:", data); // Log data from react-hook-form
 
       // Clear errors only on success
       setError("");
       setFileError("");
+      navigate("/envioExitoso");
     } catch (error) {
       window.alert("Error en el registro");
       console.error("Error submitting form:", error);
@@ -71,10 +73,15 @@ export default function RegistroSedes() {
       if (error.response) {
         console.error("Server response data:", error.response.data);
         console.error("Server response status:", error.response.status);
-        errorMessage = `Error del servidor: ${error.response.data.message || error.response.statusText || 'Error desconocido'}`;
+        errorMessage = `Error del servidor: ${
+          error.response.data.message ||
+          error.response.statusText ||
+          "Error desconocido"
+        }`;
       } else if (error.request) {
         console.error("No response received:", error.request);
-        errorMessage = "No se recibió respuesta del servidor. Verifique su conexión.";
+        errorMessage =
+          "No se recibió respuesta del servidor. Verifique su conexión.";
       } else {
         console.error("Error setting up request:", error.message);
         errorMessage = `Error al enviar la solicitud: ${error.message}`;
@@ -115,7 +122,7 @@ export default function RegistroSedes() {
               Llenar con datos como aparecen en un documento oficial.
             </p>
             <label>
-              Nombre(s) de la alumna&nbsp;
+              Nombre(s) de la coordinadora
               <span className="registro__obligatorio">*</span>
               <br />
               <input

@@ -2,6 +2,7 @@ import express from "express";
 import { pool } from "../server.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
+import { sendEmail } from "../routes/emailservices.js";
 import {
   authenticateToken,
   requireAdmin,
@@ -521,6 +522,79 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error al eliminar los datos",
+      error: error.message,
+    });
+  }
+});
+
+router.post("/email/:id", authenticateToken, checkSedeAccess, async (req, res) => {
+  const { id } = req.params;
+  const { estado } = req.body; // Recibe el estado desde el cuerpo de la solicitud
+
+  try {
+    // Obtén los datos del participante, la sede y el tutor desde la base de datos
+    const result = await pool.query(
+      `SELECT 
+         p.nombre AS nombre_participante, 
+         p.correo AS correo_participante, 
+         s.nombre AS nombre_sede,
+         CONCAT(t.nombre, ' ', t.apellido_paterno, ' ', t.apellido_materno) AS nombre_completo_tutor,
+         t.correo AS correo_tutor
+       FROM participante p
+       LEFT JOIN sede s ON p.id_sede = s.id_sede
+       LEFT JOIN padre_o_tutor t ON p.id_padre_o_tutor = t.id_padre_o_tutor
+       WHERE p.id_participante = $1`,
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Participante no encontrado" });
+    }
+
+    const participante = result.rows[0];
+
+    // Configura el contenido del correo según el estado
+    let subject;
+    let html;
+
+    if (estado === "Aceptado") {
+      subject = "¡Felicidades! has sido aceptada en Patrones Hermosos";
+      html = `
+        <p>Saludos cordiales: ${participante.nombre_participante},</p>
+        <p>¡Felicidades! Has sido seleccionada para la sede <strong>${participante.nombre_sede || "Sin sede asignada"}</strong>.</p>
+        <p>Si tienes alguna duda, ponte en comunicación con tu tutor:</p>
+        <p>${participante.nombre_completo_tutor || "Sin tutor asignado"}</p>
+        <p>Correo: ${participante.correo_tutor || "No disponible"}</p>
+        <p>Saludos,</p>
+        <p>Campamento Patrones Hermosos</p>
+      `;
+    } else if (estado === "Rechazado") {
+      subject = "Notificación sobre tu solicitud en Patrones Hermosos";
+      html = `
+        <p>Saludos cordiales: ${participante.nombre_participante},</p>
+        <p>Lamentamos informarte que no has sido seleccionada para participar en esta edición de Patrones Hermosos.</p>
+        <p>Agradecemos tu interés y te invitamos a seguir participando en futuras convocatorias.</p>
+        <p>Saludos,</p>
+        <p>Campamento Patrones Hermosos</p>
+      `;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Estado no válido. Debe ser 'Aceptado' o 'Rechazado'.",
+      });
+    }
+
+    // Envía el correo
+    await sendEmail(participante.correo_participante, subject, html);
+
+    res.json({
+      success: true,
+      message: `Correo enviado a ${participante.correo_participante}`,
+    });
+  } catch (error) {
+    console.error("Error al enviar el correo:", error);
+    res.status(500).json({
+      message: "Error al enviar el correo",
       error: error.message,
     });
   }

@@ -38,16 +38,16 @@ export default function Tabla({
               <span> Nivel</span>
             </div>
           </th>
-          <th onClick={() => onSort("mentora")}>
+          <th onClick={() => onSort("nombre_mentora")}>
             <div className="tablas__thContainer">
               <span> Mentora</span>
-              {renderSortArrow("mentora")}
+              {renderSortArrow("nombre_mentora")}
             </div>
           </th>
-          <th onClick={() => onSort("instructora")}>
+          <th onClick={() => onSort("nombre_instructora")}>
             <div className="tablas__thContainer">
               <span>Instructora</span>
-              {renderSortArrow("instructora")}
+              {renderSortArrow("nombre_instructora")}
             </div>
           </th>
           <th>
