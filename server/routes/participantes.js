@@ -430,7 +430,7 @@ router.put(
           [id],
         );
         const hasCapacity = capacityResult.rows[0].has_capacity;
-        if (!hasCapacity) {
+        if (hasCapacity === "false") {
           return res.status(400).json({
             success: false,
             message: "No hay lugares disponibles en esta sede",

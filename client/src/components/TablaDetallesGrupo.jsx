@@ -15,50 +15,43 @@ import useColaboradores from "../hooks/useAddColaboradores"; // Hook para obtene
 import useParticipantes from "../hooks/useAddParticipantes";
 import useMentoras from "../hooks/useAddMentora"; // Hook para obtener mentoras
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Hook para navegación
 
 export default function TablaDetallesGrupos() {
+  const navigate = useNavigate(); // Hook para navegación
   const { id } = useParams(); // Obtiene el ID del grupo desde la URL
   const { listado: grupos, loading, error } = useGrupoListado(id); // Usa el hook para obtener los datos
+  const { detalles, loading: loadingDetalles, error: errorDetalles } = useGrupoDetalles(id); // Hook para obtener detalles del grupo
+  const { mentora, loading: loadingMentora, error: errorMentora } = useGrupoMentora(id); // Hook para obtener mentoras
+  // Hook para obtener colaboradores disponibles
   const {
-    detalles,
-    loading: loadingDetalles,
-    error: errorDetalles,
-  } = useGrupoDetalles(id); // Hook para obtener detalles del grupo
+    colaboradores,
+    colaboradoresLoading,
+    colaboradoresError,
+    fetchColaboradores,
+    assignColaborador,
+  } = useColaboradores(id);
+  //Hook para obtener participantes disponibles
   const {
-    mentora,
-    loading: loadingMentora,
-    error: errorMentora,
-  } = useGrupoMentora(id); // Hook para obtener mentoras
+    participantes,
+    participantesLoading,
+    participantesError,
+    fetchParticipantes,
+    assignParticipante,
+  } = useParticipantes(id);
+  // Hook para obtener mentoras disponibles
+  const {
+    mentoras,
+    mentorasLoading,
+    mentorasError,
+    fetchMentoras,
+    assignMentora,
+  } = useMentoras(id);
 
-    // Hook para obtener colaboradores disponibles
-    const {
-      colaboradores,
-      colaboradoresLoading,
-      colaboradoresError,
-      fetchColaboradores,
-      assignColaborador,
-    } = useColaboradores(id);
-    //Hook para obtener participantes disponibles
-    const {
-      participantes,
-      participantesLoading,
-      participantesError,
-      fetchParticipantes,
-      assignParticipante,
-    } = useParticipantes(id);
-    // Hook para obtener mentoras disponibles
-    const {
-      mentoras,
-      mentorasLoading,
-      mentorasError,
-      fetchMentoras,
-      assignMentora,
-    } = useMentoras(id);
-  
-    //Hook para mantener el pop-up abierto
-    const [isColaboradorPopupOpen, setIsColaboradorPopupOpen] = useState(false); // Estado para el pop-up de colaboradores
-    const [isParticipantePopupOpen, setIsParticipantePopupOpen] = useState(false); // Estado para el pop-up de participantes
-    const [isMentoraPopupOpen, setIsMentoraPopupOpen] = useState(false); // Estado para el pop-up de mentoras
+  //Hook para mantener el pop-up abierto
+  const [isColaboradorPopupOpen, setIsColaboradorPopupOpen] = useState(false); // Estado para el pop-up de colaboradores
+  const [isParticipantePopupOpen, setIsParticipantePopupOpen] = useState(false); // Estado para el pop-up de participantes
+  const [isMentoraPopupOpen, setIsMentoraPopupOpen] = useState(false); // Estado para el pop-up de mentoras
 
   // Copia local para poder mutar el estado en cliente
   const [gruposList, setGruposList] = useState([]);
@@ -67,11 +60,9 @@ export default function TablaDetallesGrupos() {
   }, [grupos]);
 
   // Extrae los detalles del grupo
-  const { idioma = "N/A", nivel = "N/A" } = detalles || {};
+  const { idioma = "N/A", nivel = "N/A"} = detalles || {};
   //Extrae la mentora
-  const nombreMentora = mentora
-    ? mentora.nombre_completo
-    : "Sin mentora asignada";
+  const nombreMentora = mentora ? mentora.nombre_completo : "Sin mentora asignada";
 
   // Estado para el texto de búsqueda
   const [busqueda, setBusqueda] = useState("");
@@ -92,11 +83,7 @@ export default function TablaDetallesGrupos() {
   const [cupoSeleccionados, setCupoSeleccionados] = useState([]);
   const [mentoraSeleccionadas, setMentoraSeleccionadas] = useState([]);
   const [instructoraSeleccionadas, setInstructoraSeleccionadas] = useState([]);
-  const {
-    eliminarIntegrante,
-    loading: loadingEliminar,
-    error: errorEliminar,
-  } = useEliminarIntegrante(); // Usa el hook
+  const { eliminarIntegrante, loading: loadingEliminar, error: errorEliminar } = useEliminarIntegrante(); // Usa el hook
 
   // Función para ordenar un array de grupos según el campo y el orden seleccionado
   const ordenarGrupos = (data) => {
@@ -123,7 +110,8 @@ export default function TablaDetallesGrupos() {
 
     const estadoCupo = grupo.cupo > 0 ? "Disponible" : "Lleno";
     const coincideCupo =
-      cupoSeleccionados.length === 0 || cupoSeleccionados.includes(estadoCupo);
+      cupoSeleccionados.length === 0 ||
+      cupoSeleccionados.includes(estadoCupo);
 
     return coincideIdioma && coincideNivel && coincideCupo;
   });
@@ -148,48 +136,79 @@ export default function TablaDetallesGrupos() {
   };
 
   //Manejo de eliminaciones en vista detallada
-  const handleDelete = async (idIntegrante, rol) => {
-    console.log("idIntegrante", idIntegrante);
-    console.log("rol", rol);
-    const result = await eliminarIntegrante(id, idIntegrante, rol);
-    if (result.success) {
-      // Actualizar la lista local después de eliminar
-      setGruposList((prev) =>
-        prev.filter((grupo) => grupo.id_integrante !== idIntegrante),
-      );
-      alert(result.message);
-    } else {
-      alert(result.message);
-    }
-  };
+    const handleDelete = async (idIntegrante, rol) => {
+      const result = await eliminarIntegrante(id, idIntegrante, rol);
+      if (result.success) {
+        // Actualizar la lista local después de eliminar
+        setGruposList((prev) => prev.filter((grupo) => grupo.id_integrante !== idIntegrante));
+        alert(result.message);
+      } else {
+        alert(result.message);
+      }
+    };
 
-  // Función para refrescar la tabla de grupos
+      // Función para refrescar la tabla de grupos
   const fetchGrupos = async () => {
     try {
       const response = await axios.get(`/api/grupos/${id}/listado`);
       setGruposList(response.data.data); // Actualiza la lista de grupos
-      } catch (error) {
-        console.error("Error al refrescar los grupos:", error);
-      }
+    } catch (error) {
+      console.error("Error al refrescar los grupos:", error);
+    }
   };
-    
-    
-  // Función para refrescar la informacion de las mentoras
+
+
+      // Función para refrescar la informacion de las mentoras
   const actualizacionMentoras = async () => {
     try {
       const response = await axios.get(`/api/grupos/${id}/mentoras`);
-        setMentoraSeleccionadas(response.data.data); // Actualiza la lista de mentoras
-      } catch (error) {
-          console.error("Error al refrescar las mentoras:", error);
-        }
-  };
-  
+      setMentoraSeleccionadas(response.data.data); // Actualiza la lista de mentoras
+    } catch (error) {
+      console.error("Error al refrescar las mentoras:", error);
+    }
+  }
 
-  console.log("Mentora:", mentora);
+  const handleDeleteMentora = async (idMentora) => {
+    if (!idMentora) {
+      alert("No se pudo obtener el ID de la mentora.");
+      return;
+    }
+  
+    try {
+      const response = await axios.delete(`/api/grupos/${id}/mentoras/${idMentora}`);
+      if (response.data.success) {
+        alert(response.data.message);
+        setMentoraSeleccionadas([]); // Limpia la mentora seleccionada
+        window.location.reload(); // Recarga la página para reflejar los cambios
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error al eliminar la mentora:", error);
+      alert("Ocurrió un error al intentar eliminar la mentora.");
+    }
+  };
+
+  const handleDeleteGrupo = async () => {
+    try {
+      const response = await axios.delete(`/api/grupos/${id}`);
+      if (response.data.success) {
+        alert(response.data.message);
+        // Redirige al usuario a otra página después de eliminar el grupo
+        navigate("/admin/grupos"); // Cambia la ruta según tu aplicación
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error al eliminar el grupo:", error);
+      alert("Ocurrió un error al intentar eliminar el grupo.");
+    }
+  };
+
+
   return (
     <div className="tabla__containerBlancoMentora">
       {/* Encabezado y búsqueda */}
-
       <div className="tabla__container__tituloBusquedaGrupos">
         <h2 className="tabla__titulo">Grupo {id}</h2>
         <div className="tabla__contenedor_busquedaFiltros">
@@ -213,9 +232,15 @@ export default function TablaDetallesGrupos() {
        <div className="info__grupo">
           <p className="info__grupo__item"><span className="info__grupo__label">Idioma: </span>{idioma}</p>
           <p className="info__grupo__item"><span className="info__grupo__label">Nivel: </span>{nivel}</p>
-          <p className="info__grupo__item"><span className="info__grupo__label">Mentora: </span>{nombreMentora}</p>
+          <p className="info__grupo__item">
+            <span className="info__grupo__label">Mentora: </span>
+            {mentora && mentora.length > 0
+              ? mentora.map((m) => m.nombre_completo).join(", ")
+              : "Sin mentoras asignadas"}
+          </p>
         </div>
 
+      
       {/* Panel de filtros avanzados (modal) */}
       {mostrarFiltros && (
         <div
@@ -292,35 +317,47 @@ export default function TablaDetallesGrupos() {
           Agregar colaborador
         </button>
 
-      {/* Pop-up de selección de colaborador */}
-      {isColaboradorPopupOpen && (
-        <AgregarColaborador
-          onClose={() => setIsColaboradorPopupOpen(false)} // Cerrar el pop-up
-          onConfirm={(idColaborador) => {
-            assignColaborador(idColaborador, fetchGrupos); // Asignar colaborador y refrescar grupos
-            setIsColaboradorPopupOpen(false); // Cerrar el pop-up
-          }}
-          colaboradores={colaboradores}
-          colaboradoresLoading={colaboradoresLoading}
-          colaboradoresError={colaboradoresError}
-        />
-      )}
+        {/* Pop-up de selección de colaborador */}
+        {isColaboradorPopupOpen && (
+          <AgregarColaborador
+            onClose={() => setIsColaboradorPopupOpen(false)} // Cerrar el pop-up
+            onConfirm={(idColaborador) => {
+              assignColaborador(idColaborador, fetchGrupos); // Asignar colaborador y refrescar grupos
+              setIsColaboradorPopupOpen(false); // Cerrar el pop-up
+            }}
+            // Reemplaza la propiedad "colaboradores" en el pop-up de AgregarColaborador por el siguiente:
+            colaboradores={
+              gruposList.some((grupo) => grupo.rol === "Instructora")
+                ? colaboradores.filter((colaborador) =>
+                    ["Facilitadora", "Staff"].includes(colaborador.rol)
+                  )
+                : colaboradores.filter((colaborador) =>
+                  ["Instructora", "Facilitadora", "Staff"].includes(colaborador.rol)
+                )
+            }// Filtrar instructoras si ya hay una asignada
+            colaboradoresLoading={colaboradoresLoading}
+            colaboradoresError={colaboradoresError}
+          />
+        )}
         
         <button
-          className={mentora ? "btn-eliminarMentora" : "btn-agregarPersonaGrupo"}
-          onClick={() => {
-            if (mentora) {
-              // Acción para eliminar mentora
-              // handleDelete(mentora.id, "mentora");
+          className={mentora.length > 0 ? "btn-eliminarMentora" : "btn-agregarPersonaGrupo"}
+          onClick={async () => {
+            if (mentora.length > 0) {
+              const confirmacion = window.confirm(
+                "¿Estás seguro de que deseas eliminar a la mentora?"
+              );
+              if (confirmacion) {
+                console.log("Eliminando mentora con ID:", mentora[0]?.id_mentora);
+                await handleDeleteMentora(mentora[0]?.id_mentora); // Accede al primer elemento del arreglo
+              }
             } else {
-              // Acción para asignar mentora
-              // openAsignarMentoraModal();
               fetchMentoras(); // Cargar mentoras disponibles
               setIsMentoraPopupOpen(true); // Abrir el pop-up de mentoras
             }
           }}
         >
-          {mentora ? "Eliminar mentora" : "Asignar mentora"}
+          {mentora.length > 0 ? "Eliminar mentora" : "Asignar mentora"}
         </button>
         {/* Pop-up de selección de mentora */}
         {isMentoraPopupOpen && (
@@ -360,8 +397,21 @@ export default function TablaDetallesGrupos() {
           participantesError={participantesError}
         />
       )}
+
+        <button
+          className="btn-eliminarMentora"
+          onClick={async () => {
+            const confirmacion = window.confirm(
+              "¿Estás seguro de que deseas eliminar este grupo y sus asignaciones?"
+            );
+            if (confirmacion) {
+              await handleDeleteGrupo(); // Llama a la función para eliminar el grupo
+            }
+          }}
+        >
+          Eliminar grupo
+        </button>
       </div>
     </div>
   );
 }
-

@@ -743,7 +743,7 @@ router.get(
   },
 );
 
-// Get the mentora of a group
+// Get the mentora(s) of a group
 router.get(
   "/:id/mentoras",
   authenticateToken,
@@ -751,10 +751,11 @@ router.get(
   async (req, res) => {
     try {
       const { id } = req.params; // Group ID
-      // Get the group first to check permissions
+
+      // Check if the group exists
       const groupCheck = await pool.query(
         "SELECT id_sede FROM grupo WHERE id_grupo = $1",
-        [id],
+        [id]
       );
 
       if (groupCheck.rows.length === 0) {
@@ -773,25 +774,7 @@ router.get(
         });
       }
 
-      // get mentora
-      const mentora = await pool.query(
-        "SELECT id_mentora  FROM mentora_grupo WHERE id_grupo = $1",
-        [id],
-      );
-      // console.log("MENTORA");
-      // console.log(mentora);
-      // console.log(mentora.rows[0].id_mentora);
-
-      //check if the group has a mentora
-      if (!mentora.rows[0]) {
-        return res.status(200).json({
-          success: true,
-          message: "Mentora(s) del grupo obtenida(s) exitosamente",
-          data: null,
-        });
-      }
-
-      // Get mentora(s) assigned to the group with their details
+      // Get mentora(s) assigned to the group
       const mentoraResult = await pool.query(
         `SELECT
            m.id_mentora,
@@ -801,28 +784,26 @@ router.get(
            CONCAT(m.nombre, ' ', m.apellido_paterno, ' ', m.apellido_materno) AS nombre_completo,
            m.correo,
            m.id_sede
-        FROM mentora m
-         WHERE id_mentora = $1`,
-        [mentora.rows[0].id_mentora],
+         FROM mentora m
+         INNER JOIN mentora_grupo mg ON m.id_mentora = mg.id_mentora
+         WHERE mg.id_grupo = $1`,
+        [id]
       );
-
-      // If a group is expected to have only one mentora, you might send mentoraResult.rows[0]
-      // If multiple, send mentoraResult.rows
 
       res.status(200).json({
         success: true,
         message: "Mentora(s) del grupo obtenida(s) exitosamente",
-        data: mentoraResult.rows[0],
+        data: mentoraResult.rows, // Siempre devuelve un arreglo
       });
     } catch (error) {
-      console.error("Error al ver mentora to group:", error);
+      console.error("Error al obtener mentora(s) del grupo:", error);
       res.status(500).json({
         success: false,
         message: "Error al obtener la(s) mentora(s) del grupo",
         error: error.message,
       });
     }
-  },
+  }
 );
 
 // Add a mentora to a group
