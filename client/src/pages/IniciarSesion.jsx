@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import styles from "../styles/inicio_sesion.module.css";
 
 export default function IniciarSesion() {
@@ -9,6 +10,7 @@ export default function IniciarSesion() {
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
@@ -92,11 +94,25 @@ export default function IniciarSesion() {
             {emailError && <p className={styles.error}>{emailError}</p>}
           </label>
 
-          <label className={styles.letter_email}>
-            Contraseña
-            <input type="password" name="password" className={styles.box} />
-            {passwordError && <p className={styles.error}>{passwordError}</p>}
-          </label>
+                    <label className={styles.letter_email}>
+                        Contraseña
+                        <div className={styles.passwordContainer}>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                className={styles.box}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className={styles.eyeButton}
+                                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                            >
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </button>
+                        </div>
+                        {passwordError && <p className={styles.error}>{passwordError}</p>}
+                    </label>
 
           <div style={{ display: "flex", justifyContent: "center" }}>
             <button type="submit" className={styles.boton} disabled={loading}>
