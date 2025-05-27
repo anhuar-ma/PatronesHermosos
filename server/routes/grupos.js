@@ -258,7 +258,10 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
       "UPDATE participante SET id_grupo = NULL WHERE id_grupo = $1",
       [id],
     );
-
+    await pool.query(
+      "UPDATE colaborador SET id_grupo = NULL WHERE id_grupo = $1",
+      [id],
+    );
     // First delete records from mentora_grupo table
     await pool.query("DELETE FROM mentora_grupo WHERE id_grupo = $1", [id]);
 
