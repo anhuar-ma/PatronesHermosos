@@ -74,7 +74,7 @@ router.get(
       const result = await pool.query(
         `
             SELECT
-                s.nombre AS Sede,
+                s.nombre AS nombre_sede,
                 (SELECT COUNT(*) FROM participante WHERE id_sede = s.id_sede AND estado = 'Aceptado') AS alumnas_aceptadas,
                 (SELECT COUNT(*) FROM participante WHERE id_sede = s.id_sede AND estado = 'Rechazado') AS alumnas_rechazadas,
                 (SELECT COUNT(*) FROM participante WHERE id_sede = s.id_sede AND estado = 'Pendiente') AS alumnas_pendientes,

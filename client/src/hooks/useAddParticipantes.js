@@ -15,7 +15,7 @@ export default function useParticipantes(idGrupo) {
       setParticipantes(response.data.data);
     } catch (error) {
       console.error("Error al obtener participantes:", error);
-      setParticipantesError("No se pudieron cargar los participantes.");
+      setParticipantesError("No se pudieron cargar los participantes. ");
     } finally {
       setParticipantesLoading(false);
     }
@@ -32,7 +32,7 @@ export default function useParticipantes(idGrupo) {
       refreshGrupos(); // Refrescar la tabla de grupos
     } catch (error) {
       console.error("Error al asignar colaborador:", error);
-      alert("No se pudo asignar el colaborador.");
+      alert("Error al asignar el participante. Verifique que el cupo no este lleno.");
     }
   };
 
