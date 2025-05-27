@@ -43,6 +43,31 @@ const AdminDashboard = () => {
     }
   };
 
+  // Add this new function for database deletion
+  const handleDeleteDatabase = async () => {
+    // Confirm deletion with a warning message
+    const confirmed = window.confirm(
+      "¡ADVERTENCIA! Esta acción eliminará TODOS los datos de la base de datos y no se puede deshacer. ¿Estás seguro que deseas continuar?"
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+      const response = await axios.delete("/api/deleteDB");
+      
+      if (response.data.success) {
+        alert("Base de datos vaciada exitosamente");
+        // Optional: reload the page to refresh any statistics
+        window.location.reload();
+      } else {
+        alert(`Error: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error("Error al eliminar la base de datos:", error);
+      alert(`Error al eliminar la base de datos: ${error.response?.data?.message || error.message}`);
+    }
+  };
+
   return (
     <div className="admin-dashboard-content">
       <h1 className="adminDashboard__tituloBienvenida">
@@ -77,7 +102,7 @@ const AdminDashboard = () => {
 
       <div
         className="download-statistics-container"
-        style={{ marginBottom: "20px", textAlign: "right" }}
+        style={{ marginBottom: "20px", textAlign: "right", display: "flex", justifyContent: "flex-end", gap: "10px" }}
       >
         <button
           onClick={downloadStatistics}
@@ -95,6 +120,26 @@ const AdminDashboard = () => {
         >
           <i className="fas fa-download"></i> Descargar Estadísticas en Excel
         </button>
+
+        {/* Add the new delete database button - only visible to admin (rol === 0) */}
+        {rol === 0 && (
+          <button
+            onClick={handleDeleteDatabase}
+            style={{
+              padding: "10px 15px",
+              backgroundColor: "#D32F2F", // Red color for warning
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <i className="fas fa-trash-alt"></i> Eliminar Base de Datos
+          </button>
+        )}
       </div>
 
       {/* <div className="">

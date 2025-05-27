@@ -13,6 +13,7 @@ import sedesRoutes from "./routes/sedes.js";
 import authRoutes from "./routes/authRoute.js";
 import diplomasRoutes from "./routes/diplomas.js";
 import estadisticas from "./routes/estadisticas.js";
+import deleteDB from "./routes/deleteDB.js";
 import dotenv from "dotenv";
 import multer from "multer";
 import path from "path";
@@ -74,6 +75,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api/diplomas", diplomasRoutes);
 //estadisticas
 app.use("/api/estadisticas", estadisticas);
+app.use("/api/deleteDB", deleteDB);
 
 // Listen on all interfaces
 app.listen(process.env.PORT || 8000, "0.0.0.0", () => {
