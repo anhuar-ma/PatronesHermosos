@@ -99,9 +99,10 @@ router.post("/", authenticateToken, checkSedeAccess, async (req, res) => {
         idioma,
         nivel,
         cupo,
-        id_sede
-      ) VALUES ($1, $2, $3, $4) RETURNING *`,
-      [idioma, nivel, cupo, id_sede],
+        id_sede,
+        current_cupo
+      ) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [idioma, nivel, cupo, id_sede, 0],
     );
 
     res.status(201).json({
@@ -760,7 +761,7 @@ router.get(
       // Check if the group exists
       const groupCheck = await pool.query(
         "SELECT id_sede FROM grupo WHERE id_grupo = $1",
-        [id]
+        [id],
       );
 
       if (groupCheck.rows.length === 0) {
@@ -808,7 +809,7 @@ router.get(
         error: error.message,
       });
     }
-  }
+  },
 );
 
 // Add a mentora to a group
@@ -1055,6 +1056,15 @@ router.post(
         });
       }
 
+      // Check if the user has access to this group
+      const groupSedeId = groupCheck.rows[0].id_sede;
+      if (req.user.rol !== 0 && req.user.id_sede !== groupSedeId) {
+        return res.status(403).json({
+          success: false,
+          message: "Permisos insuficientes para modificar este grupo",
+        });
+      }
+
       const capacity = await pool.query("SELECT check_group_capacity($1)", [
         id,
       ]);
@@ -1063,15 +1073,6 @@ router.post(
         return res.status(404).json({
           success: false,
           message: "Cupo de grupo lleno",
-        });
-      }
-
-      // Check if the user has access to this group
-      const groupSedeId = groupCheck.rows[0].id_sede;
-      if (req.user.rol !== 0 && req.user.id_sede !== groupSedeId) {
-        return res.status(403).json({
-          success: false,
-          message: "Permisos insuficientes para modificar este grupo",
         });
       }
 
