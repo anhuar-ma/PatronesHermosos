@@ -14,13 +14,11 @@ export default function IniciarSesion() {
   const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
-  // Add this effect to wait for authentication before navigation
+  // Modified effect to handle page reload on successful authentication
   useEffect(() => {
     if (loginSuccess && isAuthenticated) {
-      console.log("Entradooooo");
-      console.log(user);
-      console.log("Current user role:", user?.rol);
-      navigate("/admin/inicio");
+      // Force page reload to reset application state
+      window.location.href = "/admin/inicio";
     }
   }, [loginSuccess, isAuthenticated, navigate, user]);
 
@@ -57,6 +55,10 @@ export default function IniciarSesion() {
     }
 
     try {
+      // Clear any previous authentication tokens from storage
+      localStorage.clear();
+      sessionStorage.clear();
+
       // Use the login function from auth context
       setLoading(true);
       const result = await login(email, password);
