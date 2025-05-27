@@ -89,9 +89,9 @@ router.post("/", upload.single("archivo_tutor"), async (req, res) => {
       data: result.rows[0],
       file: req.file
         ? {
-            filename: req.file.filename,
-            path: permiso_padre_tutor,
-          }
+          filename: req.file.filename,
+          path: permiso_padre_tutor,
+        }
         : null,
     });
   } catch (error) {

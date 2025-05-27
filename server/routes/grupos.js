@@ -760,7 +760,7 @@ router.get(
       // Check if the group exists
       const groupCheck = await pool.query(
         "SELECT id_sede FROM grupo WHERE id_grupo = $1",
-        [id],
+        [id]
       );
 
       if (groupCheck.rows.length === 0) {
@@ -808,7 +808,7 @@ router.get(
         error: error.message,
       });
     }
-  },
+  }
 );
 
 // Add a mentora to a group
