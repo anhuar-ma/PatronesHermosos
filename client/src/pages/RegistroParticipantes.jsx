@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import axios from "axios";
 import "../styles/registros.css";
 import useSedesNames from "../hooks/useSedesNombres";
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/plain.css'; // Usa el tema más limpio
+import { useEffect } from "react";
 
 export default function RegistroParticipantes() {
   const [fileName, setFileName] = useState("");
@@ -12,14 +15,30 @@ export default function RegistroParticipantes() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState(null);
   const { sedes, loading: sedesLoading, error: sedesError } = useSedesNames();
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   console.log(sedes);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch, // Agrega watch aquí
+    setValue, // Asegúrate de incluir setValue si lo usas
   } = useForm();
+
+  useEffect(() => {
+  register("telefono_tutor", {
+    required: "Este campo es obligatorio.",
+    validate: (value) => {
+      const digitsOnly = value.replace(/\D/g, ""); // Elimina cualquier cosa que no sea número
+      const digitsWithoutCountryCode = digitsOnly.replace(/^52/, ""); // Elimina lada mexicana (52)
+      return (
+        digitsWithoutCountryCode.length === 10 ||
+        "El número debe tener 10 dígitos (sin contar la lada)"
+      );
+    },
+  });
+}, [register]);
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -36,37 +55,41 @@ export default function RegistroParticipantes() {
       const formData = new FormData();
 
       // Add all form fields to FormData
-      formData.append('nombre_alumna', data.nombre_alumna);
-      formData.append('apellido_paterno', data.apellido_paterno_alumna);
-      formData.append('apellido_materno', data.apellido_materno_alumna || '');
-      formData.append('edad', data.edad_alumna);
-      formData.append('correo', data.correo_alumna);
-      formData.append('escuela', data.escuela);
-      formData.append('escolaridad', data.escolaridad);
-      formData.append('sede_deseada', data.sede_deseada);
-      formData.append('idioma', data.idioma);
-      formData.append('nombre_tutor', data.nombre_tutor);
-      formData.append('apellido_paterno_tutor', data.apellido_paterno_tutor);
-      formData.append('apellido_materno_tutor', data.apellido_materno_tutor || '');
-      formData.append('correo_tutor', data.correo_tutor);
-      formData.append('telefono_tutor', data.telefono_tutor);
+      formData.append("nombre_alumna", data.nombre_alumna);
+      formData.append("apellido_paterno", data.apellido_paterno_alumna);
+      formData.append("apellido_materno", data.apellido_materno_alumna || "");
+      formData.append("edad", data.edad_alumna);
+      formData.append("correo", data.correo_alumna);
+      formData.append("escuela", data.escuela);
+      formData.append("escolaridad", data.escolaridad);
+      formData.append("sede_deseada", data.sede_deseada);
+      formData.append("idioma", data.idioma);
+      formData.append("nombre_tutor", data.nombre_tutor);
+      formData.append("apellido_paterno_tutor", data.apellido_paterno_tutor);
+      formData.append(
+        "apellido_materno_tutor",
+        data.apellido_materno_tutor || ""
+      );
+      formData.append("correo_tutor", data.correo_tutor);
+      formData.append("telefono_tutor", data.telefono_tutor);
 
       // Add the file to FormData
-      const fileInput = document.getElementById('archivo_tutor');
+      const fileInput = document.getElementById("archivo_tutor");
       if (fileInput.files[0]) {
-        formData.append('archivo_tutor', fileInput.files[0]);
+        formData.append("archivo_tutor", fileInput.files[0]);
       }
 
       // Send the FormData with file to the server
-      const response = await axios.post('/api/participantes', formData, {
+      const response = await axios.post("/api/participantes", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       setSubmitResult({
         success: true,
-        message: "¡Registro exitoso! La participante ha sido registrada correctamente."
+        message:
+          "¡Registro exitoso! La participante ha sido registrada correctamente.",
       });
       setError("");
       setFileError("");
@@ -79,7 +102,7 @@ export default function RegistroParticipantes() {
         success: false,
         message: `Error en el registro: ${
           error.response?.data?.message || "No se pudo completar el registro"
-        }`
+        }`,
       });
     } finally {
       setIsSubmitting(false);
@@ -121,7 +144,9 @@ export default function RegistroParticipantes() {
               <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${errors.nombre_alumna ? "registro__input-error" : ""}`}
+                className={`registro__input ${
+                  errors.nombre_alumna ? "registro__input-error" : ""
+                }`}
                 {...register("nombre_alumna", {
                   required: true,
                 })}
@@ -135,7 +160,9 @@ export default function RegistroParticipantes() {
               <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${errors.apellido_paterno_alumna ? "registro__input-error" : ""}`}
+                className={`registro__input ${
+                  errors.apellido_paterno_alumna ? "registro__input-error" : ""
+                }`}
                 {...register("apellido_paterno_alumna", {
                   required: true,
                 })}
@@ -163,7 +190,9 @@ export default function RegistroParticipantes() {
               {/* <input type="email" {...register("correo_alumna", { required: true })} />
                             {errors.correo_alumna && <p className="error">Este campo es obligatorio</p>} */}
               <input
-                className={`registro__input ${errors.correo_alumna ? "registro__input-error" : ""}`}
+                className={`registro__input ${
+                  errors.correo_alumna ? "registro__input-error" : ""
+                }`}
                 type="email"
                 {...register("correo_alumna", {
                   required: "Este campo es obligatorio.",
@@ -183,21 +212,31 @@ export default function RegistroParticipantes() {
               Edad <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${errors.edad_alumna ? "registro__input-error" : ""}`}
+                className={`registro__input ${
+                  errors.edad_alumna ? "registro__input-error" : ""
+                }`}
                 type="number"
                 {...register("edad_alumna", {
-                  required: true,
+                  required: "Este campo es obligatorio.",
+                  validate: {
+                    positive: (value) =>
+                      value > 0 || "La edad debe ser un número positivo.",
+                    maxLimit: (value) =>
+                      value < 100 || "La edad debe ser menor a 100.",
+                  },
                 })}
               />
               {errors.edad_alumna && (
-                <p className="registro__error">Este campo es obligatorio</p>
+                <p className="registro__error">{errors.edad_alumna.message}</p>
               )}
             </label>
             <label>
               Escuela <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${errors.escuela ? "registro__input-error" : ""}`}
+                className={`registro__input ${
+                  errors.escuela ? "registro__input-error" : ""
+                }`}
                 {...register("escuela", {
                   required: true,
                 })}
@@ -282,7 +321,9 @@ export default function RegistroParticipantes() {
               <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${errors.nombre_tutor ? "registro__input-error" : ""}`}
+                className={`registro__input ${
+                  errors.nombre_tutor ? "registro__input-error" : ""
+                }`}
                 {...register("nombre_tutor", {
                   required: true,
                 })}
@@ -296,7 +337,9 @@ export default function RegistroParticipantes() {
               <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${errors.apellido_paterno_tutor ? "registro__input-error" : ""}`}
+                className={`registro__input ${
+                  errors.apellido_paterno_tutor ? "registro__input-error" : ""
+                }`}
                 {...register("apellido_paterno_tutor", {
                   required: true,
                 })}
@@ -308,7 +351,9 @@ export default function RegistroParticipantes() {
             <label>
               Apellido materno del tutor <br />
               <input
-                className={`registro__input ${errors.apellido_materno_tutor ? "registro__input-error" : ""}`}
+                className={`registro__input ${
+                  errors.apellido_materno_tutor ? "registro__input-error" : ""
+                }`}
                 {...register("apellido_materno_tutor", {
                   required: false,
                 })}
@@ -323,7 +368,9 @@ export default function RegistroParticipantes() {
               {/* <input type="email" {...register("correo_tutor", { required: true })} />
                             {errors.correo_tutor && <p className="error">Este campo es obligatorio</p>} */}
               <input
-                className={`registro__input ${errors.correo_tutor ? "input-error" : ""}`}
+                className={`registro__input ${
+                  errors.correo_tutor ? "input-error" : ""
+                }`}
                 type="email"
                 {...register("correo_tutor", {
                   required: "Este campo es obligatorio.",
@@ -341,20 +388,20 @@ export default function RegistroParticipantes() {
               Teléfono del tutor{" "}
               <span className="registro__obligatorio">*</span>
               <br />
-              <input
-                className={`registro__input ${errors.telefono_tutor ? "registro__input-error" : ""}`}
-                type="tel"
-                {...register("telefono_tutor", {
-                  required: true,
-                })}
+             <PhoneInput
+                country={"mx"}
+                value={watch("telefono_tutor")}
+                onChange={(value) => setValue("telefono_tutor", value, { shouldValidate: true })}
+                inputClass="mi-input-telefono"
+                buttonClass="mi-boton-bandera"
+                containerClass="mi-contenedor-phone"
               />
               {errors.telefono_tutor && (
-                <p className="registro__error">Este campo es obligatorio</p>
+                <p className="registro__error">{errors.telefono_tutor.message}</p>
               )}
             </label>
             <label>
-              Permiso Firmado{" "}
-              <span className="registro__obligatorio">*</span>
+              Permiso Firmado <span className="registro__obligatorio">*</span>
               <br />
               <input
                 type="file"
