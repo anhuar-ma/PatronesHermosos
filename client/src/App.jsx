@@ -19,6 +19,7 @@ import RegistroMentoras from "./pages/admin/RegistroMentora.jsx";
 import RegistroCoordinadoraAsociada from "./pages/admin/RegistroCoordinadoraAsociada.jsx";
 import RegistroGrupos from "./pages/admin/RegistroGrupo";
 import DetallesGrupo from "./pages/admin/DetallesGrupo";
+import EnvioExitoso from "./pages/EnvioExitoso.jsx";
 
 import AdminDashboard from "./pages/admin/adminHome";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
@@ -57,6 +58,7 @@ function App() {
         <Route path="/colaborador" element={<RegistroColaboradores />} />
         <Route path="/sede" element={<RegistroSedes />} />
         <Route path="/sesion" element={<IniciarSesion />} />
+        <Route path="/envioExitoso" element={<EnvioExitoso />} />
 
         {/* Protected admin routes */}
 

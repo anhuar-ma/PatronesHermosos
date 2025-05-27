@@ -36,7 +36,7 @@ const TablaComparativa = () => {
             <th>Alumnas aceptadas</th>
             <th>Alumnas rechazadas</th>
             <th>Alumnas pendientes</th>
-            <th>Staff aceptado</th>
+            <th>Colaboradores aceptados</th>
           </tr>
         </thead>
         <tbody>

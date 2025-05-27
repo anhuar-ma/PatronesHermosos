@@ -2,9 +2,12 @@ import "../styles/registros.css";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import useSedesNames from "../hooks/useSedesNombres";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import axios from "axios";
 
 export default function RegistroColaboradores() {
+    const navigate = useNavigate(); // Inicializa el hook
+
   const {
     register,
     handleSubmit,
@@ -45,9 +48,10 @@ export default function RegistroColaboradores() {
         // message: "Registro exitoso",
       });
 
-      window.alert("Registro exitoso!");
+      // window.alert("Registro exitoso!");
 
-      console.log(response.data);
+        // Redirige a EnvioExitoso.jsx
+      navigate("/envioExitoso");
     } catch (error) {
       window.alert("Error en el registro");
       setSubmitResult({
