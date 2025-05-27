@@ -150,7 +150,7 @@ export default function RegistroColaboradores() {
                       message: "Correo electrónico inválido",
                     },
                   })}
-                  type="email"
+                  // type="email"
                 />
                 {errors.correo_colaborador && (
                   <p className="registro__error">{errors.correo_colaborador.message}</p>
@@ -198,7 +198,7 @@ export default function RegistroColaboradores() {
                 )}
               </label>
 
-              <div className="registro__container__2inputsInRow">
+              {/* <div className="registro__container__2inputsInRow"> */}
                 <label>
                   Idioma de preferencia <span className="registro__obligatorio">*</span>
                   <br />
@@ -220,7 +220,7 @@ export default function RegistroColaboradores() {
                 </label>
 
                 <label>
-                  Nivel de dominio <span className="registro__obligatorio">*</span>
+                  Nivel del grupo que quieres impartir <span className="registro__obligatorio">*</span>
                   <br />
                   <select
                     className={`registro__select ${
@@ -231,14 +231,14 @@ export default function RegistroColaboradores() {
                     })}
                   >
                     <option value="">Seleccionar</option>
-                    <option value="Basico">Básico</option>
-                    <option value="Avanzado">Avanzado</option>
+                    <option value="Basico">Básico (HTML)</option>
+                    <option value="Avanzado">Avanzado (Python)</option>
                   </select>
                   {errors.nivel_dominio && (
                     <p className="registro__error">{errors.nivel_dominio.message}</p>
                   )}
                 </label>
-              </div>
+              {/* </div> */}
 
               <label>
                 Carrera <span className="registro__obligatorio">*</span>
