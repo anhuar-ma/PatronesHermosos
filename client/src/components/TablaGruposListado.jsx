@@ -64,8 +64,8 @@ export default function Tabla({
             <td>{grupo.id_grupo}</td>
             <td>{grupo.idioma}</td>
             <td>{grupo.nivel}</td>
-            <td>{grupo.nombre_mentora}</td>
-            <td>{grupo.nombre_instructora}</td>
+            <td>{grupo.nombre_mentora?.trim() ? grupo.nombre_mentora : "Sin asignar"}</td>
+            <td>{grupo.nombre_instructora?.trim() ? grupo.nombre_instructora : "Sin asignar"}</td>
             <td style={{ textAlign: 'center', verticalAlign: 'middle' }} >{grupo.cupo - grupo.current_cupo}</td>
             <td>
               <button
