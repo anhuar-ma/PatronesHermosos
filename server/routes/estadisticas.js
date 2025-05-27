@@ -16,7 +16,7 @@ router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
     let query;
     let params = [];
 
-    if (req.body.rol === 0) {
+    if (req.user.rol === 0) {
       query = `
             SELECT
                (SELECT COUNT(*) FROM participante WHERE estado = 'Aceptado') AS participantes_aceptadas_nacional,

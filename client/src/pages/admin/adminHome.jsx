@@ -11,7 +11,8 @@ import useCurrentRol from "../../hooks/useCurrentRol";
 import axios from "axios";
 
 const AdminDashboard = () => {
-  const currentRol = useCurrentRol();
+  const { rol } = useCurrentRol();
+  // console.log("CURRENT ROL", currentRol);
   const downloadStatistics = async () => {
     try {
       // Make a request to get the Excel file
@@ -49,10 +50,10 @@ const AdminDashboard = () => {
       </h1>
       <p>Visión general del estado de las sedes, cursos y alumnas.</p>
 
-      {currentRol === 1 && 
-      <div className="adminDashboard__chart-box">
-        <TablaCoodinadoraAsociada />
-      </div>}
+      {rol === 1 &&
+        <div className="adminDashboard__chart-box">
+          <TablaCoodinadoraAsociada />
+        </div>}
 
       <KPICards />
 
@@ -65,10 +66,10 @@ const AdminDashboard = () => {
         </div>
       </div> */}
 
-       {currentRol === 0 &&  <div className="adminDashboard__chart-box">
-      <TablaComparativa />
-        </div>}
-      
+      {rol === 0 && <div className="adminDashboard__chart-box">
+        <TablaComparativa />
+      </div>}
+
       {/* <div className="adminDashboard__chart-box">
         <h2>Inicio de Actividades por Sede</h2>
         <TablaEstadoSedes />
