@@ -39,18 +39,18 @@ function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
-    // const token = localStorage.getItem("token");
-    const currentRol    = useCurrentRol();
+  // const token = localStorage.getItem("token");
+  const { rol } = useCurrentRol();
 
-    return (
-      <AuthProvider>
-        {
-          isAdminRoute
-            ? (currentRol === 0
-                ? <AdminNavbar />
-                : <AdminNavbarSede />)
-            : <Navbar />
-        }
+  return (
+    <AuthProvider>
+      {
+        isAdminRoute
+          ? (rol === 0
+            ? <AdminNavbar />
+            : <AdminNavbarSede />)
+          : <Navbar />
+      }
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
@@ -97,7 +97,7 @@ function App() {
 
           <Route
             path="/admin/diplomas"
-            element={<GenerateDiplomas/>}
+            element={<GenerateDiplomas />}
           />
 
           <Route
@@ -115,7 +115,7 @@ function App() {
             element={<DetalleMentora />}
           />
 
-            <Route
+          <Route
             path="/admin/mentoras"
             element={<ListadoMentoras />}
           />
