@@ -246,12 +246,12 @@ export default function RegistroParticipantes() {
               )}
             </label>
             <label>
-              Sede deseada para registro{" "}
+              Sede deseada para registro
               <span className="registro__obligatorio">*</span>
               <br />
               <select
-                className={` registro__select${
-                  errors.sede_deseada ? "registro__select-error" : ""
+                className={`registro__select${
+                  errors.sede_deseada ? " select-error" : ""
                 }`}
                 {...register("sede_deseada", {
                   required: true,
@@ -295,7 +295,7 @@ export default function RegistroParticipantes() {
                 <br />
                 <select
                   className={`registro__select ${
-                    errors.escolaridad ? "select-error" : ""
+                    errors.idioma ? "select-error" : ""
                   }`}
                   {...register("idioma", {
                     required: true,
