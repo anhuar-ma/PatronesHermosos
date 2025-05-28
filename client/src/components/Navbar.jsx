@@ -47,19 +47,18 @@ const NavContainer = styled.nav`
   .logo-container {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 0.4rem;
     z-index: 5;
   }
 
   img {
-    width: 120px;
+    width: 7rem;
     height: auto;
   }
 
   h1 {
     color: white;
     font-size: 2.0rem;
-    font-weight: 400;
     white-space: nowrap;
     font-weight: bold;
   }
@@ -71,10 +70,9 @@ const NavContainer = styled.nav`
     color: white;
     display: block;
     font-weight: bold;
-    margin-left: 30px;
+    margin-left: 1rem;
     font-size: 2rem;
   }
-
   .links {
       padding: 2rem 2rem;
       position: initial;
@@ -90,11 +88,10 @@ const NavContainer = styled.nav`
   .link {
     color: white;
     text-decoration: none;
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     font-weight: bold;
     text-align: center;
     transition: color 0.3s ease, transform 0.3s ease;
-
     &:hover {
       color: #f4a261;
       transform: scale(1.1);
@@ -106,9 +103,6 @@ const NavContainer = styled.nav`
     opacity: 1;
     display: flex;
   }
-
-  
-
   .burguer {
     display: block;
     cursor: pointer;
@@ -142,11 +136,10 @@ const NavContainer = styled.nav`
       transition: transform 0.3s ease, opacity 0.3s ease;
       z-index: 5;
       padding-top: 4rem;           
-      gap: 2rem; 
+      gap: 4rem; 
       padding-left: 3rem;
     }
      
-
     .links.active {
       transform: translateY(0);
       opacity: 1;
@@ -154,7 +147,7 @@ const NavContainer = styled.nav`
     }
     h1 {
       color: white;
-      font-size: 1.8rem;
+
       font-weight: 400;
       white-space: nowrap;
       font-weight: bold;
@@ -163,11 +156,9 @@ const NavContainer = styled.nav`
       color: white;
       display: block;
       font-weight: bold;
-      margin-left: 30px;
-      font-size: 1.8rem;
     }
     img {
-      width: 70px;
+      width: 7rem;
       height: auto;
     }
       @keyframes fadeInSlide {
@@ -183,7 +174,6 @@ const NavContainer = styled.nav`
   @media (max-width: 767px) {
     h1 {
       color: white;
-      font-size: 1rem;
       font-weight: 400;
       white-space: nowrap;
       font-weight: bold;
@@ -192,14 +182,12 @@ const NavContainer = styled.nav`
       color: white;
       display: block;
       font-weight: bold;
-      margin-left: 30px;
-      font-size: 1rem;
     }
   }
     .link {
       color: white;
       text-decoration: none;
-      font-size: 1.3rem;
+      font-size: 2rem;
       font-weight: bold;
       text-align: center;
       opacity: 0;

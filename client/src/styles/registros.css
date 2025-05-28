@@ -15,7 +15,7 @@ body {
   padding: 10px;
   border-radius: 8px;
   border: 2px solid #ccc;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .mi-boton-bandera {
@@ -27,16 +27,14 @@ body {
 .mi-contenedor-phone {
   width: 100%;
 }
-
-
 .register-container {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
   width: 100%;
-  padding-top: 100px;
-  padding-bottom: 100px;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
   overflow-y: auto;
 }
 
@@ -65,8 +63,8 @@ body {
   width: 50%;
   border: 1px solid #000000;
   border-radius: 10px;
-  padding: 40px 60px;
-  margin: 20px;
+  padding: 2rem 3rem;
+  margin: 1rem;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
   background-color: white;
 }
@@ -74,13 +72,13 @@ body {
 .registro__titulo {
   text-align: center;
   text-transform: uppercase;
-  color: #9e629a;
+  color: var(--color-primario);
 }
 
 .registro__obligatorio {
   display: inline-block;
   white-space: nowrap;
-  color: #ec002b;
+  color: red;
   margin-left: 0.3rem;
 }
 
@@ -89,7 +87,7 @@ body {
   margin-left: -2rem;
   margin-bottom: 0rem;
 }
-registro__tituloSeccionGrupo {
+.sregistro__tituloSeccionGrupo {
   font-size: 1.5rem;
   margin-left: -2rem;
   margin-bottom: 2rem;
@@ -97,14 +95,14 @@ registro__tituloSeccionGrupo {
 .registro__instrucciones {
   font-weight: normal;
   font-size: 1rem;
-  color: #9e629a;
+  color: var(--color-primario);
   margin-top: 0rem;
   margin-left: -2rem;
 }
 
 .registro__formulario label {
   display: block;
-  margin-bottom: 30px;
+  margin-bottom: 1.6rem;
   font-size: 1.2rem;
 }
 
@@ -112,7 +110,7 @@ registro__tituloSeccionGrupo {
   justify-content: center;
   padding-left: 2rem;
   padding-right: 2rem;
-  margin-top: 20px;
+  margin-top: 1.2rem;
 }
 
 .registro__input {
@@ -126,7 +124,7 @@ registro__tituloSeccionGrupo {
   border-radius: 8px;
   width: 60%;
   height: 2rem;
-  background-color: #7b787a; /* Gris original */
+  background-color: #7b787a;
   color: #ffffff;
   margin-top: 0.5rem;
   border: none;
@@ -135,9 +133,9 @@ registro__tituloSeccionGrupo {
   transform: scale(1);
 }
 .registro__botonGrisArchivos:hover {
-  background-color: #5a5859; /* Gris un poco más oscuro */
-  transform: scale(1.03); /* Sutil aumento de tamaño */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave para profundidad */
+  background-color: #5a5859; 
+  transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .registro__contenedor__botonSubmit {
@@ -145,15 +143,13 @@ registro__tituloSeccionGrupo {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 2rem;
 }
 
 .registro__botonMorado {
   border-radius: 5px;
-  /* width: 150px; */
-  /* height: 35px; */
   border: none;
-  background-color: #9e629a;
+  background-color: var(--color-primario);
   color: #ffffff;
   padding: 0.5rem 1rem;
 }
@@ -165,9 +161,9 @@ registro__tituloSeccionGrupo {
   color: #ffffff;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: all 0.3s ease; /* Suaviza todos los cambios */
-  transform: scale(1.05); /* Estado inicial */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Agrega una sombra para resaltar */
+  transition: all 0.3s ease; 
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 .registro__select {
   background-color: #fff;
@@ -180,18 +176,18 @@ registro__tituloSeccionGrupo {
   width: 100%;
 }
 .registro__error {
-  color: #ec002b;
+  color: red;
   margin-top: 0.6rem;
   font-weight: bold;
 }
 
 .registro__input-error {
-  border: 1px solid #ec002b !important;
+  border: 1px solid red !important;
   border-radius: 0.3rem;
 }
 
 .registro__select.select-error {
-  border-color: #ec002b !important;
+  border-color: red !important;
 }
 
 #nombre_sede{
@@ -246,7 +242,6 @@ registro__tituloSeccionGrupo {
 
   .registro__container__2inputsInRow label {
     flex: 1;
-    /* display: flex; */
     flex-direction: column;
   }
   .registro__input {
@@ -279,9 +274,6 @@ registro__tituloSeccionGrupo {
 		margin-left: -1.2rem;
 		margin-bottom: 0rem;
 	}
-	/* .registro__tituloSeccion h4 {
-		font-size: 4rem;
-	} */
 
   .registro__formulario label {
     display: block;
@@ -291,7 +283,7 @@ registro__tituloSeccionGrupo {
 	.registro__instrucciones {
 		font-weight: normal;
 		font-size: 1rem;
-		color: #9e629a;
+		color: var(--color-primario);
 		margin-top: 0rem;
 		margin-left: -1.2rem;
 	}
@@ -335,7 +327,7 @@ registro__tituloSeccionGrupo {
 	.registro__instrucciones {
 		font-weight: normal;
 		font-size: 1rem;
-		color: #9e629a;
+		color: var(--color-primario);
 		margin-top: 0rem;
 		margin-left: -1rem;
 	}
@@ -345,7 +337,7 @@ registro__tituloSeccionGrupo {
   .registro__instrucciones {
     font-weight: normal;
     font-size: 0.8rem;
-    color: #9e629a;
+    color: var(--color-primario);
   }
   .registro__formulario {
     justify-content: center;

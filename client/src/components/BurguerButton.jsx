@@ -62,7 +62,7 @@ const Burguer = styled.div`
   }
   /* Animación para transformar en "X" */
   .is-active .line:nth-child(1) {
-    transform: translateY(10px) rotate(45deg);
+    transform: translateY(0.7rem) rotate(45deg);
   }
 
   .is-active .line:nth-child(2) {
@@ -70,6 +70,6 @@ const Burguer = styled.div`
   }
 
   .is-active .line:nth-child(3) {
-    transform: translateY(-10px) rotate(-45deg);
+    transform: translateY(-1rem) rotate(-45deg);
   }
 `;
