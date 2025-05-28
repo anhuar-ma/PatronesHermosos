@@ -8,6 +8,7 @@ import { useFetchParticipante } from "../../hooks/useFetchParticipante";
 import "../../styles/ViewDetails.css";
 import useCurrentRol from "../../hooks/useCurrentRol";
 import CambiarGrupo from "../../components/CambiarGrupo";
+import { FaArrowLeft } from "react-icons/fa";
 import useGrupos from "../../hooks/useGrupos";
 
 export default function DetalleParticipante() {
@@ -26,6 +27,13 @@ export default function DetalleParticipante() {
   const [mostrarCambiarGrupo, setMostrarCambiarGrupo] = useState(false);
   const { grupos, loading: gruposLoading, error: gruposError } = useGrupos();
   const currentRol = useCurrentRol();
+    // Agrega un estado para errores
+    const [errors, setErrors] = useState({});
+
+    // Función para regresar
+    const handleGoBack = () => {
+      navigate(-1);
+    };
 
 
   const handleDelete = async () => {
@@ -63,6 +71,9 @@ export default function DetalleParticipante() {
   return (
     <div className="background__view">
       <div className="colaborador-card">
+        <button className="btn-regresar" onClick={handleGoBack}>
+            <FaArrowLeft className="btn-regresar__icon" /> Regresar
+        </button>
         <div className="header-actions">
           <h2 className="title__view">Vista detallada de participantes</h2>
           <div className="actions">

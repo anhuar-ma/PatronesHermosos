@@ -5,6 +5,7 @@ import LoadingCard from "../../components/LoadingCard";
 import { useEditColaborador } from "../../hooks/useEditColaborador";
 import useCurrentRol from "../../hooks/useCurrentRol";
 import { useFetchColaborador } from "../../hooks/useFetchColaborador";
+import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useGrupos from "../../hooks/useGrupos";
 import CambiarGrupo from "../../components/CambiarGrupo";
@@ -16,6 +17,7 @@ export default function DetalleColaborador() {
   const [mostrarCambiarGrupo, setMostrarCambiarGrupo] = useState(false);
   const { grupos, loading: gruposLoading, error: gruposError } = useGrupos();
   const navigate = useNavigate();
+  const currentRol = useCurrentRol();
 
   const {
     editableData,
@@ -42,6 +44,14 @@ export default function DetalleColaborador() {
     }
   };
 
+    // Agrega un estado para errores
+    const [errors, setErrors] = useState({});
+
+    // Función para regresar
+    const handleGoBack = () => {
+      navigate(-1);
+    };
+
   const saveChanges = async () => {
     try {
       const updatedData = await handleSave(id);
@@ -56,11 +66,13 @@ export default function DetalleColaborador() {
   if (loading) return <LoadingCard mensaje="Cargando colaborador..." />;
   if (error) return <LoadingCard mensaje={error} />;
 
-  const currentRol = useCurrentRol();
 
   return (
     <div className="background__view">
       <div className="colaborador-card">
+        <button className="btn-regresar" onClick={handleGoBack}>
+          <FaArrowLeft className="btn-regresar__icon" /> Regresar
+        </button>
         <div className="header-actions">
           <h2 className="title__view">Vista detallada de colaborador</h2>
           <div className="actions">
