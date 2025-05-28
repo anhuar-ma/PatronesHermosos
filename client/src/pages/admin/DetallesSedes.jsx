@@ -105,7 +105,7 @@ export default function DetalleSede() {
         <div className="header-actions">
           <h2 className="title__view">Vista detallada de Sedes</h2>
           <div className="actions">
- `         <button
+          <button
               className={`btn-edit ${editMode ? "registroEdicion__botonCancelar" : ""}`}
               onClick={() => {
                 if (editMode) {
@@ -117,7 +117,7 @@ export default function DetalleSede() {
               }}
             >
               {editMode ? "Cancelar edición" : "Editar registro"}
-          </button>`
+          </button>
             {editMode && (
               <button className="registroEdicion__botonGuardar" onClick={saveChanges}>
                 Guardar cambios

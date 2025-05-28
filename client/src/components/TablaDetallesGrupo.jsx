@@ -377,9 +377,10 @@ export default function TablaDetallesGrupos() {
         <button
           className="btn-agregarPersonaGrupo"
           onClick={() => {
-            fetchParticipantes(); // Cargar colaboradores disponibles
-            setIsParticipantePopupOpen(true); // Abrir el pop-up
+            fetchParticipantes();
+            setIsParticipantePopupOpen(true);
           }}
+          disabled={participantesLoading}
         >
           Agregar participante
         </button>
