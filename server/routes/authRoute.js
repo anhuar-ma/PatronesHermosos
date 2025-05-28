@@ -41,12 +41,26 @@ router.post("/login", async (req, res) => {
     }
 
     const sedeResult = await pool.query(
-      "SELECT id_sede FROM sede WHERE id_coordinadora = $1",
+      "SELECT id_sede, estado FROM sede WHERE id_coordinadora = $1",
       [user.id_coordinadora],
     );
 
     const id_sede =
       sedeResult.rows.length > 0 ? sedeResult.rows[0].id_sede : null;
+
+    console.log("SEDE ", sedeResult.rows[0]);
+    console.log("ID SEDE", id_sede);
+
+    if (
+      sedeResult.rows.length > 0 &&
+      sedeResult.rows[0].estado != "Aceptado" &&
+      user.rol != 0
+    ) {
+      return res.status(401).json({
+        success: false,
+        message: "Credenciales incorrectas",
+      });
+    }
 
     // Generate JWT token
     const token = jwt.sign(
@@ -117,7 +131,5 @@ router.get("/me", async (req, res) => {
     });
   }
 });
-
-
 
 export default router;
