@@ -11,7 +11,7 @@ import useCurrentRol from "../hooks/useCurrentRol";
 import axios from "axios";
 
 // Colores para cada categoría
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AA00FF"];
+const COLORS = ["#4BB198 ", "#E75F50", "#F9D864", "#9E629A", "#AA00FF"];
 
 const renderLabel = ({ percent }) =>
   `${(percent * 100).toFixed(0)}%`;
