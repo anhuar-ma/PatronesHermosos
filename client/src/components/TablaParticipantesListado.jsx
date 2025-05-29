@@ -13,6 +13,7 @@ export default function Tabla({
   onStatusChange,
 }) {
   const navigate = useNavigate();
+  const {rol} = useCurrentRol();
 
   const renderSortArrow = (field) => {
     if (sortField !== field) return <ArrowDownUp size={14} />;
@@ -24,8 +25,6 @@ export default function Tabla({
   };
 
   // const token = localStorage.getItem("token");
-  const currentRol = useCurrentRol();
-  console.log(currentRol);
 
   return (
     <table className="colaboradores-table">
@@ -44,7 +43,7 @@ export default function Tabla({
             </div>
           </th>
           <th>Teléfono de contacto</th>
-          {currentRol === 0 ? <th>Sede</th> : <th>Grupo</th>}
+          {rol === 0 ? <th>Sede</th> : <th>Grupo</th>}
 
           <th>Más Información</th>
           <th>Estado</th>
@@ -57,7 +56,7 @@ export default function Tabla({
             <td>{participante.nombre_completo_participante}</td>
             <td>{participante.nombre_completo_tutor}</td>
             <td>{participante.telefono_tutor}</td>
-            {currentRol === 0 ? (
+            {rol === 0 ? (
               <td>{participante.nombre_sede || "Sin asignar" }</td>
             ) : (
               <td>{participante.id_grupo || "Sin asignar"}</td>

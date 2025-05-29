@@ -10,6 +10,24 @@ body {
   left: 0;
   z-index: 0;
 }
+.mi-input-telefono {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  font-size: 16px;
+}
+
+.mi-boton-bandera {
+  border-radius: 8px 0 0 8px;
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+}
+
+.mi-contenedor-phone {
+  width: 100%;
+}
+
 
 .register-container {
   display: flex;
@@ -360,3 +378,15 @@ registro__tituloSeccionGrupo {
     padding-left: 1px;
   }
 }
+
+.registro__botonTelefono {
+  border: 2px solid #ccc;
+  border-right: none;
+  background-color: #fff;
+  border-radius: 8px 0 0 8px;
+}
+
+.registro__contenedorTelefono {
+  width: 100%;
+}
+

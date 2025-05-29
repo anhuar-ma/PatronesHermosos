@@ -205,7 +205,7 @@ export default function RegistroSedes() {
                   type="password"
                   autoComplete="new-password"
                   {...register("verificar_contraseña", {
-                    required: true,
+                    required: "La verificación de contraseña es obligatoria",
                     validate: (value) =>
                       value === watch("password") ||
                       "Las contraseñas no coinciden",
@@ -286,8 +286,11 @@ export default function RegistroSedes() {
                 {...register("fecha_inicio", { required: true })}
               >
                 <option value="">Seleccione una fecha</option>
-                <option value="7/11/22">7/11/22</option>
-                <option value="8/12/22">8/12/22</option>
+                <option value="06/16/25">16/06/25</option>
+                <option value="06/23/25">23/06/25</option>
+                <option value="06/30/25">30/06/25</option>
+                <option value="07/07/25">07/07/25</option>
+                <option value="07/14/25">14/07/25</option>
               </select>
               {errors.fecha_inicio && (
                 <p className="registro__error">Este campo es obligatorio</p>

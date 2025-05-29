@@ -22,8 +22,7 @@ export default function Tabla({
     );
   };
 
-  const currentRol = useCurrentRol();
-  console.log(currentRol);
+  const {rol} = useCurrentRol();
 
   return (
     <table className="colaboradores-table">
@@ -41,7 +40,7 @@ export default function Tabla({
               <span> Rol</span>
             </div>
           </th>
-          {currentRol === 0 ? <th>Sede</th> : <th>Grupo</th>}
+          {rol === 0 ? <th>Sede</th> : <th>Grupo</th>}
 
           {/* <th onClick={() => onSort("universidad")}>
             <div className="tablas__thContainer">
@@ -65,7 +64,7 @@ export default function Tabla({
           <tr key={colaborador.id_colaborador}>
             <td>{colaborador.nombre_completo_colaborador}</td>
             <td>{colaborador.rol}</td>
-            {currentRol === 0 ? (
+            {rol === 0 ? (
               <td>{colaborador.nombre_sede || "Sin asignar"}</td>
             ): (
               <td>{colaborador.id_grupo || "Sin asignar"}</td>

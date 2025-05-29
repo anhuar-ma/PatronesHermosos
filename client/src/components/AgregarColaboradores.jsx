@@ -5,9 +5,9 @@ import '../styles/CambiarGrupo.css';
 const AgregarColaborador = ({ onClose, onConfirm, colaboradores, colaboradoresLoading, colaboradoresError }) => {
   const [selectedColaborador, setSelectedColaborador] = useState(null);
 
-  if (colaboradoresLoading) {
-    return <p>Cargando colaboradores...</p>;
-  }
+  // if (colaboradoresLoading) {
+  //   return <p>Cargando colaboradores...</p>;
+  // }
 
   if (colaboradoresError) {
     return <p>Error al cargar los colaboradores: {colaboradoresError}</p>;

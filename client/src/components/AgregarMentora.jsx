@@ -4,11 +4,7 @@ import '../styles/CambiarGrupo.css';
 
 const AgregarMentoras = ({ onClose, onConfirm, mentoras, mentorasLoading, mentorasError }) => {
   const [selectedMentora, setSelectedMentora] = useState(null);
-
-  if (mentorasLoading) {
-    return <p>Cargando mentora...</p>;
-  }
-
+  
   if (mentorasError) {
     return <p>Error al cargar los mentoras: {mentorasError}</p>;
   }

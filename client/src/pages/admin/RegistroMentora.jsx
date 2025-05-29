@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {useNavigate} from "react-router-dom";
 import "../../styles/registros.css/";
+import { FaArrowLeft } from "react-icons/fa";
 import axios from "axios";
 
 export default function RegistroMentoras() {
@@ -47,11 +48,19 @@ export default function RegistroMentoras() {
       setIsSubmitting(false);
     }
   };
+    // Función para regresar
+    const handleGoBack = () => {
+      navigate(-1);
+    };
+
 
   return (
     <div className="registroMentora__fondoMorado">
       <div className="register-container-mentora">
       <div className="registro_containerForm">
+        <button className="btn-regresar" onClick={handleGoBack}>
+            <FaArrowLeft className="btn-regresar__icon" /> Regresar
+        </button>
       <h2 className="registro__titulo">Registro de mentora</h2>
         <form
           className="registro__formulario"

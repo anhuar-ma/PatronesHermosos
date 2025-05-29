@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useFetchParticipante } from "../../hooks/useFetchParticipante";
 import "../../styles/ViewDetails.css";
 import useCurrentRol from "../../hooks/useCurrentRol";
-import CambiarGrupo from "../../components/CambiarGrupo";
-import useGrupos from "../../hooks/useGrupos";
+import { FaArrowLeft } from "react-icons/fa";
+import PhoneInput from 'react-phone-input-2';
 
 export default function DetalleParticipante() {
   const { id } = useParams();
@@ -23,9 +23,13 @@ export default function DetalleParticipante() {
   } = useEditParticipante(participante);
 
   const navigate = useNavigate();
-  const [mostrarCambiarGrupo, setMostrarCambiarGrupo] = useState(false);
-  const { grupos, loading: gruposLoading, error: gruposError } = useGrupos();
-  const currentRol = useCurrentRol();
+    // Agrega un estado para errores
+    const [errors, setErrors] = useState({});
+
+    // Función para regresar
+    const handleGoBack = () => {
+      navigate(-1);
+    };
 
 
   const handleDelete = async () => {
@@ -44,70 +48,106 @@ export default function DetalleParticipante() {
     }
   };
 
-// DetalleParticipante.jsx
   const saveChanges = async () => {
+    const requiredFields = [
+      { field: "nombre", message: "El nombre es obligatorio" },
+      { field: "apellido_paterno", message: "El apellido paterno es obligatorio" },
+      { field: "correo", message: "El correo es obligatorio" },
+      { field: "escolaridad", message: "La escolaridad es obligatoria" },
+      { field: "edad", message: "La edad es obligatoria" },
+      { field: "idioma", message: "El idioma es obligatorio" },
+      { field: "escuela", message: "La escuela es obligatoria" },
+      { field: "nombre_tutor", message: "El nombre del tutor es obligatorio" },
+      { field: "apellido_paterno_tutor", message: "El apellido paterno del tutor es obligatorio" },
+      { field: "correo_tutor", message: "El correo del tutor es obligatorio" },
+      { field: "telefono_tutor", message: "El teléfono del tutor es obligatorio" }
+    ];
+  
+    const newErrors = {};
+    for (const req of requiredFields) {
+      if (
+        !editableData[req.field] ||
+        String(editableData[req.field]).trim() === ""
+      ) {
+        newErrors[req.field] = req.message;
+      }
+      
+    }
+    
+    
+    // Verificar formato del correo si tiene contenido
+    if (editableData.correo && typeof editableData.correo === "string" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editableData.correo.trim())) {
+      newErrors.correo = "Ingresa un correo electrónico válido.";
+    }
+
+    // Verificar formato del correo si tiene contenido
+    if (editableData.correo_tutor && typeof editableData.correo_tutor === "string" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editableData.correo.trim())) {
+      newErrors.correo_tutor = "Ingresa un correo electrónico válido.";
+    }
+
+    // Validar la edad
+    if (
+      editableData.edad !== undefined &&
+      (isNaN(editableData.edad) || editableData.edad < 0 || editableData.edad > 100)
+    ) {
+      newErrors.edad = "La edad debe ser menor a 100.";
+    }
+
+    
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+  
     try {
       const updatedData = await handleSave(id);
       setParticipante(updatedData); // Actualiza la información en pantalla
       setEditableData(updatedData); // Actualiza el editableData también
       setEditMode(false);
+      setErrors({}); // Limpia los errores al guardar correctamente
     } catch (err) {
       alert("Error al guardar: " + err.message);
     }
-};
+  };
 
 
-  if (loading) return <LoadingCard mensaje="Cargando participante..." />;
+    if (loading)
+      return (
+        <div style={{ 
+          marginLeft: "18%",
+          display: "flex", 
+          justifyContent: "center", 
+          alignItems: "center", 
+          height: "100vh", 
+          backgroundColor: "#9E629A"
+        }}>
+          <LoadingCard mensaje="Cargando participantes..." />
+        </div>
+      );
   if (error) return <LoadingCard mensaje={error} />;
 
   return (
     <div className="background__view">
       <div className="colaborador-card">
+        <button className="btn-regresar" onClick={handleGoBack}>
+            <FaArrowLeft className="btn-regresar__icon" /> Regresar
+        </button>
         <div className="header-actions">
           <h2 className="title__view">Vista detallada de participantes</h2>
           <div className="actions">
-            {currentRol === 1 && (
-                <>
-                  <button
-                    className={`btn-edit ${editMode ? "btn-delete-disabled" : ""}`}
-                    onClick={() => setMostrarCambiarGrupo(true)}
-                  >
-                    Cambiar grupo
-                  </button>
-                  {mostrarCambiarGrupo && (
-                    <CambiarGrupo
-                      onClose={() => setMostrarCambiarGrupo(false)}
-                      onConfirm={async (grupoSeleccionado) => {
-                        try {
-                          await axios.post(
-                            `/api/grupos/${grupoSeleccionado}/participantes`,
-                            { id_participante: participante.id_participante }
-                          );
-                          alert("Grupo actualizado correctamente");
-                          setMostrarCambiarGrupo(false);
-                          window.location.reload(); // Recarga la página o actualiza los datos
-                        } catch (err) {
-                          alert(
-                            "Error al actualizar el grupo: " +
-                            (err.response?.data?.message || err.message)
-                          );
-                        }
-                      }}
-                      grupos={grupos}
-                      gruposLoading={gruposLoading}
-                      gruposError={gruposError}
-                    />
-                  )}
-                </>
-              )}
-            {/* <button className="btn-edit" onClick={() => setEditMode(!editMode)}>
-              {editMode ? "Cancelar edición" : "Editar registro"}
-            </button> */}
             <button
               className={`btn-edit ${
                 editMode ? "registroEdicion__botonCancelar" : ""
               }`}
-              onClick={() => setEditMode(!editMode)}
+              onClick={() => {
+                if (editMode) {
+                  // Si se cancela, reinicia los datos editables a los originales
+                  setEditableData(participante);
+                }
+                setEditMode(!editMode);
+                setErrors({});
+              }}
             >
               {editMode ? "Cancelar edición" : "Editar registro"}
             </button>
@@ -128,11 +168,17 @@ export default function DetalleParticipante() {
               Nombre(s) de la participante:
             </h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.nombre || ""}
-                onChange={(e) => handleChange("nombre", e.target.value)}
+                onChange={(e) =>{
+                  handleChange("nombre", e.target.value);
+                  setErrors({...errors, nombre: "" }); 
+                }}
               />
+              {errors.nombre && <p className="error-message">{errors.nombre}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{participante.nombre}</p>
             )}
@@ -141,13 +187,17 @@ export default function DetalleParticipante() {
               Apellido paterno de la participante:
             </h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.apellido_paterno || ""}
-                onChange={(e) =>
-                  handleChange("apellido_paterno", e.target.value)
-                }
+                onChange={(e) =>{
+                  handleChange("apellido_paterno", e.target.value);
+                  setErrors({...errors, apellido_paterno: "" });
+                }}
               />
+              {errors.apellido_paterno && <p className="error-message">{errors.apellido_paterno}</p>}
+            </>
             ) : (
               <p className="info__colaborator">
                 {participante.apellido_paterno}
@@ -156,22 +206,43 @@ export default function DetalleParticipante() {
 
             <h5 className="label__colaborator">Correo:</h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.correo || ""}
-                onChange={(e) => handleChange("correo", e.target.value)}
+                onChange={(e) =>{
+                  handleChange("correo", e.target.value)
+                  setErrors({...errors, correo: "" });
+                }}
               />
+              {errors.correo && <p className="error-message">{errors.correo}</p>}
+            </>
             ) : (
               <p className="info__colaborator">{participante.correo}</p>
             )}
 
             <h5 className="label__colaborator">Escolaridad:</h5>
             {editMode ? (
-              <input
-                className="registroEdicion__input"
-                value={editableData.escolaridad || ""}
-                onChange={(e) => handleChange("escolaridad", e.target.value)}
-              />
+              <>
+                <select
+                  className="registroEdicion__input"
+                  value={editableData.escolaridad || ""}
+                  onChange={(e) => {
+                    handleChange("escolaridad", e.target.value);
+                    setErrors({ ...errors, escolaridad: "" });
+                  }}
+                >
+                  <option value={editableData.escolaridad}>
+                    {editableData.escolaridad}
+                  </option>
+                  {editableData.escolaridad === "Secundaria" ? (
+                    <option value="Prepa">Prepa</option>
+                  ) : (
+                    <option value="Secundaria">Secundaria</option>
+                  )}
+                </select>
+                {errors.escolaridad && <p className="error-message">{errors.escolaridad}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{participante.escolaridad}</p>
             )}
@@ -195,17 +266,23 @@ export default function DetalleParticipante() {
               />
             ) : (
               <p className="info__colaborator">
-                {participante.apellido_materno}
+                {participante.apellido_materno || "N/A"}
               </p>
             )}
 
             <h5 className="label__colaborator">Edad de la participante:</h5>
             {editMode ? (
+              <>
               <input
+                type="number"
                 className="registroEdicion__input"
                 value={editableData.edad || ""}
-                onChange={(e) => handleChange("edad", e.target.value)}
+                onChange={(e) => {
+                  handleChange("edad", e.target.value)
+                }}
               />
+              {errors.edad && <p className="error-message">{errors.edad}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{participante.edad}</p>
             )}
@@ -227,11 +304,18 @@ export default function DetalleParticipante() {
 
             <h5 className="label__colaborator">Escuela:</h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.escuela || ""}
-                onChange={(e) => handleChange("escuela", e.target.value)}
+                onChange={(e) => {
+                  handleChange("escuela", e.target.value);
+                  setErrors({ ...errors, escuela: "" });
+
+                }}
               />
+              {errors.escuela && <p className="error-message">{errors.escuela}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{participante.escuela}</p>
             )}
@@ -243,24 +327,34 @@ export default function DetalleParticipante() {
           <div className="info-column">
             <h5 className="label__colaborator">Nombre(s) del tutor:</h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.nombre_tutor || ""}
-                onChange={(e) => handleChange("nombre_tutor", e.target.value)}
+                onChange={(e) => {
+                  handleChange("nombre_tutor", e.target.value);
+                  setErrors({ ...errors, nombre_tutor: "" });
+                }}
               />
+              {errors.nombre_tutor && <p className="error-message">{errors.nombre_tutor}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{participante.nombre_tutor}</p>
             )}
 
             <h5 className="label__colaborator">Apellido paterno del tutor:</h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.apellido_paterno_tutor || ""}
-                onChange={(e) =>
+                onChange={(e) => {
                   handleChange("apellido_paterno_tutor", e.target.value)
-                }
+                  setErrors({ ...errors, apellido_paterno_tutor: "" });
+                }}
               />
+              {errors.apellido_paterno_tutor && <p className="error-message">{errors.apellido_paterno_tutor}</p>}
+              </>
             ) : (
               <p className="info__colaborator">
                 {participante.apellido_paterno_tutor}
@@ -269,11 +363,17 @@ export default function DetalleParticipante() {
 
             <h5 className="label__colaborator">Correo:</h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.correo_tutor || ""}
-                onChange={(e) => handleChange("correo_tutor", e.target.value)}
+                onChange={(e) => {
+                  handleChange("correo_tutor", e.target.value);
+                  setErrors({ ...errors, correo_tutor: "" })
+                }}
               />
+              {errors.correo_tutor && <p className="error-message">{errors.correo_tutor}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{participante.correo_tutor}</p>
             )}
@@ -291,7 +391,7 @@ export default function DetalleParticipante() {
               />
             ) : (
               <p className="info__colaborator">
-                {participante.apellido_materno_tutor}
+                {participante.apellido_materno_tutor || "N/A"}
               </p>
             )}
 
@@ -332,14 +432,24 @@ export default function DetalleParticipante() {
 
             <h5 className="label__colaborator">Teléfono del tutor:</h5>
             {editMode ? (
-              <input
-                className="registroEdicion__input"
-                value={editableData.telefono_tutor || ""}
-                onChange={(e) => handleChange("telefono_tutor", e.target.value)}
-              />
+              <>
+                <PhoneInput
+                  country={'mx'} // Cambia a 'us' o cualquier país por defecto si lo prefieres
+                  value={editableData.telefono_tutor || ''}
+                  onChange={(phone) => {
+                    handleChange('telefono_tutor', phone);
+                    setErrors({ ...errors, telefono_tutor: '' });
+                  }}
+                  inputClass="registroEdicion__input"
+                  containerStyle={{ width: '100%' }}
+                  specialLabel="" // Quita el label interno
+                />
+                {errors.telefono_tutor && <p className="error-message">{errors.telefono_tutor}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{participante.telefono_tutor}</p>
             )}
+
           </div>
         </div>
 
