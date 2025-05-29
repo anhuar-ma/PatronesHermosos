@@ -174,25 +174,25 @@ router.get(
 
           // In case the mentora is needed
           // Get mentoras
-          // const mentoraResult = await pool.query(
-          //   `SELECT id_mentora, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
-          //  FROM mentora
-          //  WHERE id_sede = $1`,
-          //   [sede.id_sede],
-          // );
-          //
-          // // Generate diplomas for mentoras
-          // for (const mentora of mentoraResult.rows) {
-          //   const diplomaPath = path.join(
-          //     sedeDir,
-          //     `mentora_${coordAsoc.id_coordinadora_asociada}.pdf`,
-          //   );
-          //   await generateDiploma(
-          //     path.join(process.cwd(), "/diplomas/mentoras.pdf"),
-          //     diplomaPath,
-          //     coordAsoc.nombre_completo,
-          //   );
-          // }
+          const mentoraResult = await pool.query(
+            `SELECT id_mentora, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
+           FROM mentora
+           WHERE id_sede = $1`,
+            [sede.id_sede],
+          );
+
+          // Generate diplomas for mentoras
+          for (const mentora of mentoraResult.rows) {
+            const diplomaPath = path.join(
+              sedeDir,
+              `mentora_${mentora.id_mentora}.pdf`,
+            );
+            await generateDiploma(
+              path.join(process.cwd(), "/diplomas/mentora.pdf"),
+              diplomaPath,
+              mentora.nombre_completo,
+            );
+          }
         }
 
         // Create ZIP archive
@@ -237,11 +237,11 @@ router.get(
 
         // Create category directories
         const participantesDir = path.join(tempDir, "participantes");
-        const mentorasDir = path.join(tempDir, "mentoras");
+        // const mentorasDir = path.join(tempDir, "mentoras");
         const colaboradoresDir = path.join(tempDir, "colaboradores");
 
         await fs.ensureDir(participantesDir);
-        await fs.ensureDir(mentorasDir);
+        // await fs.ensureDir(mentorasDir);
         await fs.ensureDir(colaboradoresDir);
 
         // Get participantes for this sede with accepted status
@@ -252,13 +252,13 @@ router.get(
           [sedeId],
         );
 
-        // Get mentoras for this sede with accepted status
-        const mentorasResult = await pool.query(
-          `SELECT id_mentora, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
-         FROM mentora
-         WHERE id_sede = $1`,
-          [sedeId],
-        );
+        // // Get mentoras for this sede with accepted status
+        // const mentorasResult = await pool.query(
+        //   `SELECT id_mentora, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
+        //  FROM mentora
+        //  WHERE id_sede = $1`,
+        //   [sedeId],
+        // );
 
         // Get colaboradores for this sede with accepted status
         const colaboradoresResult = await pool.query(
@@ -281,18 +281,18 @@ router.get(
           );
         }
 
-        // Generate diplomas for mentoras
-        for (const mentora of mentorasResult.rows) {
-          const diplomaPath = path.join(
-            mentorasDir,
-            `mentora_${mentora.id_mentora}.pdf`,
-          );
-          await generateDiploma(
-            path.join(process.cwd(), "/diplomas/mentora.pdf"),
-            diplomaPath,
-            mentora.nombre_completo,
-          );
-        }
+        // // Generate diplomas for mentoras
+        // for (const mentora of mentorasResult.rows) {
+        //   const diplomaPath = path.join(
+        //     mentorasDir,
+        //     `mentora_${mentora.id_mentora}.pdf`,
+        //   );
+        //   await generateDiploma(
+        //     path.join(process.cwd(), "/diplomas/mentora.pdf"),
+        //     diplomaPath,
+        //     mentora.nombre_completo,
+        //   );
+        // }
 
         // Generate diplomas for colaboradores
         for (const colaborador of colaboradoresResult.rows) {

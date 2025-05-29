@@ -28,7 +28,6 @@ router.post("/", upload.single("convocatoria"), async (req, res) => {
       fecha_inicio,
     } = req.body;
 
-
     // File path to store in the database (or null if no file)
     const convocatoria = req.file
       ? `/uploads/convocatorias/${req.file.filename}`
@@ -39,6 +38,19 @@ router.post("/", upload.single("convocatoria"), async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Contraseña is required",
+      });
+    }
+
+    const checkCorreo = await pool.query(
+      `SELECT correo FROM coordinadora WHERE correo = $1`,
+      [correo_coordinadora],
+    );
+
+    // Check if email already exists
+    if (checkCorreo.rows.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Este correo ya esta registrado",
       });
     }
 
@@ -225,7 +237,6 @@ router.get(
   },
 );
 
-
 // Get the names from sedes that are accepeted
 router.get("/nombres", async (req, res) => {
   try {
@@ -245,8 +256,6 @@ router.get("/nombres", async (req, res) => {
     });
   }
 });
-
-
 
 // vista detallada sede y coordinadora
 router.get("/:id", async (req, res) => {
