@@ -71,12 +71,20 @@ export default function TablaSedes() {
 
   const handleStatusChange = async (id_sede, nuevoEstado) => {
     try {
+      let razonRechazo = "";
+  
+      // Si se selecciona "Rechazado", solicitar la razón
+      if (nuevoEstado === "Rechazado") {
+        razonRechazo = prompt("Por favor, indica la razón del rechazo:");
+        if (!razonRechazo) {
+          alert("Debes ingresar una razón para rechazar a la participante.");
+          return;
+        }
+      }
       // Actualiza el estado del colaborador
       const response = await axios.put(
         `/api/sedes/estado/${id_sede}`,
-        {
-          estado: nuevoEstado,
-        }
+        {estado: nuevoEstado,}
       );
   
       if (response.data.success) {
@@ -92,7 +100,10 @@ export default function TablaSedes() {
         // Envía el correo según el estado
         const emailResponse = await axios.post(
           `/api/sedes/email/${id_sede}`,
-          { estado: nuevoEstado } // Enviar el estado al backend
+          { 
+            estado: nuevoEstado,
+            razon: razonRechazo || null 
+          } // Enviar el estado al backend
         );
   
         if (emailResponse.data.success) {

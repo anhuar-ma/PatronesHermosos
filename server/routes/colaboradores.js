@@ -332,7 +332,7 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 
 router.post("/email/:id", async (req, res) => {
   const { id } = req.params;
-  const { estado } = req.body; // Recibe el estado desde el cuerpo de la solicitud
+  const { estado, razon } = req.body; // Recibe el estado desde el cuerpo de la solicitud
 
   try {
     // Obtén los datos del colaborador, la sede y la coordinadora desde la base de datos
@@ -361,24 +361,46 @@ router.post("/email/:id", async (req, res) => {
     let html;
 
     if (estado === "Aceptado") {
-      subject = "¡Felicidades! has sido aceptada en Patrones Hermosos";
+      subject = "¡Felicidades! Has sido aceptada en Patrones Hermosos";
       html = `
-        <p>Saludos cordiales: ${colaborador.nombre_colaborador},</p>
-        <p>¡Felicidades! Has sido seleccionada para la sede <strong>${colaborador.nombre_sede || "Sin sede asignada"}</strong>.</p>
-        <p>Si tienes alguna duda, ponte en comunicación con la coordinadora de sede:</p>
-        <p>${colaborador.nombre_completo_coordinadora || "Sin coordinadora asignada"}</p>
-        <p>Correo: ${colaborador.correo_coordinadora || "No disponible"}</p>
-        <p>Saludos,</p>
-        <p>Campamento Patrones Hermosos</p>
+        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+          <h2 style="color: #D6336C;">¡Felicidades, ${colaborador.nombre_colaborador}!</h2>
+          <p>Te escribimos para informarte que has sido <strong>seleccionada</strong> para participar en el campamento <strong>Patrones Hermosos</strong>.</p>
+          <p>Has sido asignada a la sede: <strong style="color: #1D3557;">${colaborador.nombre_sede || "Sin sede asignada"}</strong></p>
+          <p>Si tienes alguna duda, te invitamos a ponerte en contacto con tu coordinadora de sede:</p>
+
+          <div style="background-color: #f9f9f9; padding: 10px 15px; border-left: 4px solid #D6336C; margin: 20px 0;">
+            <p style="margin: 0;"><strong>Nombre:</strong> ${colaborador.nombre_completo_coordinadora || "Sin coordinadora asignada"}</p>
+            <p style="margin: 0;"><strong>Correo:</strong> ${colaborador.correo_coordinadora || "No disponible"}</p>
+          </div>
+
+          <p style="margin-top: 30px;">Atentamente,</p>
+          <p><strong>Equipo de Patrones Hermosos</strong></p>
+        </div>
       `;
     } else if (estado === "Rechazado") {
       subject = "Notificación sobre tu solicitud en Patrones Hermosos";
       html = `
-        <p>Saludos cordiales: ${colaborador.nombre_colaborador},</p>
-        <p>Lamentamos informarte que no has sido seleccionada para participar en esta edición de Patrones Hermosos.</p>
-        <p>Agradecemos tu interés y te invitamos a seguir participando en futuras convocatorias.</p>
-        <p>Saludos,</p>
-        <p>Campamento Patrones Hermosos</p>
+        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+          <h2 style="color: #D6336C;">Gracias por tu interés, ${colaborador.nombre_colaborador}</h2>
+      
+          <p>Queremos agradecerte sinceramente por haberte postulado al campamento <strong>Patrones Hermosos</strong>.</p>
+      
+          <p>Después de revisar cuidadosamente todas las solicitudes, lamentamos informarte que en esta ocasión <strong>no fuiste seleccionada</strong> para participar.</p>
+
+          ${
+            razon
+              ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
+              : ""
+          }
+      
+          <p>Sabemos que tienes mucho potencial, y esperamos que sigas desarrollando tus talentos. Nos encantaría volver a recibir tu solicitud en futuras ediciones del campamento.</p>
+      
+          <p>Si tienes alguna duda o comentario, no dudes en ponerte en contacto con nuestro equipo.</p>
+      
+          <p style="margin-top: 30px;">Con aprecio,</p>
+          <p><strong>Equipo de Patrones Hermosos</strong></p>
+        </div>
       `;
     } else {
       return res.status(400).json({

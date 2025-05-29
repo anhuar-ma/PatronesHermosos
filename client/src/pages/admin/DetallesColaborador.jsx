@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import useGrupos from "../../hooks/useGrupos";
 import CambiarGrupo from "../../components/CambiarGrupo";
 import "../../styles/ViewDetails.css";
+import { set } from "react-hook-form";
 
 export default function DetalleColaborador() {
   const { id } = useParams();
@@ -44,6 +45,7 @@ export default function DetalleColaborador() {
     }
   };
 
+
     // Agrega un estado para errores
     const [errors, setErrors] = useState({});
 
@@ -52,18 +54,63 @@ export default function DetalleColaborador() {
       navigate(-1);
     };
 
+
+
   const saveChanges = async () => {
+    const requiredFields = [
+      { field: "nombre", message: "El nombre es obligatorio" },
+      { field: "apellido_paterno", message: "El apellido paterno es obligatorio" },
+      { field: "correo", message: "El correo es obligatorio" },
+      { field: "universidad", message: "La universidad es obligatoria" },
+    ]
+
+    const newErrors = {};
+    for (const req of requiredFields) {
+      if (
+        !editableData[req.field] ||
+        String(editableData[req.field]).trim() === ""
+      ) {
+        newErrors[req.field] = req.message;
+      }
+      
+    }
+
+    // Verificar formato del correo si tiene contenido
+    if (editableData.correo && typeof editableData.correo === "string" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editableData.correo.trim())) {
+      newErrors.correo = "Ingresa un correo electrónico válido.";
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       const updatedData = await handleSave(id);
       setColaborador(updatedData);
       setEditableData(updatedData);
       setEditMode(false);
+      setErrors({}); // Limpiar errores al guardar correctamente
     } catch (err) {
       alert("Error al guardar: " + err.message);
     }
   };
 
-  if (loading) return <LoadingCard mensaje="Cargando colaborador..." />;
+  if (loading)
+    return (
+      <div style={{
+        marginLeft: '18%', // igual al sidebar
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "#9E629A"
+      }}>
+        <LoadingCard mensaje="Cargando colaborador..." />
+      </div>
+    );
+  
+  
   if (error) return <LoadingCard mensaje={error} />;
 
 
@@ -76,40 +123,6 @@ export default function DetalleColaborador() {
         <div className="header-actions">
           <h2 className="title__view">Vista detallada de colaborador</h2>
           <div className="actions">
-            {currentRol === 1 && (
-              <>
-                <button
-                  className={`btn-edit ${editMode ? "btn-delete-disabled" : ""}`}
-                  onClick={() => setMostrarCambiarGrupo(true)}
-                >
-                  Cambiar grupo
-                </button>
-                {mostrarCambiarGrupo && (
-                  <CambiarGrupo
-                    onClose={() => setMostrarCambiarGrupo(false)}
-                    onConfirm={async (grupoSeleccionado) => {
-                      try {
-                        await axios.post(
-                          `/api/grupos/${grupoSeleccionado}/colaboradoresDisponibles`,
-                          { id_colaborador: colaborador.id_colaborador }
-                        );
-                        alert("Grupo actualizado correctamente");
-                        setMostrarCambiarGrupo(false);
-                        window.location.reload(); // Recarga la página o actualiza los datos
-                      } catch (err) {
-                        alert(
-                          "Error al actualizar el grupo: " +
-                          (err.response?.data?.message || err.message)
-                        );
-                      }
-                    }}
-                    grupos={grupos}
-                    gruposLoading={gruposLoading}
-                    gruposError={gruposError}
-                  />
-                )}
-              </>
-            )}
             <button
               className={`btn-edit ${
                 editMode ? "registroEdicion__botonCancelar" : ""
@@ -131,22 +144,34 @@ export default function DetalleColaborador() {
           <div className="info-column">
             <h5 className="label__colaborator">Nombre(s) del colaborador:</h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.nombre || ""}
-                onChange={(e) => handleChange("nombre", e.target.value)}
+                onChange={(e) => {
+                  handleChange("nombre", e.target.value);
+                  setErrors(...errors, { nombre: "" });
+                }}
               />
+                {errors.nombre && <p className="error-message">{errors.nombre}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{colaborador.nombre}</p>
             )}
 
             <h5 className="label__colaborator">Apellido paterno del colaborador:</h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.apellido_paterno || ""}
-                onChange={(e) => handleChange("apellido_paterno", e.target.value)}
+                onChange={(e) => {
+                  handleChange("apellido_paterno", e.target.value);
+                  setErrors({ ...errors, apellido_paterno: "" });
+                }}
               />
+                {errors.apellido_paterno && <p className="error-message">{errors.apellido_paterno}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{colaborador.apellido_paterno}</p>
             )}
@@ -164,7 +189,7 @@ export default function DetalleColaborador() {
 
 
             <h5 className="label__colaborator">Grupo:</h5>
-            <p className="info__colaborator">{colaborador.id_grupo}</p>
+            <p className="info__colaborator">{colaborador.id_grupo || "Sin asignar"}</p>
 
           </div>
 
@@ -178,16 +203,22 @@ export default function DetalleColaborador() {
                 onChange={(e) => handleChange("apellido_materno", e.target.value)}
               />
             ) : (
-              <p className="info__colaborator">{colaborador.apellido_materno}</p>
+              <p className="info__colaborator">{colaborador.apellido_materno || "N/A"}</p>
             )}
 
             <h5 className="label__colaborator">Universidad de procedencia:</h5>
             {editMode ? (
+              <>
               <input
                 className="registroEdicion__input"
                 value={editableData.universidad || ""}
-                onChange={(e) => handleChange("universidad", e.target.value)}
+                onChange={(e) => {
+                   handleChange("universidad", e.target.value)
+                    setErrors({ ...errors, universidad: "" });
+                }}
               />
+                {errors.universidad && <p className="error-message">{errors.universidad}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{colaborador.universidad}</p>
             )}

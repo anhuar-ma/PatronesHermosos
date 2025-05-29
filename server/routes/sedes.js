@@ -529,7 +529,7 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
 
 router.post("/email/:id", authenticateToken, requireAdmin, async (req, res) => {
   const { id } = req.params;
-  const { estado } = req.body; // Recibe el estado desde el cuerpo de la solicitud
+  const { estado, razon } = req.body; // Recibe el estado desde el cuerpo de la solicitud
 
   try {
     // Obtén los datos de la sede y su coordinadora desde la base de datos
@@ -558,20 +558,32 @@ router.post("/email/:id", authenticateToken, requireAdmin, async (req, res) => {
     if (estado === "Aceptado") {
       subject = "¡Tu sede está activa en Patrones Hermosos!";
       html = `
-        <p>Saludos cordiales,</p>
-        <p>Nos complace informarte que la sede <strong>${sede.nombre_sede}</strong> ha sido activada exitosamente.</p>
-        <p>Por favor ingresa sesion con las credenciales que proporcionaste en el registro</p>
-        <p>Saludos,</p>
-        <p>Equipo de Patrones Hermosos</p>
-      `;
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2c2c2c; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #ddd; border-radius: 12px; background-color: #fafafa; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+          <h2 style="color: #D6336C; margin-bottom: 20px;">🎉 ¡Sede aceptada con éxito!</h2>
+          <p style="font-size: 16px; line-height: 1.6;">Nos complace informarte que la sede <strong style="color: #333;">${sede.nombre_sede}</strong> ha sido <strong>aprobada</strong> para formar parte de <em>Patrones Hermosos</em>.</p>
+          <p style="font-size: 16px; line-height: 1.6;">Ya puedes ingresar al sistema utilizando las credenciales que registraste previamente.</p>
+          
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #e0e0e0;">
+          
+          <p style="font-size: 15px; color: #666;">Gracias por ser parte de esta experiencia.</p>
+          <p style="font-size: 15px; font-weight: bold; color: #444;">Equipo de Patrones Hermosos</p>
+        </div>
+        `;
     } else if (estado === "Rechazado") {
       subject = "Notificación: Tu sede está inactiva en Patrones Hermosos";
       html = `
-        <p>Saludos cordiales,</p>
-        <p>Te informamos que la sede <strong>${sede.nombre_sede}</strong> fue rechazada.</p>
-        <p>Por favor verifica la información del formulario y vuelve a intentarlo</p>
-        <p>Saludos,</p>
-        <p>Equipo de Patrones Hermosos</p>
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2c2c2c; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #ddd; border-radius: 12px; background-color: #fafafa; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+          <h2 style="color: #D6336C;">Estimada, ${sede.nombre_completo_coordinadora}</h2>
+          <p>Te informamos que la sede <strong>${sede.nombre_sede}</strong> fue rechazada.</p>
+          ${
+            razon
+              ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
+              : ""
+          }
+          <p>Por favor verifica la información del formulario y vuelve a intentarlo</p>
+          <p>Saludos,</p>
+          <p>Equipo de Patrones Hermosos</p>
+        </div>
       `;
     } else {
       return res.status(400).json({

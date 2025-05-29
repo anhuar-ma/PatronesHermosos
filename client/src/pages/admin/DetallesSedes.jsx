@@ -93,7 +93,19 @@ export default function DetalleSede() {
     }
   };
 
-  if (loading) return <LoadingCard mensaje="Cargando info de sede..." />;
+  if (loading)
+    return (
+      <div style={{ 
+        marginLeft: '18%',
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        height: "100vh", 
+        backgroundColor: "#9E629A"
+      }}>
+        <LoadingCard mensaje="Cargando info de sede..." />
+      </div>
+    );
   if (error) return <LoadingCard mensaje={error} />;
 
   return (
@@ -175,7 +187,7 @@ export default function DetalleSede() {
                 />
               </>
             ) : (
-              <p className="info__colaborator">{sede.apellido_materno}</p>
+              <p className="info__colaborator">{sede.apellido_materno || "N/A"}</p>
             )}
 
             <h5 className="label__colaborator">Correo:</h5>
@@ -228,7 +240,7 @@ export default function DetalleSede() {
                     setErrors({ ...errors, fecha_inicio: "" });
                   }}
                 >
-                  <option value="">Seleccione una fecha</option>
+                  <option value="">{formatDate(sede.fecha_inicio)}</option>
                   <option value="06/16/25">16/06/2025</option>
                   <option value="06/23/25">23/06/2025</option>
                   <option value="06/30/25">30/06/2025</option>

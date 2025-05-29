@@ -314,7 +314,7 @@ export default function TablaDetallesGrupos() {
             setIsColaboradorPopupOpen(true); // Abrir el pop-up
           }}
         >
-          Agregar colaborador
+          {colaboradoresLoading ? "Cargando colaboradores..." : "Agregar colaborador"}
         </button>
 
         {/* Pop-up de selección de colaborador */}
@@ -354,10 +354,10 @@ export default function TablaDetallesGrupos() {
             } else {
               fetchMentoras(); // Cargar mentoras disponibles
               setIsMentoraPopupOpen(true); // Abrir el pop-up de mentoras
-            }
-          }}
+            }}
+        }
         >
-          {mentora.length > 0 ? "Eliminar mentora" : "Asignar mentora"}
+            {mentorasLoading ? "Cargando mentoras" : mentora.length > 0? "Eliminar mentora": "Asignar mentora"}
         </button>
         {/* Pop-up de selección de mentora */}
         {isMentoraPopupOpen && (
@@ -381,7 +381,7 @@ export default function TablaDetallesGrupos() {
             setIsParticipantePopupOpen(true); // Abrir el pop-up
           }}
         >
-          Agregar participante
+          {participantesLoading ? "Cargando participantes..." : "Agregar participante"}
         </button>
 
         {/* Pop-up de selección de participante */}

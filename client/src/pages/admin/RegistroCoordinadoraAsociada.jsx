@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 import "../../styles/registros.css/";
 import axios from "axios";
 
@@ -42,11 +43,18 @@ export default function RegistroSedes() {
     console.log(data);
   };
 
+    // Función para regresar
+    const handleGoBack = () => {
+      navigate(-1);
+    };
 
   return (
     <div className="registroMentora__fondoMorado">
       <div className="register-container-mentora">
       <div className="registro_containerForm">
+      <button className="btn-regresar" onClick={handleGoBack}>
+          <FaArrowLeft className="btn-regresar__icon" /> Regresar
+      </button>
       <h2 className="registro__titulo">Registro de coordinadora asociada</h2>
         <form
           className="registro__formulario"
@@ -106,8 +114,15 @@ export default function RegistroSedes() {
                 className={`registro__input ${
                   errors.correo_coordinadora ? "registro__input-error" : ""
                 }`}
-                {...register("correo_coordinadora", { required: true })}
-                type="email"
+                {...register("correo_coordinadora", {
+                  required: "Este campo es obligatorio",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Correo inválido",
+                  },
+                })}
+                
+                type="text"
               />
               {errors.correo_coordinadora && (
                 <p className="registro__error">Correo inválido o vacío</p>
@@ -119,7 +134,6 @@ export default function RegistroSedes() {
               type="submit"
               className="registro__botonMorado"
               value="Registrar coordinadora"
-              onClick={() => navigate(`/admin/inicio`)}
             />
           </div>
         </form>

@@ -88,12 +88,21 @@ export default function TablaParticipantes() {
 
   const handleStatusChange = async (id_participante, nuevoEstado) => {
     try {
-      // Actualiza el estado del colaborador
+      let razonRechazo = "";
+  
+      // Si se selecciona "Rechazado", solicitar la razón
+      if (nuevoEstado === "Rechazado") {
+        razonRechazo = prompt("Por favor, indica la razón del rechazo:");
+        if (!razonRechazo) {
+          alert("Debes ingresar una razón para rechazar a la participante.");
+          return;
+        }
+      }
+  
+      // Actualiza el estado en la base de datos
       const response = await axios.put(
         `/api/participantes/estado/${id_participante}`,
-        {
-          estado: nuevoEstado,
-        }
+        { estado: nuevoEstado }
       );
   
       if (response.data.success) {
@@ -106,14 +115,17 @@ export default function TablaParticipantes() {
           )
         );
   
-        // Envía el correo según el estado
+        // Envía el correo, incluyendo la razón si es un rechazo
         const emailResponse = await axios.post(
           `/api/participantes/email/${id_participante}`,
-          { estado: nuevoEstado } // Enviar el estado al backend
+          {
+            estado: nuevoEstado,
+            razon: razonRechazo || null,
+          }
         );
   
         if (emailResponse.data.success) {
-          alert(emailResponse.data.message); // Muestra un mensaje de éxito
+          alert(emailResponse.data.message);
         } else {
           console.error("Error al enviar el correo");
         }
@@ -121,7 +133,6 @@ export default function TablaParticipantes() {
         console.error("Error al actualizar el estado");
       }
     } catch (error) {
-      // Manejo de errores
       if (
         error.response &&
         error.response.data &&
@@ -134,6 +145,7 @@ export default function TablaParticipantes() {
       console.error("Error en la solicitud:", error);
     }
   };
+  
 
   return (
     <div className="tabla__containerBlanco">

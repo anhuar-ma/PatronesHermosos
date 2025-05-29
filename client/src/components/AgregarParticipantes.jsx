@@ -5,9 +5,6 @@ import '../styles/CambiarGrupo.css';
 const AgregarParticipantes = ({ onClose, onConfirm, participantes, participantesLoading, participantesError }) => {
   const [selectedParticipante, setSelectedParticipante] = useState(null);
 
-  if (participantesLoading) {
-    return <p>Cargando participantes...</p>;
-  }
 
   if (participantesError) {
     return <p>Error al cargar los colaboradores: {colaboradoresError}</p>;
