@@ -338,6 +338,7 @@
   }
 
   /* Estilos base para el select */
+  
 .select-estado {
   padding: 4px 8px;
   border-radius: 4px;
@@ -347,25 +348,25 @@
 
 /* Gris para Pendiente */
 .select-estado--pendiente {
-  background-color: gray;
-  border: 3px solid rgb(79, 79, 79);
+  background-color: #F9D864;
+  border: 3px solid #A59B79;
 
-  color: white;
+  color: #504B3B;
 }
 
 /* Verde para Aceptado */
 .select-estado--aceptado {
-  background-color: #70c574;
-  border: 3px solid #008767;
-  color: green;
+  background-color: #4BB198;
+  border: 3px solid #4E8578;
+  color: #24332F;
 }
 
 /* Rojo para Rechazado */
 .select-estado--rechazado {
-  background-color: #FFC5C5;
+  background-color: #E75F50;
   border: 3px solid #DF0404;
 
-  color: #DF0404;
+  color: white;
 }
 
 /* Opcional: hover */
@@ -503,11 +504,13 @@
 .info__grupo__label{
   color: #9E629A;
 }
-.tabla__container__botones{
+.tabla__container__botones {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px; /* Space between buttons */
   align-items: center;
-  width: 50%;
+  width: 100%; /* Optional: make the row full width */
+  margin-top: 24px; /* Optional: space above the button row */
 }
 
 .btn-agregarPersonaGrupo {
@@ -531,7 +534,7 @@
   transform: scale(1.05);    /* pequeño “zoom” */
 }
 .btn-eliminarMentora{
-  background-color: #ff4545;
+  background-color: #d32f2f;
   color: white;
   border: none;
   padding: 0.9rem 1.6rem;
@@ -544,6 +547,6 @@
   font-weight: 800;
 }
 .btn-eliminarMentora:hover {
-  background-color: red; /* tono más oscuro */
+  background-color: darkred; /* tono más oscuro */
   transform: scale(1.05);    /* pequeño “zoom” */
 }

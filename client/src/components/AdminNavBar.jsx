@@ -106,7 +106,7 @@ export default function AdminNavbar() {
         onClick={handleLogout}
         className="AdminNavbar__button-logout"
       >
-        <LogOut size={20} />
+        <LogOut size={25} />
         <span className="AdminNavbar__buttonLabel">Cerrar sesión</span>
       </button>
         {/* </div> */}

@@ -6,10 +6,10 @@ export default function Home() {
       <div className="home__fondoImg"></div>
 
       <div className="contenido__home">
-        <h1 className="home__titulo">¿QUÉ BUSCAMOS?</h1>
+        <h2 className="home__titulo">¿QUÉ BUSCAMOS?</h2>
         <div className="objetivos">
           <Objetivo
-            imagen="./src/assets/ImageHome3.png"
+            imagen="./src/assets/ImageHome3.svg"
             alt="Entrenar ingenieras"
             descripcion={
               <>
@@ -20,7 +20,7 @@ export default function Home() {
             }
           />
           <Objetivo
-            imagen="./src/assets/ImageHome2.png"
+            imagen="./src/assets/ImageHome2.svg"
             alt="Cambiar el paradigma"
             descripcion={
               <>
@@ -31,7 +31,7 @@ export default function Home() {
             }
           />
           <Objetivo
-            imagen="./src/assets/ImageHome.png"
+            imagen="./src/assets/ImageHome.svg"
             alt="Catalizar la independencia"
             descripcion={
               <>

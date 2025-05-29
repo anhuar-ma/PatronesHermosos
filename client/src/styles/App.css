@@ -1,6 +1,15 @@
 * {
   box-sizing: border-box;
 }
+html{
+  font-size: 70%;
+}
+@media (min-width: 700px) {
+  html {
+    font-size: 100%;
+  }
+  
+}
 /* Globales */
 :root {
   --color-primario: #9E629A;
