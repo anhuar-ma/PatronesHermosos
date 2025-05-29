@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../../styles/GenerateDiplomas.css';
 
 const GenerateDiplomas = () => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -10,13 +11,11 @@ const GenerateDiplomas = () => {
     setMessage(null);
 
     try {
-      // Call the backend API endpoint
       const response = await axios.get('/api/diplomas/generate', {
         responseType: 'blob',
-        withCredentials: true
+        withCredentials: true,
       });
 
-      // Create a download link for the received file
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -25,47 +24,35 @@ const GenerateDiplomas = () => {
       link.click();
       link.remove();
 
-      setMessage('Diplomas generated successfully!');
-      setIsGenerating(false);
+      setMessage('¡Diplomas generados exitosamente!');
     } catch (err) {
       console.error('Error:', err);
-      setMessage('Error generating diplomas');
+      setMessage('Error al generar los diplomas');
+    } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <h3>Diploma Generator</h3>
-
+    <div className="generate-diplomas__container">
       <button
-        style={{
-          padding: '10px 15px',
-          backgroundColor: '#4B0082',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: isGenerating ? 'not-allowed' : 'pointer'
-        }}
+        className="generate-diplomas__button"
         onClick={handleGenerateDiplomas}
         disabled={isGenerating}
       >
-        {isGenerating ? 'Generating...' : 'Generate Diplomas'}
+        {isGenerating ? 'Generando...' : 'Generar diploma'}
       </button>
 
-      {isGenerating && (
-        <p style={{ marginTop: '10px' }}>Processing, please wait...</p>
-      )}
-
       {message && (
-        <p style={{
-          marginTop: '10px',
-          padding: '8px',
-          backgroundColor: message.includes('Error') ? '#ffdddd' : '#ddffdd',
-          borderRadius: '4px'
-        }}>
+        <div
+          className={`generate-diplomas__message ${
+            message.includes('Error')
+              ? 'generate-diplomas__message--error'
+              : 'generate-diplomas__message--success'
+          }`}
+        >
           {message}
-        </p>
+        </div>
       )}
     </div>
   );
