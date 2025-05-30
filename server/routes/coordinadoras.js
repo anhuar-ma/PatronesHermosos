@@ -1,13 +1,19 @@
 import express from "express";
 import { pool } from "../server.js";
 
+import {
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+} from "../middleware/auth.js";
+
 const router = express.Router();
 
 // Handle participant registration
 router.post("/", async (req, res) => {});
 
-// Get all participantes
-router.get("/", async (req, res) => {
+// Get all coordinadoras
+router.get("/", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM coordinadora");
     res.status(200).json({
