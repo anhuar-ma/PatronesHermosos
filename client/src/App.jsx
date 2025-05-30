@@ -14,12 +14,21 @@ import ListadoSedes from "./pages/admin/ViewSedes.jsx";
 import ListadoGrupos from "./pages/admin/ViewGrupos.jsx";
 import ListadoMentoras from "./pages/admin/ViewMentoras.jsx";
 import AdminNavbar from "./components/AdminNavBar";
+<<<<<<< HEAD
 import AdminNavbarSede from "./components/AdminNavBarSede";
 import RegistroMentoras from "./pages/admin/RegistroMentora.jsx";
 import RegistroCoordinadoraAsociada from "./pages/admin/RegistroCoordinadoraAsociada.jsx";
 import RegistroGrupos from "./pages/admin/RegistroGrupo";
 import DetallesGrupo from "./pages/admin/DetallesGrupo";
 import EnvioExitoso from "./pages/EnvioExitoso.jsx";
+||||||| 19e7bfb (tablaGrupos)
+import AdminDashboard from "./pages/admin/adminHome";
+import ListadoGrupos from "./pages/admin/ViewGrupos";
+// import AdminSedeDashboard from "./pages/adminSede/adminHome";
+=======
+import AdminDashboard from "./pages/admin/adminHome";
+// import AdminSedeDashboard from "./pages/adminSede/adminHome";
+>>>>>>> parent of 19e7bfb (tablaGrupos)
 
 import AdminDashboard from "./pages/admin/adminHome";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
@@ -60,7 +69,41 @@ function App() {
         <Route path="/sesion" element={<IniciarSesion />} />
         <Route path="/envioExitoso" element={<EnvioExitoso />} />
 
+<<<<<<< HEAD
         {/* Protected admin routes */}
+||||||| 19e7bfb (tablaGrupos)
+        {/* Admin routes */}
+        <Route
+          path="/admin/inicio"
+          element={<AdminDashboard></AdminDashboard>}
+        />
+        <Route
+          path="/admin/colaboradores"
+          element={<ListadoColaboradores></ListadoColaboradores>}
+        ></Route>
+         <Route
+          path="/admin/grupos"
+          element={<ListadoGrupos></ListadoGrupos>}
+        ></Route>
+        {/* <Route
+          path="/adminSede/inicio"
+          element={<AdminSedeDashboard></AdminSedeDashboard>}
+        ></Route> */}
+=======
+        {/* Admin routes */}
+        <Route
+          path="/admin/inicio"
+          element={<AdminDashboard></AdminDashboard>}
+        />
+        <Route
+          path="/admin/colaboradores"
+          element={<ListadoColaboradores></ListadoColaboradores>}
+        ></Route>
+        <Route
+          path="/adminSede/inicio"
+          element={<AdminSedeDashboard></AdminSedeDashboard>}
+        ></Route>
+>>>>>>> parent of 19e7bfb (tablaGrupos)
 
         <Route element={<ProtectedRoutes requiredRoles={[0, 1]} />}>
           <Route

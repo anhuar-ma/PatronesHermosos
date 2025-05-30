@@ -488,6 +488,7 @@
     }
     
   }
+<<<<<<< HEAD
 
 
   .tabla__containerBlancoMentora{
@@ -588,3 +589,14 @@
   background-color: darkred; /* tono más oscuro */
   transform: scale(1.05);    /* pequeño “zoom” */
 }
+||||||| 19e7bfb (tablaGrupos)
+
+
+
+  /* Tabla grupos */
+
+  .centrar{
+    text-align: center;
+  }
+=======
+>>>>>>> parent of 19e7bfb (tablaGrupos)
