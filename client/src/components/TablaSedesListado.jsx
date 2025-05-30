@@ -26,6 +26,12 @@ export default function Tabla({
     <table className="colaboradores-table">
       <thead>
         <tr>
+          <th onClick={() => onSort("nombre_sede")}>
+            <div className="tablas__thContainer">
+              <span>Nombre de sede</span>
+              {renderSortArrow("nombre_sede")}
+            </div>
+          </th>
           <th onClick={() => onSort("nombre_completo_coordinadora")}>
             <div className="tablas__thContainer">
               <span>Nombre de la coordinadora</span>
@@ -38,7 +44,6 @@ export default function Tabla({
               {renderSortArrow("correo")}
             </div>
           </th>
-          <th>Nombre de sede</th>
           <th>Fecha de inicio</th>
           <th>Ver permiso</th>
           <th>Estado</th>
@@ -48,9 +53,10 @@ export default function Tabla({
       <tbody>
         {sedes.map((sede) => (
           <tr key={sede.id_sedes}>
+            <td>{sede.nombre_sede}</td>
             <td>{sede.nombre_completo_coordinadora}</td>
             <td>{sede.correo}</td>
-            <td>{sede.nombre_sede}</td>
+
             <td>
               {new Date(sede.fecha_inicio).toLocaleDateString("es-MX", {
                 day: "2-digit",

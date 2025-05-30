@@ -47,7 +47,7 @@ export default function TablaSedes() {
   };
 
   const sedesFiltradas = sedes.filter((s) => {
-    const nombreSede = s.nombre ? s.nombre.toString().toLowerCase() : "";
+    const nombreSede = s.nombre_sede ? s.nombre_sede.toString().toLowerCase() : "";
     const coincideBusqueda = nombreSede.includes(busqueda.toLowerCase());
     const coincideTipo = tiposSeleccionados.length === 0 || tiposSeleccionados.includes(s.tipo);
     const coincideEstado = estadosSeleccionados.length === 0 || estadosSeleccionados.includes(s.estado);
@@ -155,9 +155,8 @@ export default function TablaSedes() {
         <div className="tabla__overlay-filtros" onClick={() => setMostrarFiltros(false)}>
           <div className="tabla__panel-filtros" onClick={(e) => e.stopPropagation()}>
             <h3>Filtros avanzados</h3>
-            <FiltroTabla titulo="Tipo" opciones={tiposDisponibles} seleccionados={tiposSeleccionados} setSeleccionados={setTiposSeleccionados} />
             <FiltroTabla titulo="Estado" opciones={statusOptions} seleccionados={estadosSeleccionados} setSeleccionados={setEstadosSeleccionados} />
-            <button onClick={() => { setBusqueda(""); setTiposSeleccionados([]); setEstadosSeleccionados([]); setMostrarFiltros(false); }}>Limpiar todos los filtros</button>
+            <button className="tabla_boton-limpiar-filtros" onClick={() => { setBusqueda(""); setTiposSeleccionados([]); setEstadosSeleccionados([]); setMostrarFiltros(false); }}>Limpiar todos los filtros</button>
           </div>
         </div>
       )}

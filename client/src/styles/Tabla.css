@@ -27,6 +27,7 @@
 .tabla__titulo{
     margin-top: 0;
     margin-bottom: 0rem;
+    font-size: 1.5rem;
 }
 
 .table_container {
@@ -311,7 +312,9 @@
     border: none;
     background-color: #d791d2;
     color: #ffffff;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.5rem;
+    font-size: 1rem;
+    min-width: 8rem;
   }
 
   .tabla__botonGris {
@@ -415,10 +418,15 @@
       gap: 1rem;  
     }
     .table_container{
-      margin-top: 3rem;
+      margin-top: 6rem;
     }
     .btn-agregar{
       width: 50%;
+    }
+    .tabla__titulo{
+      margin-top: 0;
+      margin-bottom: 0rem;
+      font-size: 2.5rem;
     }
    
   }
@@ -433,22 +441,52 @@
       gap: 1rem;  
     }
     .table_container{
-      margin-top: 6rem;
+      margin-top: 10rem;
       max-height: 75%;
     }
     .tabla__titulo{
       margin-top: 0;
       margin-bottom: 0rem;
-      font-size: 1.3rem;
+      font-size: 2.2rem;
     }
     .tabla__contenedor_busquedaFiltros{
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 1.5rem;
+    width: 100%;
     }
     .btn-agregar{
       width: 100%;
     }
+    .tabla__input-busqueda{
+      width: 100%;
+      padding: 1rem 0.5rem;
+    }
+    .tabla__botonFiltros{
+      width: 100%;
+      justify-content: center;
+      padding: 1rem 0;
+    }
+    .select-estado{
+      padding: 0.5rem 2rem;
+      font-size: 1.2rem;
+    }
+    .tabla__panel-filtros h3{
+      font-size: 2rem;
+    }
+    .filtro-opciones {
+      font-size: 1.5rem;
+      gap: 1rem;
+    }
+    .filtro-header {
+      font-size: 1.8rem;
+    }
+    .tabla__botonMorado{
+      min-width: 10rem;
+      padding: 0.8rem 0.5rem;
+      font-size: 1.2rem;
+    }
+    
   }
 
 
