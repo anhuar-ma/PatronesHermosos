@@ -101,22 +101,13 @@ router.post("/", upload.single("convocatoria"), async (req, res) => {
 });
 
 // Get sedes and their respective coordinadoras
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, checkSedeAccess, requireAdmin, async (req, res) => {
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required ",
-      });
-    }
 
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
+
     //cambiar a simplemente coreo
-    if (decoded.rol === 0) {
+    if (req.user.rol === 0) {
       const result = await pool.query(
         `SELECT
           CONCAT(coordinadora.nombre, ' ', coordinadora.apellido_paterno, ' ', coordinadora.apellido_materno) AS nombre_completo_coordinadora,
@@ -267,23 +258,12 @@ router.get("/nombres", async (req, res) => {
 });
 
 // vista detallada sede y coordinadora
-router.get("/:id", async (req, res) => {
+router.get("/:id", authenticateToken, checkSedeAccess, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
-
     // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
     //cambiar a simplemente coreo
-    if (decoded.rol === 0) {
+    if (req.user.rol === 0) {
       const result = await pool.query(
         `
 SELECT coordinadora.id_coordinadora,

@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 // Handle colaborador registration
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
     // Extract the token from Authorization header
     const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -23,10 +23,8 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
 
-    let id_sede = decoded.id_sede;
+    let id_sede = req.user.id_sede;
 
     if (id_sede === null) {
       res.status(400).json({
@@ -70,25 +68,14 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
-
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
 
     let result;
 
     // Role 0 can see all colaboradores
-    if (decoded.rol === 0) {
+    if (req.user.rol === 0) {
       result = await pool.query(
         `
       SELECT
@@ -105,7 +92,7 @@ router.get("/", async (req, res) => {
       );
     }
     // Role 1 can only see colaboradores from their sede
-    else if (decoded.rol === 1 && decoded.id_sede) {
+    else if (req.user.rol === 1 && req.user.id_sede) {
       result = await pool.query(
         `
       SELECT
@@ -121,7 +108,7 @@ router.get("/", async (req, res) => {
       WHERE
           m.id_sede = $1;
       `,
-        [decoded.id_sede],
+        [req.user.id_sede],
       );
     } else {
       return res.status(403).json({
@@ -153,7 +140,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -281,8 +268,8 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
     const sede = sedeResult.rows[0].id_sede;
 
     // Check if coordinator can only delete mentoras from their own sede
-    if (decoded.rol === 1) {
-      if (decoded.id_sede !== sede) {
+    if (req.user.rol === 1) {
+      if (req.user.id_sede !== sede) {
         return res.status(403).json({
           success: false,
           message: "No tienes permiso para eliminar mentoras de otras sedes",

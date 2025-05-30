@@ -199,25 +199,13 @@ router.get(
 );
 
 // Get participantes with their parents
-router.get("/parents", async (req, res) => {
+router.get("/parents", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
-
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
 
     let result;
 
     // Role 0 can see all colaboradores
-    if (decoded.rol === 0) {
+    if (req.user.rol === 0) {
       result = await pool.query(`
       SELECT
           CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo_participante,
@@ -240,7 +228,7 @@ router.get("/parents", async (req, res) => {
     `);
     }
     // Role 1 can only see colaboradores from their sede
-    else if (decoded.rol === 1 && decoded.id_sede) {
+    else if (req.user.rol === 1 && req.user.id_sede) {
       result = await pool.query(
         `
       SELECT
@@ -262,7 +250,7 @@ router.get("/parents", async (req, res) => {
           p.id_sede = s.id_sede
       WHERE p.id_sede = $1;
     `,
-        [decoded.id_sede],
+        [req.user.id_sede],
       );
     } else {
       return res.status(403).json({
