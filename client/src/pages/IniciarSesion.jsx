@@ -84,7 +84,7 @@ export default function IniciarSesion() {
       <div className={styles.formulario_contenedor}>
         <form className={styles.formulario} onSubmit={handleSubmit}>
           <div className={styles.instructions}>
-            <h4 className={styles.login}>Login</h4>
+            <h4 className={styles.login}>Inicio de sesión</h4>
             <p className={styles.instr}>
               Bienvenida de nuevo! por favor ingresa tu cuenta.
             </p>

@@ -1,13 +1,14 @@
-/* Contenedor principal del contenido (sin incluir la sidebar) */
+/* ============================
+   Estilos generales del dashboard
+============================ */
 .admin-dashboard-content {
-    margin-left: 18%; /* Igual al width de la sidebar */
-    padding: 40px;
-    background-color: #9E629A;
-    height: 100vh;
-    width: auto;
-  }
-  
-  /* Estilos generales del dashboard */
+  margin-left: 18%; /* Igual al width de la sidebar */
+  padding: 40px;
+  background-color: #9E629A;
+  height: 100vh;
+  width: auto;
+}
+
 .admin-dashboard-content {
   padding: 2rem;
   background-color: #f9f9f9;
@@ -26,7 +27,9 @@
   color: #444;
 }
 
-/* Sección KPI */
+/* ============================
+   Sección KPI
+============================ */
 .adminDashboard__cards {
   display: flex;
   flex-wrap: wrap;
@@ -36,7 +39,6 @@
 
 .adminDashboard__card {
   flex: 1 1 calc(33.333% - 1rem); /* Máximo 3 por fila */
-  min-width: 180px;
   background-color: #ffffff;
   padding: 1rem;
   border-radius: 8px;
@@ -61,7 +63,9 @@
   color: #222;
 }
 
-/* Sección de gráficos */
+/* ============================
+   Sección de gráficos
+============================ */
 .adminDashboard__chart-section {
   display: flex;
   flex-wrap: wrap;
@@ -78,12 +82,15 @@
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Tabla comparativa */
+/* ============================
+   Tablas
+============================ */
 .adminDashboard__tableSection {
   margin-bottom: 2rem;
   overflow-x: auto;
 }
 
+/* Tabla comparativa */
 .adminDashboard__comparisonTable {
   width: 100%;
   border-collapse: collapse;
@@ -106,67 +113,8 @@
   font-weight: bold;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-
-
-  .admin-dashboard-content h1 {
-    font-size: 1.7rem;
-    margin-bottom: 0.5rem;
-  }
-  .chart-section {
-    flex-direction: column;
-  }
-
-  .kpi-cards {
-    flex-direction: column;
-  }
-
-  .admin-dashboard-content{
-    margin-left: 0; /* Elimina el margen izquierdo en pantallas pequeñas */
-    /* padding: 20px; Ajusta el padding para pantallas pequeñas */
-  }
-
-}
-
-
-
-.adminDashboard__estado-tag {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.adminDashboard__estado-tag.activa {
-  background-color: #e6ffed;
-  color: #2e7d32;
-  border: 1px solid #b2dfdb;
-}
-
-.adminDashboard__estado-tag.pendiente {
-  background-color: #fff4e6;
-  color: #a15c00;
-  border: 1px solid #ffd699;
-}
-
-
-.adminDashboard__tituloBienvenida {
-  /* color: white; */
-  /* font-size: 3rem; */
-  font-weight: 400;
-  white-space: nowrap;
-  font-weight: bold;
-}
-
-
-/* Tabla comparativa */
-.adminDashboard__tableSection {
-  margin-bottom: 2rem;
-  overflow-x: auto;
-}
-
-.adminDashboard__coodinadoraAsociacionTable{
+/* Tabla coordinadora asociación */
+.adminDashboard__coodinadoraAsociacionTable {
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
@@ -189,7 +137,7 @@
   font-weight: bold;
 }
 
-/* ajusta estos % o píxeles a tu gusto */
+/* Ajuste de columnas */
 .adminDashboard__coodinadoraAsociacionTable th:nth-child(1),
 .adminDashboard__coodinadoraAsociacionTable td:nth-child(1) {
   width: 40%;
@@ -203,9 +151,12 @@
   width: 30%;
 }
 
-.btn-agregarCoordinadora {
+/* ============================
+   Botones
+============================ */
+.btn-agregarCoordinadora,
+.btn_eliminarCoordinadora {
   text-decoration: none;
-  background-color: #b084c4;
   color: white;
   border: none;
   padding: 0.8rem 0.8rem;
@@ -215,28 +166,135 @@
   width: 50%;
   transition: background-color 0.3s ease, transform 0.2s ease;
   text-align: center;
+}
+
+.btn-agregarCoordinadora {
+  background-color: #b084c4;
 }
 
 .btn-agregarCoordinadora:hover {
-  background-color: #9e629a; /* tono más oscuro */
-  transform: scale(1.05);    /* pequeño “zoom” */
+  background-color: #9e629a;
+  transform: scale(1.05);
 }
 
 .btn_eliminarCoordinadora {
-  text-decoration: none;
   background-color: #e57373;
-  color: white;
-  border: none;
-  padding: 0.8rem 0.8rem;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: auto;
-  width: 50%;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  text-align: center;
 }
 
 .btn_eliminarCoordinadora:hover {
-  background-color: #ef5350; /* tono más oscuro */
-  transform: scale(1.05);    /* pequeño “zoom” */
+  background-color: #ef5350;
+  transform: scale(1.05);
+}
+
+/* Acciones */
+.adminDashboard__actions {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 2rem;
+}
+
+.adminDashboard__actions__buttonDownload,
+.adminDashboard__actions__buttonDelete {
+  color: white;
+  border: none;
+  font-size: 1rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.adminDashboard__actions__buttonDownload {
+  background-color: #b084c4;
+}
+
+.adminDashboard__actions__buttonDownload:hover {
+  background-color: #9e629a;
+  transform: scale(1.05);
+}
+
+.adminDashboard__actions__buttonDelete {
+  background-color: #e57373;
+}
+
+.adminDashboard__actions__buttonDelete:hover {
+  background-color: #ef5350;
+  transform: scale(1.05);
+}
+
+/* ============================
+   Responsive
+============================ */
+@media (max-width: 1024px) {
+  .admin-dashboard-content {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .adminDashboard__card p {
+    font-size: 2rem;
+  }
+  .adminDashboard__card h3 {
+    font-size: 1.3rem;
+  }
+  .adminDashboard__chart-section {
+    flex-direction: column;
+  }
+  .admin-dashboard-content h2 {
+    font-size: 1.5rem;
+  }
+  .adminDashboard__comparisonTable th,
+  .adminDashboard__comparisonTable td {
+    font-size: 1.2rem;
+  }
+  .adminDashboard__actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+  }
+  .adminDashboard__actions__buttonDownload,
+  .adminDashboard__actions__buttonDelete {
+    width: 80%;
+    font-size: 1.4rem;
+    padding: 1rem 1.5rem;
+  }
+  .adminDashboard__coodinadoraAsociacionTable th,
+  .adminDashboard__coodinadoraAsociacionTable td {
+    font-size: 1.2rem;
+  }
+  .adminDashboard__coodinadoraAsociacionTable th:nth-child(1),
+  .adminDashboard__coodinadoraAsociacionTable td:nth-child(1) {
+    width: 100%;
+  }
+   .adminDashboard__card {
+    flex: 1 1 100%; 
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  /* .adminDashboard__cards {
+    flex-direction: column;
+  } */
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .adminDashboard__card {
+    flex: 1 1 45%; 
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .admin-dashboard-content h1 {
+    font-size: 1.7rem;
+    margin-bottom: 0.5rem;
+  }
+  .chart-section {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 1200px) {
+  /* Estilos para pantallas grandes */
 }

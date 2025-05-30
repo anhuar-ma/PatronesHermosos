@@ -27,6 +27,7 @@
 .tabla__titulo{
     margin-top: 0;
     margin-bottom: 0rem;
+    font-size: 1.5rem;
 }
 
 .table_container {
@@ -311,7 +312,9 @@
     border: none;
     background-color: #d791d2;
     color: #ffffff;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.5rem;
+    font-size: 1rem;
+    min-width: 8rem;
   }
 
   .tabla__botonGris {
@@ -338,6 +341,7 @@
   }
 
   /* Estilos base para el select */
+  
 .select-estado {
   padding: 4px 8px;
   border-radius: 4px;
@@ -347,25 +351,25 @@
 
 /* Gris para Pendiente */
 .select-estado--pendiente {
-  background-color: gray;
-  border: 3px solid rgb(79, 79, 79);
+  background-color: #F9D864;
+  border: 3px solid #A59B79;
 
-  color: white;
+  color: #504B3B;
 }
 
 /* Verde para Aceptado */
 .select-estado--aceptado {
-  background-color: #70c574;
-  border: 3px solid #008767;
-  color: green;
+  background-color: #4BB198;
+  border: 3px solid #4E8578;
+  color: #24332F;
 }
 
 /* Rojo para Rechazado */
 .select-estado--rechazado {
-  background-color: #FFC5C5;
+  background-color: #E75F50;
   border: 3px solid #DF0404;
 
-  color: #DF0404;
+  color: white;
 }
 
 /* Opcional: hover */
@@ -414,10 +418,15 @@
       gap: 1rem;  
     }
     .table_container{
-      margin-top: 3rem;
+      margin-top: 6rem;
     }
     .btn-agregar{
       width: 50%;
+    }
+    .tabla__titulo{
+      margin-top: 0;
+      margin-bottom: 0rem;
+      font-size: 2.5rem;
     }
    
   }
@@ -432,22 +441,52 @@
       gap: 1rem;  
     }
     .table_container{
-      margin-top: 6rem;
+      margin-top: 10rem;
       max-height: 75%;
     }
     .tabla__titulo{
       margin-top: 0;
       margin-bottom: 0rem;
-      font-size: 1.3rem;
+      font-size: 2.2rem;
     }
     .tabla__contenedor_busquedaFiltros{
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 1.5rem;
+    width: 100%;
     }
     .btn-agregar{
       width: 100%;
     }
+    .tabla__input-busqueda{
+      width: 100%;
+      padding: 1rem 0.5rem;
+    }
+    .tabla__botonFiltros{
+      width: 100%;
+      justify-content: center;
+      padding: 1rem 0;
+    }
+    .select-estado{
+      padding: 0.5rem 2rem;
+      font-size: 1.2rem;
+    }
+    .tabla__panel-filtros h3{
+      font-size: 2rem;
+    }
+    .filtro-opciones {
+      font-size: 1.5rem;
+      gap: 1rem;
+    }
+    .filtro-header {
+      font-size: 1.8rem;
+    }
+    .tabla__botonMorado{
+      min-width: 10rem;
+      padding: 0.8rem 0.5rem;
+      font-size: 1.2rem;
+    }
+    
   }
 
 
@@ -503,11 +542,13 @@
 .info__grupo__label{
   color: #9E629A;
 }
-.tabla__container__botones{
+.tabla__container__botones {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px; /* Space between buttons */
   align-items: center;
-  width: 50%;
+  width: 100%; /* Optional: make the row full width */
+  margin-top: 24px; /* Optional: space above the button row */
 }
 
 .btn-agregarPersonaGrupo {
@@ -531,7 +572,7 @@
   transform: scale(1.05);    /* pequeño “zoom” */
 }
 .btn-eliminarMentora{
-  background-color: #ff4545;
+  background-color: #d32f2f;
   color: white;
   border: none;
   padding: 0.9rem 1.6rem;
@@ -544,6 +585,6 @@
   font-weight: 800;
 }
 .btn-eliminarMentora:hover {
-  background-color: red; /* tono más oscuro */
+  background-color: darkred; /* tono más oscuro */
   transform: scale(1.05);    /* pequeño “zoom” */
 }
