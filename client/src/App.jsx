@@ -22,7 +22,7 @@ import RegistroGrupos from "./pages/admin/RegistroGrupo";
 import DetallesGrupo from "./pages/admin/DetallesGrupo";
 import EnvioExitoso from "./pages/EnvioExitoso.jsx";
 import ListadoContacto from "./pages/admin/ViewContacto.jsx"; 
-
+import ListadoCoordinadorasAsociadas from "./pages/admin/ViewCoordinadorasAsociadas.jsx";
 import AdminDashboard from "./pages/admin/adminHome";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
 import { jwtDecode } from "jwt-decode";
@@ -124,6 +124,10 @@ function App() {
           <Route
             path="/admin/mentoras"
             element={<ListadoMentoras />}
+          /> 
+          <Route
+            path="/admin/coordinadoras-asociadas"
+            element={<ListadoCoordinadorasAsociadas />}
           />
           <Route
             path="/admin/registro-mentoras"
