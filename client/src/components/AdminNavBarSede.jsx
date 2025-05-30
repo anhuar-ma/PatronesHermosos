@@ -12,6 +12,8 @@ import {
   Contact,
   LogOut,
   Compass,
+  NotebookTabs,
+  
 } from "lucide-react";
 import "../styles/Sidebar.css"; // Asegúrate de importar los estilos
 
@@ -58,6 +60,11 @@ export default function AdminNavbar() {
       name: "Colaboradores",
       icon: <Contact size={20} className="AdminNavBar__icon" />,
       path: "/admin/colaboradores",
+    },
+     {
+      name: "Contacto informes",
+      icon: <NotebookTabs size={20} className="AdminNavBar__icon" />,
+      path: "/admin/contacto",
     },
     {
       name: "Diplomas",

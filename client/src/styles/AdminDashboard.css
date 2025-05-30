@@ -5,7 +5,7 @@
   margin-left: 18%; /* Igual al width de la sidebar */
   padding: 40px;
   background-color: #9E629A;
-  height: 100vh;
+  /* height: 100vh; */
   width: auto;
 }
 

@@ -16,10 +16,12 @@ import ListadoMentoras from "./pages/admin/ViewMentoras.jsx";
 import AdminNavbar from "./components/AdminNavBar";
 import AdminNavbarSede from "./components/AdminNavBarSede";
 import RegistroMentoras from "./pages/admin/RegistroMentora.jsx";
+import RegistroContactoInformes from "./pages/admin/RegistroContactoInformes.jsx";
 import RegistroCoordinadoraAsociada from "./pages/admin/RegistroCoordinadoraAsociada.jsx";
 import RegistroGrupos from "./pages/admin/RegistroGrupo";
 import DetallesGrupo from "./pages/admin/DetallesGrupo";
 import EnvioExitoso from "./pages/EnvioExitoso.jsx";
+import ListadoContacto from "./pages/admin/ViewContacto.jsx"; 
 
 import AdminDashboard from "./pages/admin/adminHome";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
@@ -104,6 +106,10 @@ function App() {
             path="/admin/colaboradores/:id"
             element={<DetalleColaborador />}
           />
+          <Route
+            path="/admin/contacto"
+            element={<ListadoContacto />}
+          />
 
           <Route
             path="/admin/sedes/:id"
@@ -122,6 +128,10 @@ function App() {
           <Route
             path="/admin/registro-mentoras"
             element={<RegistroMentoras />}
+          />
+          <Route
+            path="/admin/registro-contacto-informes"
+            element={<RegistroContactoInformes />}
           />
           <Route
             path="/admin/registro-grupos"
