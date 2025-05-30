@@ -137,7 +137,13 @@ router.get(
                 (SELECT COUNT(*) FROM participante WHERE id_sede = s.id_sede AND estado = 'Aceptado') AS alumnas_aceptadas,
                 (SELECT COUNT(*) FROM participante WHERE id_sede = s.id_sede AND estado = 'Rechazado') AS alumnas_rechazadas,
                 (SELECT COUNT(*) FROM participante WHERE id_sede = s.id_sede AND estado = 'Pendiente') AS alumnas_pendientes,
-                (SELECT COUNT(*) FROM colaborador WHERE id_sede = s.id_sede AND estado = 'Aceptado') AS colaboradores_aceptados
+                (SELECT COUNT(*) FROM colaborador WHERE id_sede = s.id_sede AND estado = 'Aceptado') AS colaboradores_aceptados,
+                (SELECT CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno)
+                FROM coordinadora c
+                WHERE c.id_coordinadora = s.id_coordinadora) AS coordinadora_nombre_completo,
+                (SELECT c.correo
+                FROM coordinadora c
+                WHERE c.id_coordinadora = s.id_coordinadora) AS coordinadora_correo
             FROM
                 sede s
             WHERE
