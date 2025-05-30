@@ -142,7 +142,7 @@ router.get(
           const coordAsocResult = await pool.query(
             `SELECT id_coordinadora_asociada, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
            FROM coordinadora_asociada
-           WHERE id_sede = $1`,
+           WHERE id_sede = $1 AND estado = 'Aceptado'`,
             [sede.id_sede],
           );
 
@@ -177,7 +177,7 @@ router.get(
           const mentoraResult = await pool.query(
             `SELECT id_mentora, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
            FROM mentora
-           WHERE id_sede = $1`,
+           WHERE id_sede = $1 AND estado = 'Aceptado'`,
             [sede.id_sede],
           );
 
