@@ -27,12 +27,18 @@ import ListadoGrupos from "./pages/admin/ViewGrupos";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
 =======
 import AdminDashboard from "./pages/admin/adminHome";
+<<<<<<< HEAD
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
 >>>>>>> parent of 19e7bfb (tablaGrupos)
 
 import AdminDashboard from "./pages/admin/adminHome";
 // import AdminSedeDashboard from "./pages/adminSede/adminHome";
 import { jwtDecode } from "jwt-decode";
+||||||| 54b1c3e (ruta coordinadorSede cancelada)
+// import AdminSedeDashboard from "./pages/adminSede/adminHome";
+
+=======
+>>>>>>> parent of 54b1c3e (ruta coordinadorSede cancelada)
 import { useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -44,10 +50,12 @@ import DetalleSede from "./pages/admin/DetallesSedes.jsx";
 import DetalleMentora from "./pages/admin/DetallesMentora.jsx";
 // impor/t AdminSedeDashboard from "./pages/adminSede/adminHome";
 
+
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
+<<<<<<< HEAD
   // const token = localStorage.getItem("token");
   const { rol } = useCurrentRol();
 
@@ -90,21 +98,34 @@ function App() {
           element={<AdminSedeDashboard></AdminSedeDashboard>}
         ></Route> */}
 =======
+||||||| 54b1c3e (ruta coordinadorSede cancelada)
+=======
+       
+
+>>>>>>> parent of 54b1c3e (ruta coordinadorSede cancelada)
         {/* Admin routes */}
-        <Route
-          path="/admin/inicio"
-          element={<AdminDashboard></AdminDashboard>}
-        />
+        <Route 
+          path="/admin/inicio" 
+          element={<AdminDashboard></AdminDashboard>} />
         <Route
           path="/admin/colaboradores"
           element={<ListadoColaboradores></ListadoColaboradores>}
         ></Route>
+<<<<<<< HEAD
         <Route
           path="/adminSede/inicio"
           element={<AdminSedeDashboard></AdminSedeDashboard>}
         ></Route>
 >>>>>>> parent of 19e7bfb (tablaGrupos)
+||||||| 54b1c3e (ruta coordinadorSede cancelada)
+        <Route
+          path="/adminSede/inicio"
+          element={<AdminSedeDashboard></AdminSedeDashboard>}
+        ></Route>
+=======
+>>>>>>> parent of 54b1c3e (ruta coordinadorSede cancelada)
 
+<<<<<<< HEAD
         <Route element={<ProtectedRoutes requiredRoles={[0, 1]} />}>
           <Route
             path="/admin/"
@@ -185,6 +206,14 @@ function App() {
           />
 
         </Route>
+||||||| 54b1c3e (ruta coordinadorSede cancelada)
+        <Route
+          path="/admin/add-person"
+          element={<RegistroSedes></RegistroSedes>}
+        />
+=======
+        <Route path="/admin/add-person" element={<RegistroSedes></RegistroSedes>} />
+>>>>>>> parent of 54b1c3e (ruta coordinadorSede cancelada)
       </Routes>
     </AuthProvider>
   );

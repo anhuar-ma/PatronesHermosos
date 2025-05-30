@@ -305,6 +305,7 @@
     background-color: #9E629A;
   }
 
+<<<<<<< HEAD
   .tabla__botonMorado {
     border-radius: 5px;
     /* width: 150px; */
@@ -392,15 +393,84 @@
 }
 
 
+||||||| 54b1c3e (ruta coordinadorSede cancelada)
+  .tabla__botonMorado {
+    border-radius: 5px;
+    /* width: 150px; */
+    /* height: 35px; */
+    border: none;
+    background-color: #d791d2;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+  }
+  
+  .tabla__botonMorado:hover {
+    border-radius: 5px;
+    border: none;
+    background-color: #9e629a;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Suaviza todos los cambios */
+    transform: scale(1.05); /* Estado inicial */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Agrega una sombra para resaltar */
+  }
+
+  /* Estilos base para el select */
+.select-estado {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+/* Gris para Pendiente */
+.select-estado--pendiente {
+  background-color: gray;
+  border: 3px solid rgb(79, 79, 79);
+
+  color: white;
+}
+
+/* Verde para Aceptado */
+.select-estado--aceptado {
+  background-color: #70c574;
+  border: 3px solid #008767;
+  color: green;
+}
+
+/* Rojo para Rechazado */
+.select-estado--rechazado {
+  background-color: #FFC5C5;
+  border: 3px solid #DF0404;
+
+  color: #DF0404;
+}
+
+/* Opcional: hover */
+.select-estado:hover {
+  opacity: 0.9;
+}
+
+
+=======
+>>>>>>> parent of 54b1c3e (ruta coordinadorSede cancelada)
   /* Media queries */
 
   @media (max-width: 1024px) and (min-width: 767px) {
     .fondo_tablas_admin{
       margin-left: 0;
     }
+<<<<<<< HEAD
     .btn-agregar{
       width: 33%;
     }
+||||||| 54b1c3e (ruta coordinadorSede cancelada)
+=======
+    .tabla__container__tituloBusqueda{ 
+      /* margin-bottom: 0; */
+    }
+>>>>>>> parent of 54b1c3e (ruta coordinadorSede cancelada)
   
     /* .table_container{
       margin-top: rem;
