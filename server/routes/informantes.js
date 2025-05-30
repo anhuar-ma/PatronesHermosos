@@ -122,24 +122,24 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
           message: "No tienes permiso para eliminar informante de otra sede",
         });
       }
-
-      // Begin transaction
-      await pool.query("BEGIN");
-
-      // First delete records from mentora_grupo table
-      await pool.query(
-        "DELETE FROM informante WHERE id_sede = $1 AND id_informante = $2",
-        [req.user.id_sede, id],
-      );
-
-      // Commit transaction
-      await pool.query("COMMIT");
-
-      res.json({
-        success: true,
-        message: "informante eliminada correctamente",
-      });
     }
+
+    // Begin transaction
+    await pool.query("BEGIN");
+
+    // First delete records from mentora_grupo table
+    await pool.query(
+      "DELETE FROM informante WHERE id_sede = $1 AND id_informante = $2",
+      [req.user.id_sede, id],
+    );
+
+    // Commit transaction
+    await pool.query("COMMIT");
+
+    res.json({
+      success: true,
+      message: "informante eliminada correctamente",
+    });
   } catch (error) {
     // Rollback transaction in case of error
     await pool.query("ROLLBACK");

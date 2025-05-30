@@ -281,42 +281,42 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
     const sede = sedeResult.rows[0].id_sede;
 
     // Check if coordinator can only delete mentoras from their own sede
-    if (decode.rol === 1) {
-      if (decode.id_sede !== sede) {
+    if (decoded.rol === 1) {
+      if (decoded.id_sede !== sede) {
         return res.status(403).json({
           success: false,
           message: "No tienes permiso para eliminar mentoras de otras sedes",
         });
       }
+    }
 
-      // Begin transaction
-      await pool.query("BEGIN");
+    // Begin transaction
+    await pool.query("BEGIN");
 
-      // First delete records from mentora_grupo table
-      await pool.query("DELETE FROM mentora_grupo WHERE id_mentora = $1", [id]);
+    // First delete records from mentora_grupo table
+    await pool.query("DELETE FROM mentora_grupo WHERE id_mentora = $1", [id]);
 
-      // Then delete the mentora
-      const deleteResult = await pool.query(
-        "DELETE FROM mentora WHERE id_mentora = $1 RETURNING *",
-        [id],
-      );
+    // Then delete the mentora
+    const deleteResult = await pool.query(
+      "DELETE FROM mentora WHERE id_mentora = $1 RETURNING *",
+      [id],
+    );
 
-      if (deleteResult.rowCount === 0) {
-        await pool.query("ROLLBACK");
-        return res.status(404).json({
-          success: false,
-          message: "Mentora not found",
-        });
-      }
-
-      // Commit transaction
-      await pool.query("COMMIT");
-
-      res.json({
-        success: true,
-        message: "Mentora y asignaciones de grupo eliminadas correctamente",
+    if (deleteResult.rowCount === 0) {
+      await pool.query("ROLLBACK");
+      return res.status(404).json({
+        success: false,
+        message: "Mentora not found",
       });
     }
+
+    // Commit transaction
+    await pool.query("COMMIT");
+
+    res.json({
+      success: true,
+      message: "Mentora y asignaciones de grupo eliminadas correctamente",
+    });
   } catch (error) {
     // Rollback transaction in case of error
     await pool.query("ROLLBACK");

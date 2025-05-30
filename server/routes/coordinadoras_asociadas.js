@@ -163,24 +163,24 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
             "No tienes permiso para eliminar coordinadora_asociada de otra sede",
         });
       }
-
-      // Begin transaction
-      await pool.query("BEGIN");
-
-      // First delete records from mentora_grupo table
-      await pool.query(
-        "DELETE FROM coordinadora_asociada WHERE id_sede = $1 AND id_coordinadora_asociada = $2",
-        [req.user.id_sede, id],
-      );
-
-      // Commit transaction
-      await pool.query("COMMIT");
-
-      res.json({
-        success: true,
-        message: "coordinadora_asociada eliminada correctamente",
-      });
     }
+
+    // Begin transaction
+    await pool.query("BEGIN");
+
+    // First delete records from mentora_grupo table
+    await pool.query(
+      "DELETE FROM coordinadora_asociada WHERE id_sede = $1 AND id_coordinadora_asociada = $2",
+      [req.user.id_sede, id],
+    );
+
+    // Commit transaction
+    await pool.query("COMMIT");
+
+    res.json({
+      success: true,
+      message: "coordinadora_asociada eliminada correctamente",
+    });
   } catch (error) {
     // Rollback transaction in case of error
     await pool.query("ROLLBACK");
