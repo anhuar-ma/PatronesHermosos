@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 import { useMemo, useState, useRef, useEffect } from "react";
-||||||| 54b1c3e (ruta coordinadorSede cancelada)
-import { useMemo, useState, useRef,useEffect } from "react";
-=======
-import { useMemo, useState, useRef } from "react";
->>>>>>> parent of 54b1c3e (ruta coordinadorSede cancelada)
 import { getSedeNombre } from "../utils/sedeUtils"; // Función auxiliar para obtener el nombre de la sede a partir de su ID
 import useColaboradores from "../hooks/useColaboradores"; // Hook personalizado para obtener datos de colaboradores
 import { SlidersHorizontal } from "lucide-react"; // Ícono para el botón de filtros
@@ -29,10 +23,9 @@ export default function TablaColaboradores() {
     loading,
     error,
   } = useColaboradores();
-    const currentRol = useCurrentRol();
-  
+  const currentRol = useCurrentRol();
 
-<<<<<<< HEAD
+
   // 1. Copia local para poder mutar el estado en cliente
   const [colaboradores, setColaboradores] = useState([]);
   useEffect(() => {
@@ -50,39 +43,6 @@ export default function TablaColaboradores() {
   //   return [...new Set(roles)].sort();
   // }, [colaboradores]);
 
-||||||| 54b1c3e (ruta coordinadorSede cancelada)
-   // 1. Copia local para poder mutar el estado en cliente
-   const [colabList, setColabList] = useState([]);
-   useEffect(() => {
-     setColabList(colaboradores);
-   }, [colaboradores]);
- 
-   // 2. Opciones de estado dinámicas
-   const statusOptions = useMemo(() => {
-      const estados = colaboradores.map((c) => c.estado);
-      return [...new Set(estados)].sort();
-   }, [colaboradores]);
- 
-
-  //  const rolesDisponibles = useMemo(() => {
-  //   const roles = colaboradores.map((c) => c.rol);
-  //   return [...new Set(roles)].sort();
-  // }, [colaboradores]);
-
-   // 3. Handler para cambiar estado
-   const handleStatusChange = (id, newStatus) => {
-     // Actualización local
-     setColabList((prev) =>
-       prev.map((c) =>
-         c.id_colaborador === id ? { ...c, estado: newStatus } : c
-       )
-     );
-     // TODO: aquí disparar tu llamada al backend, p.ej:
-     // axios.patch(`/api/colaboradores/${id}`, { estado: newStatus });
-   };
-
-=======
->>>>>>> parent of 54b1c3e (ruta coordinadorSede cancelada)
   // Estado para el texto de búsqueda
   const [busqueda, setBusqueda] = useState("");
 
@@ -148,9 +108,8 @@ export default function TablaColaboradores() {
    * - Coincidencia de sede (si hay sedes seleccionadas)
    */
   const colaboradoresFiltrados = colaboradores.filter((colaborador) => {
-    const nombreCompleto = `${colaborador.nombre} ${
-      colaborador.apellido_paterno
-    } ${colaborador.apellido_materno || ""}`.toLowerCase();
+    const nombreCompleto = `${colaborador.nombre} ${colaborador.apellido_paterno
+      } ${colaborador.apellido_materno || ""}`.toLowerCase();
     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
     const coincideRol =
       rolesSeleccionados.length === 0 ||
@@ -193,7 +152,7 @@ export default function TablaColaboradores() {
   const handleStatusChange = async (id_colaborador, nuevoEstado) => {
     try {
       let razonRechazo = "";
-  
+
       // Si se selecciona "Rechazado", solicitar la razón
       if (nuevoEstado === "Rechazado") {
         razonRechazo = prompt("Por favor, indica la razón del rechazo:");
@@ -206,9 +165,9 @@ export default function TablaColaboradores() {
       // Actualiza el estado del colaborador
       const response = await axios.put(
         `/api/colaboradores/estado/${id_colaborador}`,
-        {estado: nuevoEstado,}
+        { estado: nuevoEstado, }
       );
-  
+
       if (response.data.success) {
         // Actualiza el estado localmente
         setColaboradores((prev) =>
@@ -220,16 +179,16 @@ export default function TablaColaboradores() {
 
 
         );
-  
+
         // Envía el correo según el estado
         const emailResponse = await axios.post(
           `/api/colaboradores/email/${id_colaborador}`,
-          { 
-            estado: nuevoEstado, 
+          {
+            estado: nuevoEstado,
             razon: razonRechazo || null,
-          } 
+          }
         );
-  
+
         if (emailResponse.data.success) {
           alert(emailResponse.data.message); // Muestra un mensaje de éxito
         } else {
@@ -340,16 +299,9 @@ export default function TablaColaboradores() {
           onSort={handleSort}
           sortField={sortField}
           sortOrder={sortOrder}
-<<<<<<< HEAD
           // 6. Pasamos las props nuevas al componente Tabla
           statusOptions={estadosFijos}
           onStatusChange={handleStatusChange}
-||||||| 54b1c3e (ruta coordinadorSede cancelada)
-          // 6. Pasamos las props nuevas al componente Tabla
-          statusOptions={statusOptions}
-          onStatusChange={handleStatusChange}
-=======
->>>>>>> parent of 54b1c3e (ruta coordinadorSede cancelada)
         />
       </div>
     </div>
