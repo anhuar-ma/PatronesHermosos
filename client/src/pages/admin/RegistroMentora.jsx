@@ -23,6 +23,7 @@ export default function RegistroMentoras() {
         apellido_paterno: data.apellido_paterno_mentora,
         apellido_materno: data.apellido_materno_coordinadora,
         correo: data.correo_mentora,
+        estado: "Pendiente", // Estado inicial
       };
 
       const response = await axios.post("/api/mentoras", mentoraData);
