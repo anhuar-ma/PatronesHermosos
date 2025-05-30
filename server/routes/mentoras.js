@@ -1,8 +1,12 @@
 import express from "express";
 import { pool } from "../server.js";
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
-import { authenticateToken, checkSedeAccess } from "../middleware/auth.js";
+import {
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+} from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -39,9 +43,17 @@ router.post("/", async (req, res) => {
         apellido_paterno,
         apellido_materno,
         correo,
-       id_sede
-      ) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [nombre, apellido_paterno, apellido_materno, correo, id_sede],
+       id_sede,
+        estado
+      ) VALUES ($1, $2, $3, $4, $5,$6) RETURNING *`,
+      [
+        nombre,
+        apellido_paterno,
+        apellido_materno,
+        correo,
+        id_sede,
+        "Pendiente",
+      ],
     );
 
     res.status(201).json({
@@ -174,47 +186,54 @@ router.get("/:id", async (req, res) => {
 });
 
 //Editar mentora
-router.put("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
-  const { id } = req.params;
-  const { nombre, apellido_paterno, apellido_materno, correo } = req.body;
+router.put(
+  "/:id",
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    const { nombre, apellido_paterno, apellido_materno, correo } = req.body;
 
-  try {
-    const result = await pool.query(
-      `UPDATE mentora SET
+    try {
+      const result = await pool.query(
+        `UPDATE mentora SET
         nombre = $1,
         apellido_paterno = $2,
         apellido_materno = $3,
         correo = $4
       WHERE id_mentora = $5
       RETURNING *`,
-      [nombre, apellido_paterno, apellido_materno, correo, id],
-    );
+        [nombre, apellido_paterno, apellido_materno, correo, id],
+      );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Mentora no encontrado",
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Mentora no encontrado",
+        });
+      }
+
+      res.json({
+        success: true,
+        data: result.rows[0],
+      });
+    } catch (error) {
+      console.error("Error al actualizar mentora:", error);
+      res.status(500).json({
+        message: "Error al actualizar mentora",
+        error: error.message,
       });
     }
-
-    res.json({
-      success: true,
-      data: result.rows[0],
-    });
-  } catch (error) {
-    console.error("Error al actualizar mentora:", error);
-    res.status(500).json({
-      message: "Error al actualizar mentora",
-      error: error.message,
-    });
-  }
-});
+  },
+);
 
 // Update estado
 router.put(
   "/estado/:id",
   authenticateToken,
   checkSedeAccess,
+  requireAdmin,
   async (req, res) => {
     const { id } = req.params;
     const { estado } = req.body;
@@ -246,33 +265,58 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Begin transaction
-    await pool.query("BEGIN");
-
-    // First delete records from mentora_grupo table
-    await pool.query("DELETE FROM mentora_grupo WHERE id_mentora = $1", [id]);
-
-    // Then delete the mentora
-    const deleteResult = await pool.query(
-      "DELETE FROM mentora WHERE id_mentora = $1 RETURNING *",
+    // Get the sede of the mentora
+    const sedeResult = await pool.query(
+      "SELECT id_sede FROM mentora WHERE id_mentora = $1",
       [id],
     );
 
-    if (deleteResult.rowCount === 0) {
-      await pool.query("ROLLBACK");
+    if (sedeResult.rows.length === 0) {
       return res.status(404).json({
         success: false,
         message: "Mentora not found",
       });
     }
 
-    // Commit transaction
-    await pool.query("COMMIT");
+    const sede = sedeResult.rows[0].id_sede;
 
-    res.json({
-      success: true,
-      message: "Mentora y asignaciones de grupo eliminadas correctamente",
-    });
+    // Check if coordinator can only delete mentoras from their own sede
+    if (decode.rol === 1) {
+      if (decode.id_sede !== sede) {
+        return res.status(403).json({
+          success: false,
+          message: "No tienes permiso para eliminar mentoras de otras sedes",
+        });
+      }
+
+      // Begin transaction
+      await pool.query("BEGIN");
+
+      // First delete records from mentora_grupo table
+      await pool.query("DELETE FROM mentora_grupo WHERE id_mentora = $1", [id]);
+
+      // Then delete the mentora
+      const deleteResult = await pool.query(
+        "DELETE FROM mentora WHERE id_mentora = $1 RETURNING *",
+        [id],
+      );
+
+      if (deleteResult.rowCount === 0) {
+        await pool.query("ROLLBACK");
+        return res.status(404).json({
+          success: false,
+          message: "Mentora not found",
+        });
+      }
+
+      // Commit transaction
+      await pool.query("COMMIT");
+
+      res.json({
+        success: true,
+        message: "Mentora y asignaciones de grupo eliminadas correctamente",
+      });
+    }
   } catch (error) {
     // Rollback transaction in case of error
     await pool.query("ROLLBACK");

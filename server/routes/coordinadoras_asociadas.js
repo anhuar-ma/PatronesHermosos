@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-// Handle participant registration
+//coordinadora_asociada registration
 router.post("/", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
     const { nombre, apellido_paterno, apellido_materno, correo } = req.body;
@@ -32,9 +32,17 @@ router.post("/", authenticateToken, checkSedeAccess, async (req, res) => {
           apellido_paterno,
           apellido_materno,
           correo,
-          id_sede
-      ) VALUES ($1, $2, $3, $4,$5) RETURNING *`,
-      [nombre, apellido_paterno, apellido_materno, correo, id_sede],
+          id_sede,
+          estado
+      ) VALUES ($1, $2, $3, $4,$5,$6) RETURNING *`,
+      [
+        nombre,
+        apellido_paterno,
+        apellido_materno,
+        correo,
+        id_sede,
+        "Pendiente",
+      ],
     );
 
     res.status(201).json({
@@ -94,27 +102,85 @@ router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
   }
 });
 
+router.put(
+  "/estado/:id",
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    const { estado } = req.body;
+
+    try {
+      // Actualizar participante
+      await pool.query(
+        `UPDATE coordinadora_asociada SET
+        estado = $1
+      WHERE id_coordinadora_asociada = $2`,
+        [estado, id],
+      );
+
+      res.json({
+        success: true,
+        message: "coordinadora_asociada actualizada correctamente",
+      });
+    } catch (error) {
+      console.error("Error al actualizar coordinadora_asociada:", error);
+      res.status(500).json({
+        message: "Error al actualizar coordinadora_asociada",
+        error: error.message,
+      });
+    }
+  },
+);
+
 // Delete a cooridnadora asociada
 router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Begin transaction
-    await pool.query("BEGIN");
-
-    // First delete records from mentora_grupo table
-    await pool.query(
-      "DELETE FROM coordinadora_asociada WHERE id_sede = $1 AND id_coordinadora_asociada = $2",
-      [req.user.id_sede, id],
+    // Get the sede of the coordinadora_asociada
+    const sedeResult = await pool.query(
+      "SELECT id_sede FROM coordinadora_asociada WHERE id_coordinadora_asociada = $1",
+      [id],
     );
 
-    // Commit transaction
-    await pool.query("COMMIT");
+    if (sedeResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "coordinadora_asociada not found",
+      });
+    }
 
-    res.json({
-      success: true,
-      message: "coordinadora_asociada de mentoras eliminada correctamente",
-    });
+    const sede = sedeResult.rows[0].id_sede;
+
+    // Check if coordinator can only delete coordinadora_asociadas from their own sede
+    if (req.user.rol === 1) {
+      if (req.user.id_sede !== sede) {
+        return res.status(403).json({
+          success: false,
+          message:
+            "No tienes permiso para eliminar coordinadora_asociada de otra sede",
+        });
+      }
+
+      // Begin transaction
+      await pool.query("BEGIN");
+
+      // First delete records from mentora_grupo table
+      await pool.query(
+        "DELETE FROM coordinadora_asociada WHERE id_sede = $1 AND id_coordinadora_asociada = $2",
+        [req.user.id_sede, id],
+      );
+
+      // Commit transaction
+      await pool.query("COMMIT");
+
+      res.json({
+        success: true,
+        message: "coordinadora_asociada eliminada correctamente",
+      });
+    }
   } catch (error) {
     // Rollback transaction in case of error
     await pool.query("ROLLBACK");
@@ -129,3 +195,4 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 });
 
 export default router;
+
