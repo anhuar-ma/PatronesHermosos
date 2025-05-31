@@ -15,10 +15,13 @@ import archiver from "archiver";
 const router = express.Router();
 
 // Utility function to generate a PDF with a name
-async function generateDiploma(templatePath, outputPath, recipientName) {
+async function generateDiploma(templatePath, outputPath, recipientName, sedeName = "", fecha = "") {
   try {
     // Read the template PDF
     const templateBytes = await fs.readFile(templatePath);
+    console.log("templateBytes", templateBytes);
+    console.log("templatePath", templatePath);
+
 
     // Load the PDF document
     const pdfDoc = await PDFDocument.load(templateBytes);
@@ -28,6 +31,7 @@ async function generateDiploma(templatePath, outputPath, recipientName) {
 
     // Embed the standard font
     const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
     // Calculate text position (centered horizontally, positioned vertically)
     const textWidth = font.widthOfTextAtSize(recipientName, 24);
@@ -35,10 +39,10 @@ async function generateDiploma(templatePath, outputPath, recipientName) {
     const pageHeight = page.getHeight();
 
     // Position text at center of page, adjust Y position as needed for your diploma template
-    const x = (pageWidth - textWidth) / 2;
-    const y = pageHeight / 2; // Adjust this based on where names should appear
+    let x = (pageWidth - textWidth) / 2;
+    let y = pageHeight / 2; // Adjust this based on where names should appear
 
-    // Add text to the page
+    // Add recipient name to the page
     page.drawText(recipientName, {
       x,
       y,
@@ -46,6 +50,44 @@ async function generateDiploma(templatePath, outputPath, recipientName) {
       font,
       color: rgb(0, 0, 0), // Black text
     });
+
+    // Add sede name and date below the recipient name
+    if (sedeName) {
+
+      x = 195;
+      y = 222;
+
+      if (templatePath.includes('coordinadora_asociada')) {
+        x = 187;
+        y = 232;
+      }
+
+      page.drawText(sedeName, {
+        x: x,
+        y: y,
+        size: 15,
+        font: regularFont,
+        color: rgb(0, 0, 0),
+      });
+    }
+
+    if (fecha) {
+      x = 130;
+      y = 205;
+      if (templatePath.includes('coordinadora_asociada')) {
+        x = 123;
+        y = 214;
+
+      }
+
+      page.drawText(fecha, {
+        x: x,
+        y: y,
+        size: 15,
+        font: regularFont,
+        color: rgb(0, 0, 0),
+      });
+    }
 
     // Save the modified PDF
     const modifiedPdfBytes = await pdfDoc.save();
@@ -119,7 +161,7 @@ router.get(
 
         // Get all accepted sedes
         const sedesResult = await pool.query(
-          "SELECT id_sede,id_coordinadora, nombre FROM sede WHERE estado = 'Aceptado'",
+          "SELECT id_sede,id_coordinadora, nombre, fecha_inicio FROM sede WHERE estado = 'Aceptado'",
         );
 
         // Process each sede
@@ -142,9 +184,21 @@ router.get(
           const coordAsocResult = await pool.query(
             `SELECT id_coordinadora_asociada, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
            FROM coordinadora_asociada
-           WHERE id_sede = $1 AND estado = 'Aceptado'`,
+           WHERE id_sede = $1`,
             [sede.id_sede],
           );
+
+          // Format the fecha_inicio (assuming it's in a database date format)
+          let formattedDate = "";
+          if (sede.fecha_inicio) {
+            // Convert to a nice readable format
+            const date = new Date(sede.fecha_inicio);
+            formattedDate = date.toLocaleDateString('es-MX', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+          }
 
           // Generate diplomas for coordinadoras
           for (const coord of coordResult.rows) {
@@ -156,6 +210,8 @@ router.get(
               path.join(process.cwd(), "/diplomas/coordinadora.pdf"),
               diplomaPath,
               coord.nombre_completo,
+              sede.nombre,
+              formattedDate
             );
           }
 
@@ -169,15 +225,15 @@ router.get(
               path.join(process.cwd(), "/diplomas/coordinadora_asociada.pdf"),
               diplomaPath,
               coordAsoc.nombre_completo,
+              sede.nombre,
+              formattedDate
             );
           }
-
-          // In case the mentora is needed
           // Get mentoras
           const mentoraResult = await pool.query(
             `SELECT id_mentora, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
            FROM mentora
-           WHERE id_sede = $1 AND estado = 'Aceptado'`,
+           WHERE id_sede = $1`,
             [sede.id_sede],
           );
 
@@ -191,6 +247,8 @@ router.get(
               path.join(process.cwd(), "/diplomas/mentora.pdf"),
               diplomaPath,
               mentora.nombre_completo,
+              sede.nombre,
+              formattedDate
             );
           }
         }
@@ -244,6 +302,25 @@ router.get(
         // await fs.ensureDir(mentorasDir);
         await fs.ensureDir(colaboradoresDir);
 
+        // Get sede info including fecha_inicio
+        const sedeResult = await pool.query(
+          "SELECT nombre, fecha_inicio FROM sede WHERE id_sede = $1",
+          [sedeId]
+        );
+
+        const sedeName = sedeResult.rows[0]?.nombre || "Sede";
+
+        // Format the fecha_inicio
+        let formattedDate = "";
+        if (sedeResult.rows[0]?.fecha_inicio) {
+          const date = new Date(sedeResult.rows[0].fecha_inicio);
+          formattedDate = date.toLocaleDateString('es-MX', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        }
+
         // Get participantes for this sede with accepted status
         const participantesResult = await pool.query(
           `SELECT id_participante, CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
@@ -278,6 +355,8 @@ router.get(
             path.join(process.cwd(), "/diplomas/participante.pdf"),
             diplomaPath,
             participante.nombre_completo,
+            sedeName,
+            formattedDate
           );
         }
 
@@ -307,6 +386,8 @@ router.get(
             path.join(process.cwd(), `/diplomas/${templateFile}`),
             diplomaPath,
             colaborador.nombre_completo,
+            sedeName,
+            formattedDate
           );
         }
 
