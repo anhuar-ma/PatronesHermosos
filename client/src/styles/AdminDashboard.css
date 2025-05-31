@@ -195,7 +195,8 @@
 }
 
 .adminDashboard__actions__buttonDownload,
-.adminDashboard__actions__buttonDelete {
+.adminDashboard__actions__buttonDelete,
+.adminDashboard__actions__buttonDownloadDocs {
   color: white;
   border: none;
   font-size: 1rem;
@@ -220,6 +221,14 @@
 
 .adminDashboard__actions__buttonDelete:hover {
   background-color: #ef5350;
+  transform: scale(1.05);
+}
+.adminDashboard__actions__buttonDownloadDocs{
+  background-color: rgb(75, 177, 152);
+}
+
+.adminDashboard__actions__buttonDownloadDocs:hover {
+  background-color: #5cbf9c;
   transform: scale(1.05);
 }
 
