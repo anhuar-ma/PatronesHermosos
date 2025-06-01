@@ -2,11 +2,11 @@ import { useMemo, useState, useRef, useEffect } from "react";
 import useSedes from "../hooks/useSedes";
 import axios from "axios";
 import { SlidersHorizontal } from "lucide-react";
-import Tabla from "./TablaSedesListado";
+import Tabla from "./TablaCoordinadorasAsociadasListado";
 import LoadingCard from "./LoadingCard";
 import FiltroTabla from "./FiltroTabla";
 
-export default function TablaSedes() {
+export default function TablaCoordinadorasAsociadas() {
   const { sedes: sedesOriginales, loading, error } = useSedes();
   const [sedes, setSedes] = useState([]);
     
@@ -133,7 +133,7 @@ export default function TablaSedes() {
   return (
     <div className="tabla__containerBlanco">
       <div className="tabla__container__tituloBusqueda">
-        <h2 className="tabla__titulo">Listado de Sedes</h2>
+        <h2 className="tabla__titulo">Listado de coordinadoras asociadas</h2>
         <div className="tabla__contenedor_busquedaFiltros">
           <button
             className="tabla__botonFiltros"
@@ -143,7 +143,7 @@ export default function TablaSedes() {
           </button>
           <input
             type="text"
-            placeholder="Buscar por nombre de sede..."
+            placeholder="Buscar por nombre..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="tabla__input-busqueda"
@@ -161,7 +161,7 @@ export default function TablaSedes() {
         </div>
       )}
 
-      <div className="table_container" ref={containerRef}>
+      <div className="table_container titulo2filas" ref={containerRef}>
         <Tabla sedes={sedesOrdenadas} onSort={handleSort} statusOptions={estadosFijos} sortField={sortField} sortOrder={sortOrder} onStatusChange={handleStatusChange}/>
       </div>
     </div>

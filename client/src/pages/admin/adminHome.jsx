@@ -92,11 +92,19 @@ const AdminDashboard = () => {
           Descargar Estadísticas en Excel
         </button>
 
+         {rol === 0 && (
+          <button onClick={handleDeleteDatabase} className="adminDashboard__actions__buttonDownloadDocs">
+            Descargar convocatorias y permisos
+          </button>
+        )}
+
         {rol === 0 && (
           <button onClick={handleDeleteDatabase} className="adminDashboard__actions__buttonDelete">
             Eliminar Base de Datos
           </button>
         )}
+
+       
       </div>
     </div>
   );

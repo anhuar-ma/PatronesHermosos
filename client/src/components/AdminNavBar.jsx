@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Contact,
   LogOut,
+  HandHelping,
 } from "lucide-react";
 import "../styles/Sidebar.css"; // Asegúrate de importar los estilos
 
@@ -65,6 +66,11 @@ export default function AdminNavbar() {
       name: "Mentoras",
       icon: <Compass size={20} className="AdminNavBar__icon " />,
       path: "/admin/mentoras",
+    },
+      {
+      name: "Coordinadoras asociadas",
+      icon: <HandHelping size={20} className="AdminNavBar__icon " />,
+      path: "/admin/coordinadoras-asociadas",
     },
     {
       name: "Diplomas",

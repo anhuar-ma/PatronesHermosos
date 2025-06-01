@@ -5,7 +5,7 @@
   margin-left: 18%; /* Igual al width de la sidebar */
   padding: 40px;
   background-color: #9E629A;
-  height: 100vh;
+  /* height: 100vh; */
   width: auto;
 }
 
@@ -195,7 +195,8 @@
 }
 
 .adminDashboard__actions__buttonDownload,
-.adminDashboard__actions__buttonDelete {
+.adminDashboard__actions__buttonDelete,
+.adminDashboard__actions__buttonDownloadDocs {
   color: white;
   border: none;
   font-size: 1rem;
@@ -220,6 +221,14 @@
 
 .adminDashboard__actions__buttonDelete:hover {
   background-color: #ef5350;
+  transform: scale(1.05);
+}
+.adminDashboard__actions__buttonDownloadDocs{
+  background-color: rgb(75, 177, 152);
+}
+
+.adminDashboard__actions__buttonDownloadDocs:hover {
+  background-color: #5cbf9c;
   transform: scale(1.05);
 }
 
@@ -255,7 +264,8 @@
     gap: 3rem;
   }
   .adminDashboard__actions__buttonDownload,
-  .adminDashboard__actions__buttonDelete {
+  .adminDashboard__actions__buttonDelete,
+  .adminDashboard__actions__buttonDownloadDocs {
     width: 80%;
     font-size: 1.4rem;
     padding: 1rem 1.5rem;
@@ -282,6 +292,11 @@
 @media (min-width: 768px) and (max-width: 991.98px) {
     .adminDashboard__card {
     flex: 1 1 45%; 
+  }
+  .adminDashboard__actions{
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
   }
 }
 
