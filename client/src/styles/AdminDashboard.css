@@ -293,6 +293,11 @@
     .adminDashboard__card {
     flex: 1 1 45%; 
   }
+  .adminDashboard__actions{
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {

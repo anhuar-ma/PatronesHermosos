@@ -508,7 +508,7 @@
    
   }
 
-  @media (max-width: 767px) and (min-width: 410px)  {
+  @media  (min-width: 401px) and (max-width: 767px)  {
     .fondo_tablas_admin{
       margin-left: 0;
     }
@@ -517,21 +517,45 @@
       align-items: flex-start;
       gap: 1rem;  
     }
+    .tabla__contenedor_busquedaFiltros{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    width: 100%;
+    }
     .table_container{
       margin-top: 6rem;
     }
     .btn-agregar{
       width: 50%;
+      font-size: 1.5rem;
     }
     .tabla__titulo{
       margin-top: 0;
       margin-bottom: 0rem;
-      font-size: 2.5rem;
+      font-size: 1.8rem;
+    }
+    .tabla__input-busqueda{
+      width: 100%;
+      padding: 1rem 0.5rem;
+    }
+    .tabla__botonFiltros{
+      width: 80%;
+      margin: 0 auto;
+      justify-content: center;
+      padding: 1rem 0;
+    }
+    .table_container{
+      margin-top: 9rem;
+      max-height: 75%;
+    }
+    .table_containerMentora{
+      margin-top: 3rem;
     }
    
   }
 
-  @media (max-width: 409px) {
+  @media (max-width: 400px) {
     .fondo_tablas_admin{
       margin-left: 0;
     }
