@@ -8,6 +8,9 @@ import {
   checkSedeAccess,
   requireAdmin,
 } from "../middleware/auth.js";
+import fs from "fs-extra";
+import path from "path";
+import archiver from "archiver";
 
 const router = express.Router();
 //Obtain the first number of statistics
@@ -258,5 +261,136 @@ router.get(
     }
   },
 );
+
+router.get("/permisos",
+  authenticateToken,
+  checkSedeAccess,
+  async (req, res) => {
+    try {
+      const userRole = req.user.rol;
+      const userId = req.user.id_sede;
+
+      // Create temp directory for files
+      const tempDir = path.join(process.cwd(), "temp_permisos");
+      const zipPath = path.join(process.cwd(), `permisos_${Date.now()}.zip`);
+
+      await fs.ensureDir(tempDir);
+
+      // Different behavior based on role
+      if (userRole === 0) {
+        // Admin role - get all convocatorias and permisos
+
+        // 1. Get all convocatorias from accepted sedes
+        const sedesResult = await pool.query(
+          "SELECT id_sede, nombre, convocatoria FROM sede WHERE estado = 'Aceptado' AND convocatoria IS NOT NULL"
+        );
+
+        // Create sedes directory
+        const sedesDir = path.join(tempDir, "convocatorias");
+        await fs.ensureDir(sedesDir);
+
+        // Copy each convocatoria file to temp dir
+        for (const sede of sedesResult.rows) {
+          if (sede.convocatoria) {
+            const sourceFilePath = path.join(process.cwd(), sede.convocatoria.substring(1));
+            if (fs.existsSync(sourceFilePath)) {
+              const destFilePath = path.join(sedesDir, `convocatoria_${sede.nombre}.pdf`);
+              await fs.copy(sourceFilePath, destFilePath);
+            }
+          }
+        }
+
+        // 2. Get all permisos from accepted participantes
+        const participantesResult = await pool.query(
+          `SELECT p.id_participante, p.permiso_padre_tutor, p.nombre, p.apellido_paterno, 
+                  s.nombre AS nombre_sede, s.id_sede 
+           FROM participante p
+           JOIN sede s ON p.id_sede = s.id_sede
+           WHERE p.estado = 'Aceptado' AND p.permiso_padre_tutor IS NOT NULL`
+        );
+
+        // Create permisos directory
+        const permisosDir = path.join(tempDir, "permisos_participantes");
+        await fs.ensureDir(permisosDir);
+
+        // Copy each permiso file to temp dir
+        for (const participante of participantesResult.rows) {
+          if (participante.permiso_padre_tutor) {
+            const sourceFilePath = path.join(process.cwd(), participante.permiso_padre_tutor.substring(1));
+            if (fs.existsSync(sourceFilePath)) {
+              const sedeDir = path.join(permisosDir, `sede_${participante.nombre_sede}`);
+              await fs.ensureDir(sedeDir);
+
+              const destFilePath = path.join(sedeDir, `permiso_${participante.nombre}_${participante.apellido_paterno}.pdf`);
+              await fs.copy(sourceFilePath, destFilePath);
+            }
+          }
+        }
+      }
+      else if (userRole === 1) {
+        // Coordinator role - only get permisos for their sede
+        const participantesResult = await pool.query(
+          `SELECT p.id_participante, p.permiso_padre_tutor, p.nombre, p.apellido_paterno 
+           FROM participante p
+           WHERE p.id_sede = $1 AND p.estado = 'Aceptado' AND p.permiso_padre_tutor IS NOT NULL`,
+          [userId]
+        );
+
+        // Create permisos directory
+        const permisosDir = path.join(tempDir, "permisos_participantes");
+        await fs.ensureDir(permisosDir);
+
+        // Copy each permiso file to temp dir
+        for (const participante of participantesResult.rows) {
+          if (participante.permiso_padre_tutor) {
+            const sourceFilePath = path.join(process.cwd(), participante.permiso_padre_tutor.substring(1));
+            if (fs.existsSync(sourceFilePath)) {
+              const destFilePath = path.join(permisosDir, `permiso_${participante.nombre}_${participante.apellido_paterno}.pdf`);
+              await fs.copy(sourceFilePath, destFilePath);
+            }
+          }
+        }
+      }
+
+      // Create zip archive
+      const output = fs.createWriteStream(zipPath);
+      const archive = archiver('zip', { zlib: { level: 9 } });
+
+      archive.pipe(output);
+      archive.directory(tempDir, false);
+
+      output.on('close', function () {
+        // Download the zip file and then clean up
+        res.download(zipPath, `permisos_${userRole === 0 ? 'admin' : 'coordinador'}.zip`, async (err) => {
+          if (err) {
+            console.error("Error sending zip file:", err);
+          }
+
+          // Clean up temp files
+          try {
+            await fs.remove(tempDir);
+            await fs.remove(zipPath);
+          } catch (cleanupErr) {
+            console.error("Cleanup error:", cleanupErr);
+          }
+        });
+      });
+
+      archive.on('error', function (err) {
+        throw err;
+      });
+
+      archive.finalize();
+
+    } catch (error) {
+      console.error("Error downloading permisos:", error);
+      res.status(500).json({
+        success: false,
+        message: "Error al descargar los permisos",
+        error: error.message
+      });
+    }
+  },
+)
 
 export default router;
