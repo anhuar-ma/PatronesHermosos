@@ -161,7 +161,7 @@ export default function TablaCoordinadorasAsociadas() {
         </div>
       )}
 
-      <div className="table_container" ref={containerRef}>
+      <div className="table_container titulo2filas" ref={containerRef}>
         <Tabla sedes={sedesOrdenadas} onSort={handleSort} statusOptions={estadosFijos} sortField={sortField} sortOrder={sortOrder} onStatusChange={handleStatusChange}/>
       </div>
     </div>

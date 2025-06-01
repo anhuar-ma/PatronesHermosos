@@ -392,104 +392,6 @@
 }
 
 
-  /* Media queries */
-
-  @media (max-width: 1024px) and (min-width: 767px) {
-    .fondo_tablas_admin{
-      margin-left: 0;
-    }
-    .btn-agregar{
-      width: 33%;
-    }
-  
-    /* .table_container{
-      margin-top: rem;
-    } */
-   
-  }
-
-  @media (max-width: 767px) and (min-width: 410px)  {
-    .fondo_tablas_admin{
-      margin-left: 0;
-    }
-    .tabla__container__tituloBusqueda{
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;  
-    }
-    .table_container{
-      margin-top: 6rem;
-    }
-    .btn-agregar{
-      width: 50%;
-    }
-    .tabla__titulo{
-      margin-top: 0;
-      margin-bottom: 0rem;
-      font-size: 2.5rem;
-    }
-   
-  }
-
-  @media (max-width: 409px) {
-    .fondo_tablas_admin{
-      margin-left: 0;
-    }
-    .tabla__container__tituloBusqueda{
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;  
-    }
-    .table_container{
-      margin-top: 10rem;
-      max-height: 75%;
-    }
-    .tabla__titulo{
-      margin-top: 0;
-      margin-bottom: 0rem;
-      font-size: 2.2rem;
-    }
-    .tabla__contenedor_busquedaFiltros{
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-    width: 100%;
-    }
-    .btn-agregar{
-      width: 100%;
-    }
-    .tabla__input-busqueda{
-      width: 100%;
-      padding: 1rem 0.5rem;
-    }
-    .tabla__botonFiltros{
-      width: 100%;
-      justify-content: center;
-      padding: 1rem 0;
-    }
-    .select-estado{
-      padding: 0.5rem 2rem;
-      font-size: 1.2rem;
-    }
-    .tabla__panel-filtros h3{
-      font-size: 2rem;
-    }
-    .filtro-opciones {
-      font-size: 1.5rem;
-      gap: 1rem;
-    }
-    .filtro-header {
-      font-size: 1.8rem;
-    }
-    .tabla__botonMorado{
-      min-width: 10rem;
-      padding: 0.8rem 0.5rem;
-      font-size: 1.2rem;
-    }
-    
-  }
-
-
   .tabla__containerBlancoMentora{
     display: flex;
   flex-direction: column;
@@ -588,3 +490,109 @@
   background-color: darkred; /* tono más oscuro */
   transform: scale(1.05);    /* pequeño “zoom” */
 }
+
+
+  /* Media queries */
+
+  @media (max-width: 1024px) and (min-width: 767px) {
+    .fondo_tablas_admin{
+      margin-left: 0;
+    }
+    .btn-agregar{
+      width: 33%;
+    }
+  
+    /* .table_container{
+      margin-top: rem;
+    } */
+   
+  }
+
+  @media (max-width: 767px) and (min-width: 410px)  {
+    .fondo_tablas_admin{
+      margin-left: 0;
+    }
+    .tabla__container__tituloBusqueda{
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;  
+    }
+    .table_container{
+      margin-top: 6rem;
+    }
+    .btn-agregar{
+      width: 50%;
+    }
+    .tabla__titulo{
+      margin-top: 0;
+      margin-bottom: 0rem;
+      font-size: 2.5rem;
+    }
+   
+  }
+
+  @media (max-width: 409px) {
+    .fondo_tablas_admin{
+      margin-left: 0;
+    }
+    .tabla__container__tituloBusqueda{
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;  
+    }
+    .table_container{
+      margin-top: 10rem;
+      max-height: 75%;
+    }
+    .tabla__titulo{
+      margin-top: 0;
+      margin-bottom: 0rem;
+      font-size: 2.2rem;
+    }
+    .tabla__contenedor_busquedaFiltros{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    width: 100%;
+    }
+    .btn-agregar{
+      width: 100%;
+      font-size: 1.5rem;
+    }
+    .tabla__input-busqueda{
+      width: 100%;
+      padding: 1rem 0.5rem;
+    }
+    .tabla__botonFiltros{
+      width: 100%;
+      justify-content: center;
+      padding: 1rem 0;
+    }
+    .select-estado{
+      padding: 0.5rem 2rem;
+      font-size: 1.2rem;
+    }
+    .tabla__panel-filtros h3{
+      font-size: 2rem;
+    }
+    .filtro-opciones {
+      font-size: 1.5rem;
+      gap: 1rem;
+    }
+    .filtro-header {
+      font-size: 1.8rem;
+    }
+    .tabla__botonMorado{
+      min-width: 10rem;
+      padding: 0.8rem 0.5rem;
+      font-size: 1.2rem;
+    }
+    .table_containerMentora{
+      margin-top: 4rem;
+    }
+    .table_container.titulo2filas{
+      margin-top: 13rem;
+      max-height: 65%;
+    }
+    
+  }

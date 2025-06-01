@@ -294,7 +294,7 @@ export default function TablaColaboradores() {
       )}
 
       {/* Renderizado de la tabla con datos filtrados y ordenados */}
-      <div className="table_container" ref={containerRef}>
+      <div className="table_container titulo2filas" ref={containerRef}>
         <Tabla
           colaboradores={colaboradoresOrdenados}
           onSort={handleSort}

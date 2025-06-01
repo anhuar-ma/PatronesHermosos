@@ -264,7 +264,8 @@
     gap: 3rem;
   }
   .adminDashboard__actions__buttonDownload,
-  .adminDashboard__actions__buttonDelete {
+  .adminDashboard__actions__buttonDelete,
+  .adminDashboard__actions__buttonDownloadDocs {
     width: 80%;
     font-size: 1.4rem;
     padding: 1rem 1.5rem;
