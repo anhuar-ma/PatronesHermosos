@@ -1,5 +1,6 @@
 import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useCurrentRol from "../hooks/useCurrentRol";
 
 export default function Tabla({
   grupos,
@@ -17,6 +18,7 @@ export default function Tabla({
   };
 
   const navigate = useNavigate();
+  const { rol } = useCurrentRol();
 
   return (
     <table className="colaboradores-table">
@@ -50,6 +52,7 @@ export default function Tabla({
               {renderSortArrow("nombre_instructora")}
             </div>
           </th>
+          {rol === 0 && (<th>Sede</th>)}
           <th>
             <div className="tablas__thContainer">
               <span>Cupos disponibles</span>
@@ -66,6 +69,7 @@ export default function Tabla({
             <td>{grupo.nivel}</td>
             <td>{grupo.nombre_mentora?.trim() ? grupo.nombre_mentora : "Sin asignar"}</td>
             <td>{grupo.nombre_instructora?.trim() ? grupo.nombre_instructora : "Sin asignar"}</td>
+            {rol === 0 && <td>{grupo.nombre_sede}</td>}
             <td style={{ textAlign: 'center', verticalAlign: 'middle' }} >{grupo.cupo - grupo.current_cupo}</td>
             <td>
               <button

@@ -338,15 +338,29 @@ router.post("/email/:id", async (req, res) => {
     // Obtén los datos del colaborador, la sede y la coordinadora desde la base de datos
     const result = await pool.query(
       `SELECT 
-         c.nombre AS nombre_colaborador, 
-         c.correo AS correo_colaborador, 
-         s.nombre AS nombre_sede,
-         CONCAT(coor.nombre, ' ', coor.apellido_paterno) AS nombre_completo_coordinadora,
-         coor.correo AS correo_coordinadora
-       FROM colaborador c
-       LEFT JOIN sede s ON c.id_sede = s.id_sede
-       LEFT JOIN coordinadora coor ON s.id_coordinadora = coor.id_coordinadora
-       WHERE c.id_colaborador = $1`,
+        c.nombre AS nombre_colaborador, 
+        c.correo AS correo_colaborador, 
+        s.nombre AS nombre_sede,
+
+        CONCAT(i.nombre, ' ', i.apellido_paterno) AS nombre_completo_informante,
+        i.correo AS correo_informante,
+
+        CONCAT(coo.nombre, ' ', coo.apellido_paterno) AS nombre_completo_coordinadora,
+        coo.correo AS correo_coordinadora
+
+      FROM colaborador c
+      JOIN sede s 
+        ON c.id_sede = s.id_sede
+      LEFT JOIN LATERAL (
+        SELECT *
+        FROM informante inf
+        WHERE inf.id_sede = s.id_sede
+        ORDER BY random()
+        LIMIT 1
+      ) i ON true
+      JOIN coordinadora coo
+        ON s.id_coordinadora = coo.id_coordinadora
+      WHERE c.id_colaborador = $1;`,
       [id],
     );
 
@@ -355,6 +369,10 @@ router.post("/email/:id", async (req, res) => {
     }
 
     const colaborador = result.rows[0];
+
+    const contactoNombre = colaborador.nombre_completo_informante?.trim()
+    ? colaborador.nombre_completo_informante
+    : colaborador.nombre_completo_coordinadora;
 
     // Configura el contenido del correo según el estado
     let subject;
@@ -367,11 +385,11 @@ router.post("/email/:id", async (req, res) => {
           <h2 style="color: #D6336C;">¡Felicidades, ${colaborador.nombre_colaborador}!</h2>
           <p>Te escribimos para informarte que has sido <strong>seleccionada</strong> para participar en el campamento <strong>Patrones Hermosos</strong>.</p>
           <p>Has sido asignada a la sede: <strong style="color: #1D3557;">${colaborador.nombre_sede || "Sin sede asignada"}</strong></p>
-          <p>Si tienes alguna duda, te invitamos a ponerte en contacto con tu coordinadora de sede:</p>
+          <p>Si tienes alguna duda, te invitamos a ponerte en contacto con un miembro de nuestro equipo:</p>
 
           <div style="background-color: #f9f9f9; padding: 10px 15px; border-left: 4px solid #D6336C; margin: 20px 0;">
-            <p style="margin: 0;"><strong>Nombre:</strong> ${colaborador.nombre_completo_coordinadora || "Sin coordinadora asignada"}</p>
-            <p style="margin: 0;"><strong>Correo:</strong> ${colaborador.correo_coordinadora || "No disponible"}</p>
+            <p style="margin: 0;"><strong>Nombre:</strong> ${contactoNombre}</p>
+            <p style="margin: 0;"><strong>Correo:</strong> ${colaborador.correo_informante || colaborador.correo_coordinadora}</p>
           </div>
 
           <p style="margin-top: 30px;">Atentamente,</p>

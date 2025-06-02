@@ -40,6 +40,7 @@ export default function Tabla({
               {renderSortArrow("correo")}
             </div>
           </th>
+          {rol === 0 && (<th>Sede</th>)}
           <th>Ver detalles</th>
           <th>Estado</th>
         </tr>
@@ -50,6 +51,7 @@ export default function Tabla({
           <tr key={mentora.id_mentora}>
             <td>{mentora.nombre_completo_mentora}</td>
             <td>{mentora.correo}</td>
+            {rol === 0 && (<td>{mentora.nombre_sede}</td>)}
             <td>
               <button
                 className="tabla__botonMorado"

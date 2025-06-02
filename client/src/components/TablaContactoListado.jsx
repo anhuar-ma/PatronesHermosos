@@ -5,7 +5,7 @@ import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Tabla({
-  mentoras,
+  informantes,
   onSort,
   sortField,
   sortOrder,
@@ -42,10 +42,10 @@ export default function Tabla({
       </thead>
 
       <tbody>
-        {mentoras.map((mentora) => (
-          <tr key={mentora.id_mentora}>
-            <td>{mentora.nombre_completo_mentora}</td>
-            <td>{mentora.correo}</td>
+        {informantes.map((informante) => (
+          <tr key={informante.id_informante}>
+            <td>{informante.nombre_completo}</td>
+            <td>{informante.correo}</td>
             {/* <td>
               <button
                 className="tabla__botonMorado"

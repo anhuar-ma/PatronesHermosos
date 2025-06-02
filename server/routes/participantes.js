@@ -535,15 +535,26 @@ router.post("/email/:id", authenticateToken, checkSedeAccess, async (req, res) =
     // Obtén los datos del participante, la sede y el tutor desde la base de datos
     const result = await pool.query(
       `SELECT 
-         p.nombre AS nombre_participante, 
-         p.correo AS correo_participante, 
-         s.nombre AS nombre_sede,
-         CONCAT(coor.nombre, ' ', coor.apellido_paterno) AS nombre_completo_coordinadora,
-         coor.correo AS correo_coordinadora
-       FROM participante p
-       LEFT JOIN sede s ON p.id_sede = s.id_sede
-       LEFT JOIN coordinadora coor ON s.id_coordinadora = coor.id_coordinadora
-       WHERE p.id_participante = $1;`,
+        p.nombre AS nombre_participante, 
+        p.correo AS correo_participante, 
+        s.nombre AS nombre_sede,
+        CONCAT(i.nombre, ' ', i.apellido_paterno) AS nombre_completo_informante,
+        i.correo AS correo_informante,
+        CONCAT(c.nombre, ' ', c.apellido_paterno) AS nombre_completo_coordinadora,
+        c.correo AS correo_coordinadora
+      FROM participante p
+      JOIN sede s 
+        ON p.id_sede = s.id_sede
+      LEFT JOIN LATERAL (
+        SELECT *
+        FROM informante inf
+        WHERE inf.id_sede = s.id_sede
+        ORDER BY random()
+        LIMIT 1
+      ) i ON true
+      JOIN coordinadora c 
+        ON s.id_coordinadora = c.id_coordinadora
+      WHERE p.id_participante = $1`,
       [id],
     );
 
@@ -552,6 +563,10 @@ router.post("/email/:id", authenticateToken, checkSedeAccess, async (req, res) =
     }
 
     const participante = result.rows[0];
+
+    const contactoNombre = participante.nombre_completo_informante?.trim()
+      ? participante.nombre_completo_informante
+      : participante.nombre_completo_coordinadora;
 
     // Configura el contenido del correo según el estado
     let subject;
@@ -566,11 +581,11 @@ router.post("/email/:id", authenticateToken, checkSedeAccess, async (req, res) =
       
           <p>Has sido asignada a la sede: <strong style="color: #1D3557;">${participante.nombre_sede || "Sin sede asignada"}</strong></p>
       
-          <p>Si tienes alguna duda, te invitamos a ponerte en contacto con tu coordinadora de sede:</p>
+          <p>Si tienes alguna duda, te invitamos a ponerte en contacto con un miembro de nuestro equipo:</p>
       
           <div style="background-color: #f9f9f9; padding: 10px 15px; border-left: 4px solid #D6336C; margin: 20px 0;">
-            <p style="margin: 0;"><strong>Nombre:</strong> ${participante.nombre_completo_coordinadora || "Sin coordinadora asignada"}</p>
-            <p style="margin: 0;"><strong>Correo:</strong> ${participante.correo_coordinadora || "No disponible"}</p>
+            <p style="margin: 0;"><strong>Nombre:</strong> ${contactoNombre}</p>
+            <p style="margin: 0;"><strong>Correo:</strong> ${participante.correo_informante || participante.correo_coordinadora}</p>
           </div>
       
           <p>¡Gracias por ser parte de esta experiencia única!</p>

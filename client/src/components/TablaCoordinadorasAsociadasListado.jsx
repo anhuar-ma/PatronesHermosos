@@ -2,9 +2,10 @@
 import React from "react";
 import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useCurrentRol from "../hooks/useCurrentRol";
 
 export default function Tabla({
-  sedes,
+  coordinadoras,
   onSort,
   sortField,
   sortOrder,
@@ -12,6 +13,7 @@ export default function Tabla({
   statusOptions = [],
 }) {
   const navigate = useNavigate();
+  const { rol } = useCurrentRol();
 
   const renderSortArrow = (field) => {
     if (sortField !== field) return <ArrowDownUp size={14} />;
@@ -28,7 +30,7 @@ export default function Tabla({
         <tr>
           <th onClick={() => onSort("nombre_sede")}>
             <div className="tablas__thContainer">
-              <span>Nombre de coordinadora</span>
+              <span>Nombre de coordinadora asociada</span>
               {renderSortArrow("nombre_sede")}
             </div>
           </th>
@@ -37,38 +39,32 @@ export default function Tabla({
               <span>Email</span>
               {renderSortArrow("correo")}
             </div>
-          </th>
-          <th onClick={() => onSort("nombre_completo_coordinadora")}>
-            <div className="tablas__thContainer">
-              <span>Sede</span>
-              {renderSortArrow("nombre_completo_coordinadora")}
-            </div>
-          </th>
+          </th>  
+          <th>Sede</th>
           <th>Estado</th>
         </tr>
       </thead>
 
       <tbody>
-        {sedes.map((sede) => (
-          <tr key={sede.id_sedes}>
+        {coordinadoras.map((coordinadora) => (
+          <tr key={coordinadora.id_coordinadora_asociada}>
             
-            <td>{sede.nombre_completo_coordinadora}</td>
-            <td>{sede.correo}</td>
-            <td>{sede.nombre_sede}</td>
-           
+            <td>{coordinadora.nombre_completo}</td>
+            <td>{coordinadora.correo}</td>
+            <td>{coordinadora.nombre_sede}</td>
             <td>
               <select
-                className={`select-estado select-estado--${sede.estado.toLowerCase()}`}
-                value={sede.estado}
-                onChange={(e) => onStatusChange(sede.id_sede, e.target.value)}
+                className={`select-estado select-estado--${coordinadora.estado.toLowerCase()}`}
+                value={coordinadora.estado}
+                onChange={(e) => onStatusChange(coordinadora.id_coordinadora_asociada, e.target.value)}
               >
                 {statusOptions.map((status) => (
                   <option
                     key={status}
                     value={status}
                     disabled={
-                      (sede.estado === "Aceptado" ||
-                        sede.estado === "Rechazado") &&
+                      (coordinadora.estado === "Aceptado" ||
+                        coordinadora.estado === "Rechazado") &&
                       status === "Pendiente"
                     }
                   >
