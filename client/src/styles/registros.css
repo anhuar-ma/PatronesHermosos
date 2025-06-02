@@ -260,6 +260,9 @@ body {
   .registro__obligatorio {
     font-size: 1rem;
   }
+  .registroMentora__fondoMorado {
+  padding-left: 0;
+}
 }
 
 /* bigger mobiles */
@@ -311,6 +314,9 @@ body {
   .registro__obligatorio {
     font-size: 1rem;
   }
+  .registroMentora__fondoMorado {
+  padding-left: 0;
+}
 }
 
 /* little mobiles */
@@ -369,6 +375,9 @@ body {
   .registro__formulario h4 {
     padding-left: 1px;
   }
+  .registroMentora__fondoMorado {
+  padding-left: 0;
+}
 }
 
 .registro__botonTelefono {
