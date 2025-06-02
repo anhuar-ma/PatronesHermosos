@@ -70,25 +70,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
-
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
 
     let result;
 
     // Role 0 can see all colaboradores
-    if (decoded.rol === 0) {
+    if (req.user.rol === 0) {
       result = await pool.query(
         `
       SELECT
@@ -105,7 +93,7 @@ router.get("/", async (req, res) => {
       );
     }
     // Role 1 can only see colaboradores from their sede
-    else if (decoded.rol === 1 && decoded.id_sede) {
+    else if (req.user.rol === 1 && req.user.id_sede) {
       result = await pool.query(
         `
       SELECT
@@ -121,7 +109,7 @@ router.get("/", async (req, res) => {
       WHERE
           c.id_sede = $1;
       `,
-        [decoded.id_sede],
+        [req.user.id_sede],
       );
     } else {
       return res.status(403).json({
@@ -153,7 +141,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -185,7 +173,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   const { id } = req.params;
   const {
     id_colaborador,
@@ -259,7 +247,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Update estado
-router.put("/estado/:id", async (req, res) => {
+router.put("/estado/:id", checkSedeAccess, authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
 
@@ -330,7 +318,7 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   }
 });
 
-router.post("/email/:id", async (req, res) => {
+router.post("/email/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { estado, razon } = req.body; // Recibe el estado desde el cuerpo de la solicitud
 
@@ -406,11 +394,10 @@ router.post("/email/:id", async (req, res) => {
       
           <p>Después de revisar cuidadosamente todas las solicitudes, lamentamos informarte que en esta ocasión <strong>no fuiste seleccionada</strong> para participar.</p>
 
-          ${
-            razon
-              ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
-              : ""
-          }
+          ${razon
+          ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
+          : ""
+        }
       
           <p>Sabemos que tienes mucho potencial, y esperamos que sigas desarrollando tus talentos. Nos encantaría volver a recibir tu solicitud en futuras ediciones del campamento.</p>
       

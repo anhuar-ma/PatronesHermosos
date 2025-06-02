@@ -142,9 +142,22 @@ router.get(
 
       // Query the database to get the file path
       const result = await pool.query(
-        "SELECT permiso_padre_tutor FROM participante WHERE id_participante = $1",
+        "SELECT permiso_padre_tutor, id_sede FROM participante WHERE id_participante = $1",
         [id],
       );
+
+
+
+
+      // Check access
+      if (req.user && req.user.rol === 1) {
+        if (req.user.id_sede !== result.rows[0].id_sede) {
+          return res.status(403).json({
+            success: false,
+            message: "No tienes permiso para ver archivos de otras sedes",
+          });
+        }
+      }
 
       console.log(result);
 
@@ -168,13 +181,17 @@ router.get(
         });
       }
 
-      // Send the file
-      res.download(filePath);
+      // Use sendFile 
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'inline; filename=permiso.pdf');
+
+      // Send the file for viewing
+      res.sendFile(filePath);
     } catch (error) {
-      console.error("Error downloading file:", error);
+      console.error("Error displaying file:", error);
       res.status(500).json({
         success: false,
-        message: "Error al descargar el archivo",
+        message: "Error al mostrar el archivo",
         error: error.message,
       });
     }
@@ -182,25 +199,13 @@ router.get(
 );
 
 // Get participantes with their parents
-router.get("/parents", async (req, res) => {
+router.get("/parents", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
-
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
 
     let result;
 
     // Role 0 can see all colaboradores
-    if (decoded.rol === 0) {
+    if (req.user.rol === 0) {
       result = await pool.query(`
       SELECT
           CONCAT(p.nombre, ' ', p.apellido_paterno, ' ', p.apellido_materno) AS nombre_completo_participante,
@@ -223,7 +228,7 @@ router.get("/parents", async (req, res) => {
     `);
     }
     // Role 1 can only see colaboradores from their sede
-    else if (decoded.rol === 1 && decoded.id_sede) {
+    else if (req.user.rol === 1 && req.user.id_sede) {
       result = await pool.query(
         `
       SELECT
@@ -245,7 +250,7 @@ router.get("/parents", async (req, res) => {
           p.id_sede = s.id_sede
       WHERE p.id_sede = $1;
     `,
-        [decoded.id_sede],
+        [req.user.id_sede],
       );
     } else {
       return res.status(403).json({
@@ -604,11 +609,10 @@ router.post("/email/:id", authenticateToken, checkSedeAccess, async (req, res) =
       
           <p>Después de revisar cuidadosamente todas las solicitudes, lamentamos informarte que en esta ocasión <strong>no fuiste seleccionada</strong> para participar.</p>
 
-          ${
-            razon
-              ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
-              : ""
-          }
+          ${razon
+          ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
+          : ""
+        }
       
           <p>Sabemos que tienes mucho potencial, y esperamos que sigas desarrollando tus talentos. Nos encantaría volver a recibir tu solicitud en futuras ediciones del campamento.</p>
       

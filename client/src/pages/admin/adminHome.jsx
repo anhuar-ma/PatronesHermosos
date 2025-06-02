@@ -38,6 +38,35 @@ const AdminDashboard = () => {
     }
   };
 
+  const downloadPermisosYConvocatorias = async () => {
+    try {
+      const response = await axios.get(
+        "/api/estadisticas/permisos",
+        {
+          responseType: "blob",
+        }
+      );
+
+      // Create a blob with the correct MIME type for ZIP files
+      const blob = new Blob([response.data], {
+        type: "application/zip", // Changed from Excel to ZIP MIME type
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "permisos_y_convocatorias.zip"); // Correct file extension
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      alert("Permisos y convocatorias descargados con éxito");
+    } catch (error) {
+      console.error("Error downloading permisos:", error);
+      alert("Error al descargar permisos y convocatorias");
+    }
+  };
+
   const handleDeleteDatabase = async () => {
     // Confirm deletion with a warning message
     const confirmed = window.confirm(
@@ -59,8 +88,7 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error("Error al eliminar la base de datos:", error);
       alert(
-        `Error al eliminar la base de datos: ${
-          error.response?.data?.message || error.message
+        `Error al eliminar la base de datos: ${error.response?.data?.message || error.message
         }`
       );
     }
@@ -93,10 +121,18 @@ const AdminDashboard = () => {
         </button>
 
         {rol === 0 && (
+          <button onClick={downloadPermisosYConvocatorias} className="adminDashboard__actions__buttonDownloadDocs">
+            Descargar convocatorias y permisos
+          </button>
+        )}
+
+        {rol === 0 && (
           <button onClick={handleDeleteDatabase} className="adminDashboard__actions__buttonDelete">
             Eliminar Base de Datos
           </button>
         )}
+
+
       </div>
     </div>
   );

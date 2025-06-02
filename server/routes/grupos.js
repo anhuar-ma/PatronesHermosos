@@ -735,7 +735,7 @@ router.get(
         m.id_sede = $1
         AND m.id_mentora NOT IN (
           SELECT id_mentora FROM mentora_grupo WHERE id_grupo = $2
-        )`,
+        ) AND estado = 'Aceptado'`,
         [groupSedeId, id],
       );
 

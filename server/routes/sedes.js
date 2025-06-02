@@ -76,9 +76,9 @@ router.post("/", upload.single("convocatoria"), async (req, res) => {
       data: result.rows[0],
       file: req.file
         ? {
-            filename: req.file.filename,
-            path: convocatoria,
-          }
+          filename: req.file.filename,
+          path: convocatoria,
+        }
         : null,
     });
   } catch (error) {
@@ -101,22 +101,13 @@ router.post("/", upload.single("convocatoria"), async (req, res) => {
 });
 
 // Get sedes and their respective coordinadoras
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, checkSedeAccess, requireAdmin, async (req, res) => {
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required ",
-      });
-    }
 
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
+
     //cambiar a simplemente coreo
-    if (decoded.rol === 0) {
+    if (req.user.rol === 0) {
       const result = await pool.query(
         `SELECT
           CONCAT(coordinadora.nombre, ' ', coordinadora.apellido_paterno, ' ', coordinadora.apellido_materno) AS nombre_completo_coordinadora,
@@ -168,7 +159,7 @@ router.get("/", async (req, res) => {
 router.get(
   "/download/:id",
   authenticateToken,
-  checkSedeAccess,
+  checkSedeAccess, requireAdmin,
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -207,25 +198,34 @@ router.get(
       const originalFilename = path.basename(filePath);
       const safeFilename = `convocatoria_${result.rows[0].nombre || id}_${originalFilename}`;
 
-      // Send file with proper error handling
-      res.download(filePath, safeFilename, (err) => {
-        if (err) {
-          // This handles if the file disappears between check and download
-          if (err.code === "ENOENT") {
-            return res.status(404).json({
-              success: false,
-              message: "Archivo no encontrado en el servidor",
-            });
-          }
+      // // Send file with proper error handling
+      // res.download(filePath, safeFilename, (err) => {
+      //   if (err) {
+      //     // This handles if the file disappears between check and download
+      //     if (err.code === "ENOENT") {
+      //       return res.status(404).json({
+      //         success: false,
+      //         message: "Archivo no encontrado en el servidor",
+      //       });
+      //     }
 
-          console.error("Error downloading file:", err);
-          return res.status(500).json({
-            success: false,
-            message: "Error al descargar el archivo",
-            error: err.message,
-          });
-        }
-      });
+      //     console.error("Error downloading file:", err);
+      //     return res.status(500).json({
+      //       success: false,
+      //       message: "Error al descargar el archivo",
+      //       error: err.message,
+      //     });
+      //   }
+      // });
+
+      // Use sendFile 
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'inline; filename=permiso.pdf');
+
+      // Send the file for viewing
+      res.sendFile(filePath);
+
+
     } catch (error) {
       console.error("Error downloading file:", error);
       res.status(500).json({
@@ -258,23 +258,12 @@ router.get("/nombres", async (req, res) => {
 });
 
 // vista detallada sede y coordinadora
-router.get("/:id", async (req, res) => {
+router.get("/:id", authenticateToken, checkSedeAccess, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
-
     // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
     //cambiar a simplemente coreo
-    if (decoded.rol === 0) {
+    if (req.user.rol === 0) {
       const result = await pool.query(
         `
 SELECT coordinadora.id_coordinadora,
@@ -584,11 +573,10 @@ router.post("/email/:id", authenticateToken, requireAdmin, async (req, res) => {
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2c2c2c; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #ddd; border-radius: 12px; background-color: #fafafa; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
           <h2 style="color: #D6336C;">Estimada, ${sede.nombre_completo_coordinadora}</h2>
           <p>Te informamos que la sede <strong>${sede.nombre_sede}</strong> fue rechazada.</p>
-          ${
-            razon
-              ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
-              : ""
-          }
+          ${razon
+          ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
+          : ""
+        }
           <p>Por favor verifica la información del formulario y vuelve a intentarlo</p>
           <p>Saludos,</p>
           <p>Equipo de Patrones Hermosos</p>

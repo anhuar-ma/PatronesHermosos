@@ -40,7 +40,7 @@ export default function DetalleSede() {
     } catch (err) {
       alert(
         "Error al eliminar la sede: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
     }
   };
@@ -64,24 +64,24 @@ export default function DetalleSede() {
       { field: "nombre_sede", message: "El nombre de la sede es obligatorio." },
       { field: "fecha_inicio", message: "La fecha de inicio es obligatoria." },
     ];
-  
+
     const newErrors = {};
     for (const req of requiredFields) {
       if (!editableData[req.field] || editableData[req.field].trim() === "") {
         newErrors[req.field] = req.message;
       }
     }
-    
+
     // Verificar formato del correo si tiene contenido
     if (editableData.correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editableData.correo.trim())) {
       newErrors.correo = "Ingresa un correo electrónico válido.";
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-  
+
     try {
       const updatedData = await handleSave(id);
       setSede(updatedData);
@@ -95,12 +95,12 @@ export default function DetalleSede() {
 
   if (loading)
     return (
-      <div style={{ 
+      <div style={{
         marginLeft: '18%',
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        height: "100vh", 
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
         backgroundColor: "#9E629A"
       }}>
         <LoadingCard mensaje="Cargando info de sede..." />
@@ -117,7 +117,7 @@ export default function DetalleSede() {
         <div className="header-actions">
           <h2 className="title__view">Vista detallada de Sedes</h2>
           <div className="actions">
-          <button
+            <button
               className={`btn-edit ${editMode ? "registroEdicion__botonCancelar" : ""}`}
               onClick={() => {
                 if (editMode) {
@@ -129,7 +129,7 @@ export default function DetalleSede() {
               }}
             >
               {editMode ? "Cancelar edición" : "Editar registro"}
-          </button>
+            </button>
             {editMode && (
               <button className="registroEdicion__botonGuardar" onClick={saveChanges}>
                 Guardar cambios
@@ -261,23 +261,28 @@ export default function DetalleSede() {
               disabled={editMode || !sede.convocatoria}
               onClick={async () => {
                 try {
+                  // Get the file but don't download it - instead open in a new tab
                   const response = await axios.get(`/api/sedes/download/${id}`, {
-                    responseType: "blob",
+                    responseType: 'blob'
                   });
-                  const url = window.URL.createObjectURL(new Blob([response.data]));
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.setAttribute("download", "convocatoria.pdf");
-                  document.body.appendChild(link);
-                  link.click();
-                  link.remove();
+
+                  // Create a blob URL from the response
+                  const url = window.URL.createObjectURL(new Blob([response.data], {
+                    type: 'application/pdf'
+                  }));
+
+                  // Open the URL in a new tab instead of downloading
+                  window.open(url, '_blank');
                 } catch (error) {
-                  console.error("Error downloading file:", error);
-                  alert("Error al descargar el archivo");
+                  console.error("Error displaying file:", error);
+                  alert("Error al mostrar el archivo");
                 }
-              }}
+
+              }
+
+              }
             >
-              {sede.convocatoria ? "Descargar archivo" : "No hay archivo disponible"}
+              {sede.convocatoria ? "Ver archivo" : "No hay archivo disponible"}
             </button>
           </div>
         </div>

@@ -143,7 +143,7 @@ export default function TablaSedes() {
           </button>
           <input
             type="text"
-            placeholder="Buscar por nombre..."
+            placeholder="Buscar por nombre de sede..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="tabla__input-busqueda"
