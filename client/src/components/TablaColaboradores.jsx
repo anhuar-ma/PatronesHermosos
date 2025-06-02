@@ -23,8 +23,8 @@ export default function TablaColaboradores() {
     loading,
     error,
   } = useColaboradores();
-    const currentRol = useCurrentRol();
-  
+  const currentRol = useCurrentRol();
+
 
   // 1. Copia local para poder mutar el estado en cliente
   const [colaboradores, setColaboradores] = useState([]);
@@ -108,9 +108,8 @@ export default function TablaColaboradores() {
    * - Coincidencia de sede (si hay sedes seleccionadas)
    */
   const colaboradoresFiltrados = colaboradores.filter((colaborador) => {
-    const nombreCompleto = `${colaborador.nombre} ${
-      colaborador.apellido_paterno
-    } ${colaborador.apellido_materno || ""}`.toLowerCase();
+    const nombreCompleto = `${colaborador.nombre} ${colaborador.apellido_paterno
+      } ${colaborador.apellido_materno || ""}`.toLowerCase();
     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
     const coincideRol =
       rolesSeleccionados.length === 0 ||
@@ -153,7 +152,7 @@ export default function TablaColaboradores() {
   const handleStatusChange = async (id_colaborador, nuevoEstado) => {
     try {
       let razonRechazo = "";
-  
+
       // Si se selecciona "Rechazado", solicitar la razón
       if (nuevoEstado === "Rechazado") {
         razonRechazo = prompt("Por favor, indica la razón del rechazo:");
@@ -166,9 +165,9 @@ export default function TablaColaboradores() {
       // Actualiza el estado del colaborador
       const response = await axios.put(
         `/api/colaboradores/estado/${id_colaborador}`,
-        {estado: nuevoEstado,}
+        { estado: nuevoEstado, }
       );
-  
+
       if (response.data.success) {
         // Actualiza el estado localmente
         setColaboradores((prev) =>
@@ -180,16 +179,16 @@ export default function TablaColaboradores() {
 
 
         );
-  
+
         // Envía el correo según el estado
         const emailResponse = await axios.post(
           `/api/colaboradores/email/${id_colaborador}`,
-          { 
-            estado: nuevoEstado, 
+          {
+            estado: nuevoEstado,
             razon: razonRechazo || null,
-          } 
+          }
         );
-  
+
         if (emailResponse.data.success) {
           alert(emailResponse.data.message); // Muestra un mensaje de éxito
         } else {

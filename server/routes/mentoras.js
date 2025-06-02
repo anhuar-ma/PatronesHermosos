@@ -1,13 +1,17 @@
 import express from "express";
 import { pool } from "../server.js";
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig.js";
-import { authenticateToken, checkSedeAccess } from "../middleware/auth.js";
+import {
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+} from "../middleware/auth.js";
 
 const router = express.Router();
 
 // Handle colaborador registration
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
     // Extract the token from Authorization header
     const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -19,10 +23,8 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
 
-    let id_sede = decoded.id_sede;
+    let id_sede = req.user.id_sede;
 
     if (id_sede === null) {
       res.status(400).json({
@@ -39,9 +41,17 @@ router.post("/", async (req, res) => {
         apellido_paterno,
         apellido_materno,
         correo,
-       id_sede
-      ) VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [nombre, apellido_paterno, apellido_materno, correo, id_sede],
+       id_sede,
+        estado
+      ) VALUES ($1, $2, $3, $4, $5,$6) RETURNING *`,
+      [
+        nombre,
+        apellido_paterno,
+        apellido_materno,
+        correo,
+        id_sede,
+        "Pendiente",
+      ],
     );
 
     res.status(201).json({
@@ -58,25 +68,14 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
-    // Extract the token from Authorization header
-    const token = req.header("Authorization")?.replace("Bearer ", "");
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required",
-      });
-    }
-
-    // Verify and decode the token
-    const decoded = jwt.verify(token, JWT_SECRET);
 
     let result;
 
     // Role 0 can see all colaboradores
-    if (decoded.rol === 0) {
+    if (req.user.rol === 0) {
       result = await pool.query(
         `
       SELECT
@@ -93,7 +92,7 @@ router.get("/", async (req, res) => {
       );
     }
     // Role 1 can only see colaboradores from their sede
-    else if (decoded.rol === 1 && decoded.id_sede) {
+    else if (req.user.rol === 1 && req.user.id_sede) {
       result = await pool.query(
         `
       SELECT
@@ -109,7 +108,7 @@ router.get("/", async (req, res) => {
       WHERE
           m.id_sede = $1;
       `,
-        [decoded.id_sede],
+        [req.user.id_sede],
       );
     } else {
       return res.status(403).json({
@@ -141,7 +140,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -174,47 +173,54 @@ router.get("/:id", async (req, res) => {
 });
 
 //Editar mentora
-router.put("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
-  const { id } = req.params;
-  const { nombre, apellido_paterno, apellido_materno, correo } = req.body;
+router.put(
+  "/:id",
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    const { nombre, apellido_paterno, apellido_materno, correo } = req.body;
 
-  try {
-    const result = await pool.query(
-      `UPDATE mentora SET
+    try {
+      const result = await pool.query(
+        `UPDATE mentora SET
         nombre = $1,
         apellido_paterno = $2,
         apellido_materno = $3,
         correo = $4
       WHERE id_mentora = $5
       RETURNING *`,
-      [nombre, apellido_paterno, apellido_materno, correo, id],
-    );
+        [nombre, apellido_paterno, apellido_materno, correo, id],
+      );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Mentora no encontrado",
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Mentora no encontrado",
+        });
+      }
+
+      res.json({
+        success: true,
+        data: result.rows[0],
+      });
+    } catch (error) {
+      console.error("Error al actualizar mentora:", error);
+      res.status(500).json({
+        message: "Error al actualizar mentora",
+        error: error.message,
       });
     }
-
-    res.json({
-      success: true,
-      data: result.rows[0],
-    });
-  } catch (error) {
-    console.error("Error al actualizar mentora:", error);
-    res.status(500).json({
-      message: "Error al actualizar mentora",
-      error: error.message,
-    });
-  }
-});
+  },
+);
 
 // Update estado
 router.put(
   "/estado/:id",
   authenticateToken,
   checkSedeAccess,
+  requireAdmin,
   async (req, res) => {
     const { id } = req.params;
     const { estado } = req.body;
@@ -246,6 +252,31 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   const { id } = req.params;
 
   try {
+    // Get the sede of the mentora
+    const sedeResult = await pool.query(
+      "SELECT id_sede FROM mentora WHERE id_mentora = $1",
+      [id],
+    );
+
+    if (sedeResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Mentora not found",
+      });
+    }
+
+    const sede = sedeResult.rows[0].id_sede;
+
+    // Check if coordinator can only delete mentoras from their own sede
+    if (req.user.rol === 1) {
+      if (req.user.id_sede !== sede) {
+        return res.status(403).json({
+          success: false,
+          message: "No tienes permiso para eliminar mentoras de otras sedes",
+        });
+      }
+    }
+
     // Begin transaction
     await pool.query("BEGIN");
 

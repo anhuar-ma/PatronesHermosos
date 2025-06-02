@@ -22,7 +22,7 @@ export default function Tabla({
     );
   };
 
-  const {rol} = useCurrentRol();
+  const { rol } = useCurrentRol();
 
   return (
     <table className="colaboradores-table">
@@ -66,13 +66,13 @@ export default function Tabla({
             <td>{colaborador.rol}</td>
             {rol === 0 ? (
               <td>{colaborador.nombre_sede || "Sin asignar"}</td>
-            ): (
+            ) : (
               <td>{colaborador.id_grupo || "Sin asignar"}</td>
             )}
             <td>{colaborador.correo}</td>
             {/* <td>{colaborador.universidad}</td> */}
             <td>
-            <button
+              <button
                 className="tabla__botonMorado"
                 onClick={() =>
                   navigate(`/admin/colaboradores/${colaborador.id_colaborador}`)

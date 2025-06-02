@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-//coordinadora_asociada registration
+//informante registration
 router.post("/", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
     const { nombre, apellido_paterno, apellido_materno, correo } = req.body;
@@ -27,22 +27,14 @@ router.post("/", authenticateToken, checkSedeAccess, async (req, res) => {
     const id_sede = req.user.id_sede;
 
     const result = await pool.query(
-      `INSERT INTO coordinadora_asociada (
+      `INSERT INTO informante (
           nombre,
           apellido_paterno,
           apellido_materno,
           correo,
-          id_sede,
-          estado
-      ) VALUES ($1, $2, $3, $4,$5,$6) RETURNING *`,
-      [
-        nombre,
-        apellido_paterno,
-        apellido_materno,
-        correo,
-        id_sede,
-        "Pendiente",
-      ],
+          id_sede
+      ) VALUES ($1, $2, $3, $4,$5) RETURNING *`,
+      [nombre, apellido_paterno, apellido_materno, correo, id_sede],
     );
 
     res.status(201).json({
@@ -50,7 +42,7 @@ router.post("/", authenticateToken, checkSedeAccess, async (req, res) => {
       data: result.rows[0],
     });
   } catch (error) {
-    console.error("Error creating coordinadora_asociada:", error);
+    console.error("Error creating informante:", error);
     res.status(500).json({
       success: false,
       message: "Error al guardar los datos",
@@ -59,7 +51,7 @@ router.post("/", authenticateToken, checkSedeAccess, async (req, res) => {
   }
 });
 
-// Get all coordinadora_asociada
+// Get all informante
 router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
     let result;
@@ -68,20 +60,20 @@ router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
       result = await pool.query(
         `
       SELECT
-          c.*,
-          CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_completo
+          i.*,
+          CONCAT(i.nombre, ' ', i.apellido_paterno, ' ', i.apellido_materno) AS nombre_completo
       FROM
-          coordinadora_asociada c
+          informante i
       `,
       );
     } else if (req.user.rol === 1) {
       result = await pool.query(
         `
       SELECT
-          c.*,
-          CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_completo
+          i.*,
+          CONCAT(i.nombre, ' ', i.apellido_paterno, ' ', i.apellido_materno) AS nombre_completo
       FROM
-          coordinadora_asociada c
+          informante i
       WHERE id_sede = $1;
       `,
         [req.user.id_sede],
@@ -93,7 +85,7 @@ router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
       data: result.rows,
     });
   } catch (error) {
-    console.error("Error fetching coordinadora_asociada:", error);
+    console.error("Error fetching informante:", error);
     res.status(500).json({
       success: false,
       message: "Error al obtener los datos",
@@ -102,65 +94,32 @@ router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
   }
 });
 
-router.put(
-  "/estado/:id",
-  authenticateToken,
-  checkSedeAccess,
-  requireAdmin,
-  async (req, res) => {
-    const { id } = req.params;
-    const { estado } = req.body;
-
-    try {
-      // Actualizar participante
-      await pool.query(
-        `UPDATE coordinadora_asociada SET
-        estado = $1
-      WHERE id_coordinadora_asociada = $2`,
-        [estado, id],
-      );
-
-      res.json({
-        success: true,
-        message: "coordinadora_asociada actualizada correctamente",
-      });
-    } catch (error) {
-      console.error("Error al actualizar coordinadora_asociada:", error);
-      res.status(500).json({
-        message: "Error al actualizar coordinadora_asociada",
-        error: error.message,
-      });
-    }
-  },
-);
-
-// Delete a cooridnadora asociada
+// Delete a informante
 router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Get the sede of the coordinadora_asociada
+    // Get the sede of the informante
     const sedeResult = await pool.query(
-      "SELECT id_sede FROM coordinadora_asociada WHERE id_coordinadora_asociada = $1",
+      "SELECT id_sede FROM informante WHERE id_informante = $1",
       [id],
     );
 
     if (sedeResult.rows.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "coordinadora_asociada not found",
+        message: "informante not found",
       });
     }
 
     const sede = sedeResult.rows[0].id_sede;
 
-    // Check if coordinator can only delete coordinadora_asociadas from their own sede
+    // Check if coordinator can only delete informantes from their own sede
     if (req.user.rol === 1) {
       if (req.user.id_sede !== sede) {
         return res.status(403).json({
           success: false,
-          message:
-            "No tienes permiso para eliminar coordinadora_asociada de otra sede",
+          message: "No tienes permiso para eliminar informante de otra sede",
         });
       }
     }
@@ -170,7 +129,7 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 
     // First delete records from mentora_grupo table
     await pool.query(
-      "DELETE FROM coordinadora_asociada WHERE id_sede = $1 AND id_coordinadora_asociada = $2",
+      "DELETE FROM informante WHERE id_sede = $1 AND id_informante = $2",
       [req.user.id_sede, id],
     );
 
@@ -179,20 +138,19 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 
     res.json({
       success: true,
-      message: "coordinadora_asociada eliminada correctamente",
+      message: "informante eliminada correctamente",
     });
   } catch (error) {
     // Rollback transaction in case of error
     await pool.query("ROLLBACK");
 
-    console.error("Error eliminando coordinadora_asociada:", error);
+    console.error("Error eliminando informante:", error);
     res.status(500).json({
       success: false,
-      message: "Error al eliminando cooridnadora_asociada",
+      message: "Error al eliminando informante",
       error: error.message,
     });
   }
 });
 
 export default router;
-

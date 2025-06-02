@@ -23,13 +23,13 @@ export default function DetalleParticipante() {
   } = useEditParticipante(participante);
 
   const navigate = useNavigate();
-    // Agrega un estado para errores
-    const [errors, setErrors] = useState({});
+  // Agrega un estado para errores
+  const [errors, setErrors] = useState({});
 
-    // Función para regresar
-    const handleGoBack = () => {
-      navigate(-1);
-    };
+  // Función para regresar
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
 
   const handleDelete = async () => {
@@ -62,7 +62,7 @@ export default function DetalleParticipante() {
       { field: "correo_tutor", message: "El correo del tutor es obligatorio" },
       { field: "telefono_tutor", message: "El teléfono del tutor es obligatorio" }
     ];
-  
+
     const newErrors = {};
     for (const req of requiredFields) {
       if (
@@ -71,10 +71,10 @@ export default function DetalleParticipante() {
       ) {
         newErrors[req.field] = req.message;
       }
-      
+
     }
-    
-    
+
+
     // Verificar formato del correo si tiene contenido
     if (editableData.correo && typeof editableData.correo === "string" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editableData.correo.trim())) {
       newErrors.correo = "Ingresa un correo electrónico válido.";
@@ -93,13 +93,13 @@ export default function DetalleParticipante() {
       newErrors.edad = "La edad debe ser menor a 100.";
     }
 
-    
+
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-  
+
     try {
       const updatedData = await handleSave(id);
       setParticipante(updatedData); // Actualiza la información en pantalla
@@ -112,34 +112,33 @@ export default function DetalleParticipante() {
   };
 
 
-    if (loading)
-      return (
-        <div style={{ 
-          marginLeft: "18%",
-          display: "flex", 
-          justifyContent: "center", 
-          alignItems: "center", 
-          height: "100vh", 
-          backgroundColor: "#9E629A"
-        }}>
-          <LoadingCard mensaje="Cargando participantes..." />
-        </div>
-      );
+  if (loading)
+    return (
+      <div style={{
+        marginLeft: "18%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        backgroundColor: "#9E629A"
+      }}>
+        <LoadingCard mensaje="Cargando participantes..." />
+      </div>
+    );
   if (error) return <LoadingCard mensaje={error} />;
 
   return (
     <div className="background__view">
       <div className="colaborador-card">
         <button className="btn-regresar" onClick={handleGoBack}>
-            <FaArrowLeft className="btn-regresar__icon" /> Regresar
+          <FaArrowLeft className="btn-regresar__icon" /> Regresar
         </button>
         <div className="header-actions">
           <h2 className="title__view">Vista detallada de participantes</h2>
           <div className="actions">
             <button
-              className={`btn-edit ${
-                editMode ? "registroEdicion__botonCancelar" : ""
-              }`}
+              className={`btn-edit ${editMode ? "registroEdicion__botonCancelar" : ""
+                }`}
               onClick={() => {
                 if (editMode) {
                   // Si se cancela, reinicia los datos editables a los originales
@@ -169,15 +168,15 @@ export default function DetalleParticipante() {
             </h5>
             {editMode ? (
               <>
-              <input
-                className="registroEdicion__input"
-                value={editableData.nombre || ""}
-                onChange={(e) =>{
-                  handleChange("nombre", e.target.value);
-                  setErrors({...errors, nombre: "" }); 
-                }}
-              />
-              {errors.nombre && <p className="error-message">{errors.nombre}</p>}
+                <input
+                  className="registroEdicion__input"
+                  value={editableData.nombre || ""}
+                  onChange={(e) => {
+                    handleChange("nombre", e.target.value);
+                    setErrors({ ...errors, nombre: "" });
+                  }}
+                />
+                {errors.nombre && <p className="error-message">{errors.nombre}</p>}
               </>
             ) : (
               <p className="info__colaborator">{participante.nombre}</p>
@@ -188,16 +187,16 @@ export default function DetalleParticipante() {
             </h5>
             {editMode ? (
               <>
-              <input
-                className="registroEdicion__input"
-                value={editableData.apellido_paterno || ""}
-                onChange={(e) =>{
-                  handleChange("apellido_paterno", e.target.value);
-                  setErrors({...errors, apellido_paterno: "" });
-                }}
-              />
-              {errors.apellido_paterno && <p className="error-message">{errors.apellido_paterno}</p>}
-            </>
+                <input
+                  className="registroEdicion__input"
+                  value={editableData.apellido_paterno || ""}
+                  onChange={(e) => {
+                    handleChange("apellido_paterno", e.target.value);
+                    setErrors({ ...errors, apellido_paterno: "" });
+                  }}
+                />
+                {errors.apellido_paterno && <p className="error-message">{errors.apellido_paterno}</p>}
+              </>
             ) : (
               <p className="info__colaborator">
                 {participante.apellido_paterno}
@@ -207,16 +206,16 @@ export default function DetalleParticipante() {
             <h5 className="label__colaborator">Correo:</h5>
             {editMode ? (
               <>
-              <input
-                className="registroEdicion__input"
-                value={editableData.correo || ""}
-                onChange={(e) =>{
-                  handleChange("correo", e.target.value)
-                  setErrors({...errors, correo: "" });
-                }}
-              />
-              {errors.correo && <p className="error-message">{errors.correo}</p>}
-            </>
+                <input
+                  className="registroEdicion__input"
+                  value={editableData.correo || ""}
+                  onChange={(e) => {
+                    handleChange("correo", e.target.value)
+                    setErrors({ ...errors, correo: "" });
+                  }}
+                />
+                {errors.correo && <p className="error-message">{errors.correo}</p>}
+              </>
             ) : (
               <p className="info__colaborator">{participante.correo}</p>
             )}
@@ -247,8 +246,8 @@ export default function DetalleParticipante() {
               <p className="info__colaborator">{participante.escolaridad}</p>
             )}
 
-              <h5 className="label__colaborator">Grupo asignado:</h5>
-              <p className="info__colaborator">{participante.id_grupo}</p>
+            <h5 className="label__colaborator">Grupo asignado:</h5>
+            <p className="info__colaborator">{participante.id_grupo}</p>
 
           </div>
 
@@ -273,15 +272,15 @@ export default function DetalleParticipante() {
             <h5 className="label__colaborator">Edad de la participante:</h5>
             {editMode ? (
               <>
-              <input
-                type="number"
-                className="registroEdicion__input"
-                value={editableData.edad || ""}
-                onChange={(e) => {
-                  handleChange("edad", e.target.value)
-                }}
-              />
-              {errors.edad && <p className="error-message">{errors.edad}</p>}
+                <input
+                  type="number"
+                  className="registroEdicion__input"
+                  value={editableData.edad || ""}
+                  onChange={(e) => {
+                    handleChange("edad", e.target.value)
+                  }}
+                />
+                {errors.edad && <p className="error-message">{errors.edad}</p>}
               </>
             ) : (
               <p className="info__colaborator">{participante.edad}</p>
@@ -305,16 +304,16 @@ export default function DetalleParticipante() {
             <h5 className="label__colaborator">Escuela:</h5>
             {editMode ? (
               <>
-              <input
-                className="registroEdicion__input"
-                value={editableData.escuela || ""}
-                onChange={(e) => {
-                  handleChange("escuela", e.target.value);
-                  setErrors({ ...errors, escuela: "" });
+                <input
+                  className="registroEdicion__input"
+                  value={editableData.escuela || ""}
+                  onChange={(e) => {
+                    handleChange("escuela", e.target.value);
+                    setErrors({ ...errors, escuela: "" });
 
-                }}
-              />
-              {errors.escuela && <p className="error-message">{errors.escuela}</p>}
+                  }}
+                />
+                {errors.escuela && <p className="error-message">{errors.escuela}</p>}
               </>
             ) : (
               <p className="info__colaborator">{participante.escuela}</p>
@@ -328,15 +327,15 @@ export default function DetalleParticipante() {
             <h5 className="label__colaborator">Nombre(s) del tutor:</h5>
             {editMode ? (
               <>
-              <input
-                className="registroEdicion__input"
-                value={editableData.nombre_tutor || ""}
-                onChange={(e) => {
-                  handleChange("nombre_tutor", e.target.value);
-                  setErrors({ ...errors, nombre_tutor: "" });
-                }}
-              />
-              {errors.nombre_tutor && <p className="error-message">{errors.nombre_tutor}</p>}
+                <input
+                  className="registroEdicion__input"
+                  value={editableData.nombre_tutor || ""}
+                  onChange={(e) => {
+                    handleChange("nombre_tutor", e.target.value);
+                    setErrors({ ...errors, nombre_tutor: "" });
+                  }}
+                />
+                {errors.nombre_tutor && <p className="error-message">{errors.nombre_tutor}</p>}
               </>
             ) : (
               <p className="info__colaborator">{participante.nombre_tutor}</p>
@@ -345,15 +344,15 @@ export default function DetalleParticipante() {
             <h5 className="label__colaborator">Apellido paterno del tutor:</h5>
             {editMode ? (
               <>
-              <input
-                className="registroEdicion__input"
-                value={editableData.apellido_paterno_tutor || ""}
-                onChange={(e) => {
-                  handleChange("apellido_paterno_tutor", e.target.value)
-                  setErrors({ ...errors, apellido_paterno_tutor: "" });
-                }}
-              />
-              {errors.apellido_paterno_tutor && <p className="error-message">{errors.apellido_paterno_tutor}</p>}
+                <input
+                  className="registroEdicion__input"
+                  value={editableData.apellido_paterno_tutor || ""}
+                  onChange={(e) => {
+                    handleChange("apellido_paterno_tutor", e.target.value)
+                    setErrors({ ...errors, apellido_paterno_tutor: "" });
+                  }}
+                />
+                {errors.apellido_paterno_tutor && <p className="error-message">{errors.apellido_paterno_tutor}</p>}
               </>
             ) : (
               <p className="info__colaborator">
@@ -364,15 +363,15 @@ export default function DetalleParticipante() {
             <h5 className="label__colaborator">Correo:</h5>
             {editMode ? (
               <>
-              <input
-                className="registroEdicion__input"
-                value={editableData.correo_tutor || ""}
-                onChange={(e) => {
-                  handleChange("correo_tutor", e.target.value);
-                  setErrors({ ...errors, correo_tutor: "" })
-                }}
-              />
-              {errors.correo_tutor && <p className="error-message">{errors.correo_tutor}</p>}
+                <input
+                  className="registroEdicion__input"
+                  value={editableData.correo_tutor || ""}
+                  onChange={(e) => {
+                    handleChange("correo_tutor", e.target.value);
+                    setErrors({ ...errors, correo_tutor: "" })
+                  }}
+                />
+                {errors.correo_tutor && <p className="error-message">{errors.correo_tutor}</p>}
               </>
             ) : (
               <p className="info__colaborator">{participante.correo_tutor}</p>
@@ -397,36 +396,30 @@ export default function DetalleParticipante() {
 
             <h5 className="label__colaborator">Permiso firmado tutor:</h5>
             <button
-              className={`registro__botonGrisArchivos ${
-                editMode ? "registro__botonDeshabilitado" : ""
-              }`}
+              className={`registro__botonGrisArchivos ${editMode ? "registro__botonDeshabilitado" : ""
+                }`}
               disabled={editMode || !participante.permiso_padre_tutor}
               onClick={async () => {
                 try {
-                  // // Method 1: Direct download if the file URL is available
-                  // if (participante.permiso_padre_tutor) {
-                  //   window.open(participante.permiso_padre_tutor, '_blank');
-                  // }
-
-                  // Method 2: Using the download endpoint
+                  // Get the file but don't download it - instead open in a new tab
                   const response = await axios.get(`/api/participantes/download/${id}`, {
                     responseType: 'blob'
                   });
 
-                  const url = window.URL.createObjectURL(new Blob([response.data]));
-                  const link = document.createElement('a');
-                  link.href = url;
-                  link.setAttribute('download', 'permiso.pdf');
-                  document.body.appendChild(link);
-                  link.click();
-                  link.remove();
+                  // Create a blob URL from the response
+                  const url = window.URL.createObjectURL(new Blob([response.data], {
+                    type: 'application/pdf'
+                  }));
+
+                  // Open the URL in a new tab instead of downloading
+                  window.open(url, '_blank');
                 } catch (error) {
-                  console.error("Error downloading file:", error);
-                  alert("Error al descargar el archivo");
+                  console.error("Error displaying file:", error);
+                  alert("Error al mostrar el archivo");
                 }
               }}
             >
-              {participante.permiso_padre_tutor ? 'Descargar archivo' : 'No hay archivo disponible'}
+              {participante.permiso_padre_tutor ? 'Ver archivo' : 'No hay archivo disponible'}
             </button>
 
 
