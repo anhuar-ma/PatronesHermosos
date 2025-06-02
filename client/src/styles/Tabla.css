@@ -495,9 +495,13 @@
     width: 33%;
   }
 
-  /* .table_container{
-      margin-top: rem;
-    } */
+  .table_container{
+      margin-top: 0rem;
+    }
+    .table_containerMentora{
+      margin-top: 0rem;
+    }
+
 }
 
 @media (min-width: 401px) and (max-width: 767px) {
@@ -525,7 +529,7 @@
   .tabla__titulo {
     margin-top: 0;
     margin-bottom: 0rem;
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
   .tabla__input-busqueda {
     width: 100%;
@@ -538,11 +542,20 @@
     padding: 1rem 0;
   }
   .table_container {
-    margin-top: 9rem;
+    margin-top: 9.5rem;
     max-height: 75%;
   }
   .table_containerMentora {
     margin-top: 3rem;
+  }
+  .tabla__botonMorado {
+    min-width: 10rem;
+    padding: 0.8rem 0.5rem;
+    font-size: 1.2rem;
+  }
+  .select-estado {
+    padding: 0.5rem 2rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -606,6 +619,14 @@
     margin-top: 4rem;
   }
   .table_container.titulo2filas {
+    margin-top: 10.5rem;
+    max-height: 65%;
+  }
+}
+
+
+@media (max-width: 389px) {
+.table_container.titulo2filas {
     margin-top: 13rem;
     max-height: 65%;
   }

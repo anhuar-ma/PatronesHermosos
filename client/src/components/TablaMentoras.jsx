@@ -26,7 +26,7 @@ export default function TablaMentoras() {
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
   const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
-  const currentRol = useCurrentRol();
+  // const currentRol = useCurrentRol();
   const {rol} = useCurrentRol();
 
   const ordenarParticipantes = (data) => {
@@ -108,7 +108,7 @@ export default function TablaMentoras() {
       <div className="tabla__container__tituloBusqueda">
         <h2 className="tabla__titulo">Listado de mentoras</h2>
         <div className="tabla__contenedor_busquedaFiltros">
-           {currentRol === 0 ? <button
+           {rol === 0 ? <button
             className="tabla__botonFiltros"
             onClick={() => setMostrarFiltros(true)}
           >
@@ -150,7 +150,7 @@ export default function TablaMentoras() {
         </div>
       )}
 
-      <div className="table_containerMentora" ref={containerRef}>
+      <div className={rol === 0 ? "table_container" : "table_containerMentora"} ref={containerRef}>
         <Tabla
           mentoras={participantesOrdenados}
           onSort={handleSort}
@@ -159,7 +159,7 @@ export default function TablaMentoras() {
           statusOptions={estadosFijos}
           onStatusChange={handleStatusChange}
         />
-      </div>
+</div>
     { rol === 1 && (
       <Link to="/admin/registro-mentoras" className="btn-agregar">
         Agregar mentora
