@@ -1,6 +1,6 @@
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useMemo, useState, useRef, useEffect, use } from "react";
 import { Link } from "react-router-dom";
-import useMentoras from "../hooks/useMentoras";
+import useInformantes from "../hooks/useInformantes";
 import { SlidersHorizontal } from "lucide-react";
 import Tabla from "./TablaContactoListado";
 import LoadingCard from "./LoadingCard";
@@ -8,14 +8,14 @@ import FiltroTabla from "./FiltroTabla";
 import useCurrentRol from "../hooks/useCurrentRol";
 
 
-export default function TablaMentoras() {
-    const { mentoras: mentorasOriginales, loading, error } = useMentoras();
-    // console.log(mentorasOriginales);
-    const [mentoras, setMentoras] = useState([]);
+export default function TablaInformantes() {
+    const { informantes: informantesOriginales, loading, error } = useInformantes();
+    // console.log(informantesOriginales);
+    const [informantes, setInformantes] = useState([]);
   
     useEffect(() => {
-      setMentoras(mentorasOriginales);
-    }, [mentorasOriginales]);
+      setInformantes(informantesOriginales);
+    }, [informantesOriginales]);
 
   const [busqueda, setBusqueda] = useState("");
   const containerRef = useRef(null);
@@ -24,7 +24,7 @@ export default function TablaMentoras() {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
-  const currentRol = useCurrentRol();
+  const {rol} = useCurrentRol();
 
   const ordenarParticipantes = (data) => {
     if (!sortField) return data;
@@ -39,12 +39,12 @@ export default function TablaMentoras() {
     });
   };
 
-  const mentorasFiltradas = mentoras.filter((m) => {
+  const informantesFiltradas = informantes.filter((m) => {
     const nombreCompleto = `${m.nombre} ${m.apellido_paterno} ${m.apellido_materno || ""}`.toLowerCase();
     return nombreCompleto.includes(busqueda.toLowerCase());
   });
 
-  const participantesOrdenados = ordenarParticipantes(mentorasFiltradas);
+  const participantesOrdenados = ordenarParticipantes(informantesFiltradas);
   console.log(participantesOrdenados);
 
   if (loading) return <LoadingCard mensaje="Cargando contactos..." />;
@@ -64,7 +64,7 @@ export default function TablaMentoras() {
       <div className="tabla__container__tituloBusqueda">
         <h2 className="tabla__titulo">Listado de contactos para informes</h2>
         <div className="tabla__contenedor_busquedaFiltros">
-           {currentRol === 0 ? <button
+           {rol === 0 ? <button
             className="tabla__botonFiltros"
             onClick={() => setMostrarFiltros(true)}
           >
@@ -108,7 +108,7 @@ export default function TablaMentoras() {
 
       <div className="table_containerMentora" ref={containerRef}>
         <Tabla
-          mentoras={participantesOrdenados}
+          informantes={participantesOrdenados}
           onSort={handleSort}
           sortField={sortField}
           sortOrder={sortOrder}

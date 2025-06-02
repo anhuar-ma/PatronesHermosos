@@ -21,18 +21,20 @@ router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
     if (req.user.rol === 0) {
       query = `
         SELECT
-          g.*,
-          CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_instructora,
-          CONCAT(m.nombre, ' ', m.apellido_paterno, ' ', m.apellido_materno) AS nombre_mentora
+            g.*,
+            CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_instructora,
+            CONCAT(m.nombre, ' ', m.apellido_paterno, ' ', m.apellido_materno) AS nombre_mentora,
+            s.nombre AS nombre_sede
         FROM
-          grupo g
-        LEFT JOIN
-          colaborador c ON g.id_grupo = c.id_grupo AND c.rol = 'Instructora'
-        LEFT JOIN
-          mentora_grupo mg ON g.id_grupo = mg.id_grupo
-        LEFT JOIN
-          mentora m ON mg.id_mentora = m.id_mentora
-      `;
+            grupo g
+                LEFT JOIN
+            colaborador c ON g.id_grupo = c.id_grupo AND c.rol = 'Instructora'
+                LEFT JOIN
+            mentora_grupo mg ON g.id_grupo = mg.id_grupo
+                LEFT JOIN
+            mentora m ON mg.id_mentora = m.id_mentora
+            LEFT JOIN
+                sede s on s.id_sede = g.id_sede;`;
     }
     // If sede coordinator, only show groups from their sede
     else if (req.user.rol === 1 && req.user.id_sede) {

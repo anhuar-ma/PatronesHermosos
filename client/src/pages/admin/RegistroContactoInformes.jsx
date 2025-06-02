@@ -19,13 +19,13 @@ export default function RegistroContactoInformes() {
     setIsSubmitting(true);
     try {
       const mentoraData = {
-        nombre: data.nombre_mentora,
-        apellido_paterno: data.apellido_paterno_mentora,
-        apellido_materno: data.apellido_materno_coordinadora,
-        correo: data.correo_mentora,
+        nombre: data.nombre_contacto,
+        apellido_paterno: data.apellido_paterno_contacto,
+        apellido_materno: data.apellido_materno_contacto,
+        correo: data.correo_contacto,
       };
 
-      const response = await axios.post("/api/mentoras", mentoraData);
+      const response = await axios.post("/api/informantes", mentoraData);
 
       setSubmitResult({
         success: true,
@@ -35,7 +35,7 @@ export default function RegistroContactoInformes() {
       window.alert("Contacto registrada correctamente ✅");
       console.log(response.data);
 
-      navigate("/admin/mentoras");
+      navigate("/admin/contacto");
     } catch (error) {
       setSubmitResult({
         success: false,
