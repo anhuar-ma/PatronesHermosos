@@ -1,8 +1,9 @@
 // src/components/TablaParticipantesListado.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useDeleteInformante from "../hooks/useDeleteInformante";
 
 export default function Tabla({
   informantes,
@@ -11,6 +12,18 @@ export default function Tabla({
   sortOrder,
 }) {
   const navigate = useNavigate();
+  const [localInformantes, setLocalInformantes] = useState(informantes);
+
+  // Hook con función que se ejecuta después de eliminar correctamente
+  const { deleteInformante, loading } = useDeleteInformante((idEliminado) => {
+    setLocalInformantes((prev) =>
+      prev.filter((inf) => inf.id_informante !== idEliminado)
+    );
+  });
+
+  useEffect(() => {
+    setLocalInformantes(informantes);
+  }, [informantes]);
 
   const renderSortArrow = (field) => {
     if (sortField !== field) return <ArrowDownUp size={14} />;
@@ -38,14 +51,25 @@ export default function Tabla({
             </div>
           </th>
           {/* <th>Ver detalles</th> */}
+          <th>Eliminar</th>
         </tr>
       </thead>
 
       <tbody>
-        {informantes.map((informante) => (
+        {localInformantes.map((informante) => (
           <tr key={informante.id_informante}>
             <td>{informante.nombre_completo}</td>
             <td>{informante.correo}</td>
+            <td>
+              <button
+                onClick = {() =>
+                  deleteInformante(informante.id_informante)
+                }
+                disabled={loading}
+              >
+                {loading ? "Eliminando..." : "Eliminar informante"}
+              </button>
+            </td>
             {/* <td>
               <button
                 className="tabla__botonMorado"
