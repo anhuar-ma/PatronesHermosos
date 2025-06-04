@@ -296,11 +296,22 @@
 .filtro-checkbox input[type="checkbox"]:checked {
   background-color: #9e629a;
 }
+.table__botonEliminarContacto{
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.table__botonEliminarContacto:hover {
+  background-color: darkred; 
+  transform: scale(1.05); 
+}
 
 .tabla__botonMorado {
   border-radius: 5px;
-  /* width: 150px; */
-  /* height: 35px; */
+
   border: none;
   background-color: #d791d2;
   color: #ffffff;
@@ -501,6 +512,13 @@
     .table_containerMentora{
       margin-top: 0rem;
     }
+  .btn-agregarPersonaGrupo,
+  .btn-eliminarMentora,
+  .btn-agregarPersonaGrupo,
+  .btn-eliminarMentora{
+    width:45%;
+    font-size: 1rem;
+  }
 
 }
 
@@ -574,6 +592,30 @@
 .table__grupoos{
   margin-top: 0.5rem;
 }
+.tabla__container__botones{
+  flex-direction: column;
+  align-items: center;
+}
+.btn-agregarPersonaGrupo,
+  .btn-eliminarMentora,
+  .btn-agregarPersonaGrupo,
+  .btn-eliminarMentora{
+    width:80%;
+    font-size: 1.3rem;
+    font-weight: 400;
+    padding: 1.3rem 0;
+  }
+   .filtro-opciones {
+    font-size: 1.7rem;
+    gap: 1rem;
+  }
+  .filtro-header {
+    font-size: 1.8rem;
+  }
+   .tabla__panel-filtros h3 {
+    font-size: 2rem;
+  }
+
 }
 
 @media (max-width: 400px) {
@@ -655,6 +697,20 @@
 .table__grupoos{
   margin-top: 0.5rem;
 }
+.tabla__container__botones{
+  /* margin-top: 5rem  */
+  flex-direction: column;
+  align-items: center;
+}
+.btn-agregarPersonaGrupo,
+  .btn-eliminarMentora,
+  .btn-agregarPersonaGrupo,
+  .btn-eliminarMentora{
+    width:80%;
+    font-size: 1.3rem;
+    font-weight: 400;
+    
+}
 }
 
 
@@ -662,5 +718,16 @@
 .table_container.titulo2filas {
     margin-top: 13rem;
     max-height: 65%;
+  }
+
+  /* .tabla__containerDetallesGrupo{
+    height: 100%;
+  } */
+  .table__grupoos{
+    min-height: 40%;
+    max-height: 65%;
+  }
+  .fondo_tablas_adminGrupos{
+    height: 100%;
   }
 }

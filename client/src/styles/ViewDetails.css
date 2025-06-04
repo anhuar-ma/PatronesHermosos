@@ -212,6 +212,7 @@
   
   .btn-regresar:hover {
     background-color: white;
+    color: var(--color-primario);
   }
   
   .btn-regresar__icon {

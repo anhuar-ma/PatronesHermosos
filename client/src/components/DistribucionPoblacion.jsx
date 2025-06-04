@@ -127,7 +127,7 @@ const DistribucionPoblacion = () => {
       </div>
 
       <div className="adminDashboard__chart-box">
-        <h2>Distribución de Staff</h2>
+        <h2>Distribución de colaboradores</h2>
         {!dataFetched ? (
           <div className="loading">Cargando datos...</div>
         ) : filteredDataStaff.length > 0 ? (

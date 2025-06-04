@@ -207,7 +207,7 @@ export default function TablaDetallesGrupos() {
 
 
   return (
-    <div className="tabla__containerBlancoMentora">
+    <div className="tabla__containerBlancoMentora tabla__containerDetallesGrupo">
       {/* Encabezado y búsqueda */}
       <div className="tabla__container__tituloBusquedaGrupos">
         <h2 className="tabla__titulo">Grupo {id}</h2>

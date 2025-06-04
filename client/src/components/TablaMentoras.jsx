@@ -25,7 +25,12 @@ export default function TablaMentoras() {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
+  const [sedeSeleccionada, setSedeSeleccionada] = useState([]);
   const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
+    const sedesDisponibles = useMemo(() => {
+    const sedes = mentoras.map((m) => m.nombre_sede);
+    return [...new Set(sedes)].sort();
+  }, [mentoras]);
   // const currentRol = useCurrentRol();
   const {rol} = useCurrentRol();
 
@@ -50,7 +55,11 @@ export default function TablaMentoras() {
 
   const mentorasFiltradas = mentoras.filter((m) => {
     const nombreCompleto = `${m.nombre} ${m.apellido_paterno} ${m.apellido_materno || ""}`.toLowerCase();
-    return nombreCompleto.includes(busqueda.toLowerCase());
+    const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
+     const coincideSede =
+      sedeSeleccionada.length === 0 ||
+      sedeSeleccionada.includes(m.nombre_sede);
+    return coincideBusqueda && coincideSede;
   });
 
   const participantesOrdenados = ordenarParticipantes(mentorasFiltradas);
@@ -133,6 +142,12 @@ export default function TablaMentoras() {
             <h3>Filtros avanzados</h3>
 
 
+            <FiltroTabla
+                          titulo="Sede"
+                          opciones={sedesDisponibles}
+                          seleccionados={sedeSeleccionada}
+                          setSeleccionados={setSedeSeleccionada}
+                        />
 
 
             <button

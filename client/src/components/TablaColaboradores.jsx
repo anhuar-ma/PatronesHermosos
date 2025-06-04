@@ -23,7 +23,7 @@ export default function TablaColaboradores() {
     loading,
     error,
   } = useColaboradores();
-  const currentRol = useCurrentRol();
+  const {rol} = useCurrentRol();
 
 
   // 1. Copia local para poder mutar el estado en cliente
@@ -59,7 +59,13 @@ export default function TablaColaboradores() {
   // Filtros seleccionados: roles, estados y sedes
   const [rolesSeleccionados, setRolesSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
-  const [sedesSeleccionadas, setSedesSeleccionadas] = useState([]);
+  const [sedeSeleccionada, setSedeSeleccionada] = useState([]);
+
+  //  const sedesDisponibles = useMemo(() => {
+  //   const sedes = colaboradores.map((c) => c.nombre_sede);
+  //   return [...new Set(sedes)].sort();
+  // }, [colaboradores]);
+
 
   //Filtro para tener siempre los estados que se requieren
   const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
@@ -75,7 +81,7 @@ export default function TablaColaboradores() {
    * según su nombre (usando getSedeNombre).
    */
   const sedesDisponibles = useMemo(() => {
-    const sedes = colaboradores.map((c) => c.id_sede);
+    const sedes = colaboradores.map((c) => c.nombre_sede);
     return [...new Set(sedes)].sort((a, b) =>
       getSedeNombre(a).localeCompare(getSedeNombre(b))
     );
@@ -118,8 +124,8 @@ export default function TablaColaboradores() {
       estadosSeleccionados.length === 0 ||
       estadosSeleccionados.includes(colaborador.estado);
     const coincideSede =
-      sedesSeleccionadas.length === 0 ||
-      sedesSeleccionadas.includes(getSedeNombre(colaborador.id_sede));
+      sedeSeleccionada.length === 0 ||
+      sedeSeleccionada.includes(colaborador.nombre_sede);
 
     return coincideBusqueda && coincideRol && coincideEstado && coincideSede;
   });
@@ -266,12 +272,12 @@ export default function TablaColaboradores() {
 
             {/* Filtro por sede */}
 
-            {currentRol === 0 ? (
+            {rol === 0 ? (
               <FiltroTabla
                 titulo="Sede"
-                opciones={sedesDisponibles.map(getSedeNombre)}
-                seleccionados={sedesSeleccionadas}
-                setSeleccionados={setSedesSeleccionadas}
+                opciones={sedesDisponibles}
+                seleccionados={sedeSeleccionada}
+                setSeleccionados={setSedeSeleccionada}
               />
             ) : null}
 
@@ -282,7 +288,7 @@ export default function TablaColaboradores() {
                 setBusqueda("");
                 setRolesSeleccionados([]);
                 setEstadosSeleccionados([]);
-                setSedesSeleccionadas([]);
+                setSedeSeleccionada([]);
                 setMostrarFiltros(false);
               }}
             >

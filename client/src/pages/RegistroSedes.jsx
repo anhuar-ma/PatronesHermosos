@@ -8,6 +8,8 @@ export default function RegistroSedes() {
   const [fileName, setFileName] = useState("");
   const [fileError, setFileError] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [submitResult, setSubmitResult] = useState(null);
   const navigate = useNavigate();
 
@@ -19,8 +21,10 @@ export default function RegistroSedes() {
   } = useForm();
 
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     if (!fileName) {
       setFileError("No hay archivo seleccionado");
+      setIsSubmitting(false);
       return;
     }
 
@@ -91,6 +95,8 @@ export default function RegistroSedes() {
         message: errorMessage,
       });
       // Do not clear errors or show general success alert here
+    } finally {
+      setIsSubmitting(false);
     }
     // Removed general success alert and error clearing from here
   };
@@ -298,11 +304,13 @@ export default function RegistroSedes() {
             </label>
 
             <div className="registro__contenedor__botonSubmit">
-              <input
+              <button
                 type="submit"
                 className="registro__botonMorado"
-                value="Enviar Registro"
-              />
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Enviando..." : "Enviar Registro"}
+              </button>
             </div>
           </form>
         </div>

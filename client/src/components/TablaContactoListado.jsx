@@ -61,7 +61,7 @@ export default function Tabla({
             <td>{informante.nombre_completo}</td>
             <td>{informante.correo}</td>
             <td>
-              <button
+              <button className="table__botonEliminarContacto"
                 onClick = {() =>
                   deleteInformante(informante.id_informante)
                 }
