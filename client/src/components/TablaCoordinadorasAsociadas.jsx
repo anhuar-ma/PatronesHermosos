@@ -1,5 +1,5 @@
 import { useMemo, useState, useRef, useEffect } from "react";
-import useSedes from "../hooks/useSedes";
+import useCoordinadoras from "../hooks/useCoordinadoras";
 import axios from "axios";
 import { SlidersHorizontal } from "lucide-react";
 import Tabla from "./TablaCoordinadorasAsociadasListado";
@@ -7,12 +7,12 @@ import LoadingCard from "./LoadingCard";
 import FiltroTabla from "./FiltroTabla";
 
 export default function TablaCoordinadorasAsociadas() {
-  const { sedes: sedesOriginales, loading, error } = useSedes();
-  const [sedes, setSedes] = useState([]);
+  const { coordinadoras: coordinadorasOriginales, loading, error } = useCoordinadoras();
+  const [coordinadoras, setCoordinadoras] = useState([]);
     
   useEffect(() => {
-    setSedes(sedesOriginales);
-  }, [sedesOriginales]);
+    setCoordinadoras(coordinadorasOriginales);
+  }, [coordinadorasOriginales]);
 
   const [busqueda, setBusqueda] = useState("");
   const containerRef = useRef(null);
@@ -24,14 +24,14 @@ export default function TablaCoordinadorasAsociadas() {
   const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
 
   const tiposDisponibles = useMemo(() => {
-    const tipos = sedes.map((s) => s.tipo);
+    const tipos = coordinadoras.map((c) => c.tipo);
     return [...new Set(tipos)].sort();
-  }, [sedes]);
+  }, [coordinadoras]);
 
   const statusOptions = useMemo(() => {
-    const estados = sedes.map((s) => s.estado);
+    const estados = coordinadoras.map((c) => c.estado);
     return [...new Set(estados)].sort();
-  }, [sedes]);
+  }, [coordinadoras]);
 
   const ordenarSedes = (data) => {
     if (!sortField) return data;
@@ -46,18 +46,18 @@ export default function TablaCoordinadorasAsociadas() {
     });
   };
 
-  const sedesFiltradas = sedes.filter((s) => {
-    const nombreSede = s.nombre_sede ? s.nombre_sede.toString().toLowerCase() : "";
-    const coincideBusqueda = nombreSede.includes(busqueda.toLowerCase());
-    const coincideTipo = tiposSeleccionados.length === 0 || tiposSeleccionados.includes(s.tipo);
-    const coincideEstado = estadosSeleccionados.length === 0 || estadosSeleccionados.includes(s.estado);
+  const coordinadorasFiltradas = coordinadoras.filter((c) => {
+    const nombreCoordinadora = c.nombre_sede ? c.nombre_sede.toString().toLowerCase() : "";
+    const coincideBusqueda = nombreCoordinadora.includes(busqueda.toLowerCase());
+    const coincideTipo = tiposSeleccionados.length === 0 || tiposSeleccionados.includes(c.tipo);
+    const coincideEstado = estadosSeleccionados.length === 0 || estadosSeleccionados.includes(c.estado);
 
     return coincideBusqueda && coincideTipo && coincideEstado;
   });
 
-  const sedesOrdenadas = ordenarSedes(sedesFiltradas);
+  const coordinadorasOrdenadas = ordenarSedes(coordinadorasFiltradas);
 
-  if (loading) return <LoadingCard mensaje="Cargando sedes..." />;
+  if (loading) return <LoadingCard mensaje="Cargando coordinadoras..." />;
   if (error) return <LoadingCard mensaje={error} />;
 
   const handleSort = (field) => {
@@ -69,48 +69,23 @@ export default function TablaCoordinadorasAsociadas() {
     }
   };
 
-  const handleStatusChange = async (id_sede, nuevoEstado) => {
+  const handleStatusChange = async (id_coordinadora_asociada, nuevoEstado) => {
     try {
-      let razonRechazo = "";
-  
-      // Si se selecciona "Rechazado", solicitar la razón
-      if (nuevoEstado === "Rechazado") {
-        razonRechazo = prompt("Por favor, indica la razón del rechazo:");
-        if (!razonRechazo) {
-          alert("Debes ingresar una razón para rechazar a la participante.");
-          return;
-        }
-      }
       // Actualiza el estado del colaborador
       const response = await axios.put(
-        `/api/sedes/estado/${id_sede}`,
+        `/api/coordinadoras_asociadas/estado/${id_coordinadora_asociada}`,
         {estado: nuevoEstado,}
       );
   
       if (response.data.success) {
         // Actualiza el estado localmente
-        setSedes((prev) =>
-          prev.map((s) =>
-            s.id_sede === id_sede
-              ? { ...s, estado: nuevoEstado }
-              : s
+        setCoordinadoras((prev) =>
+          prev.map((c) =>
+            c.id_coordinadora_asociada === id_coordinadora_asociada
+              ? { ...c, estado: nuevoEstado }
+              : c
           )
         );
-  
-        // Envía el correo según el estado
-        const emailResponse = await axios.post(
-          `/api/sedes/email/${id_sede}`,
-          { 
-            estado: nuevoEstado,
-            razon: razonRechazo || null 
-          } // Enviar el estado al backend
-        );
-  
-        if (emailResponse.data.success) {
-          alert(emailResponse.data.message); // Muestra un mensaje de éxito
-        } else {
-          console.error("Error al enviar el correo");
-        }
       } else {
         console.error("Error al actualizar el estado");
       }
@@ -161,8 +136,8 @@ export default function TablaCoordinadorasAsociadas() {
         </div>
       )}
 
-      <div className="table_container titulo2filas" ref={containerRef}>
-        <Tabla sedes={sedesOrdenadas} onSort={handleSort} statusOptions={estadosFijos} sortField={sortField} sortOrder={sortOrder} onStatusChange={handleStatusChange}/>
+       <div className="table_container titulo2filas" ref={containerRef}>
+        <Tabla coordinadoras={coordinadorasOrdenadas} onSort={handleSort} statusOptions={estadosFijos} sortField={sortField} sortOrder={sortOrder} onStatusChange={handleStatusChange}/>
       </div>
     </div>
   );

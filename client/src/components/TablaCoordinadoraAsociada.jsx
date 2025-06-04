@@ -50,6 +50,7 @@ const TablaAsignacionMentora = () => {
           <tr>
             <th>Nombre</th>
             <th>Correo</th>
+            <th>Estado</th>
             <th>Eliminar/asignar coordinadora asociada</th>
           </tr>
         </thead>
@@ -59,6 +60,7 @@ const TablaAsignacionMentora = () => {
               <tr key={coordinadora.id_coordinadora_asociada}>
                 <td>{coordinadora.nombre_completo}</td>
                 <td>{coordinadora.correo}</td>
+                <td>{coordinadora.estado}</td>
                 <td>
                   <button
                     className="btn_eliminarCoordinadora"
@@ -71,6 +73,7 @@ const TablaAsignacionMentora = () => {
             ))
           ) : (
             <tr>
+              <td>— Ninguna asignada —</td>
               <td>— Ninguna asignada —</td>
               <td>— Ninguna asignada —</td>
               <td>

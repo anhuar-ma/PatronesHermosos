@@ -82,6 +82,16 @@
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
 }
 
+.adminDashboard__chart-tabla-box{
+  flex: 1;
+  min-width: 300px;
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
+}
+
 /* ============================
    Tablas
 ============================ */
@@ -121,7 +131,8 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
-  table-layout: fixed;
+  /* min-width: 500px; */
+  table-layout: auto;
 }
 
 .adminDashboard__coodinadoraAsociacionTable th,
@@ -141,15 +152,20 @@
 .adminDashboard__coodinadoraAsociacionTable th:nth-child(1),
 .adminDashboard__coodinadoraAsociacionTable td:nth-child(1) {
   width: 40%;
+  min-width: 10rem;
 }
 .adminDashboard__coodinadoraAsociacionTable th:nth-child(2),
 .adminDashboard__coodinadoraAsociacionTable td:nth-child(2) {
-  width: 30%;
+  width: 20%;
 }
 .adminDashboard__coodinadoraAsociacionTable th:nth-child(3),
 .adminDashboard__coodinadoraAsociacionTable td:nth-child(3) {
-  width: 30%;
+  width: 20%;
 }
+/* .adminDashboard__coodinadoraAsociacionTable th:nth-child(4),
+.adminDashboard__coodinadoraAsociacionTable td:nth-child(4){
+  min-width: 10rem
+} */
 
 /* ============================
    Botones
@@ -163,9 +179,10 @@
   border-radius: 8px;
   cursor: pointer;
   margin-top: auto;
-  width: 50%;
+  width: 80%;
   transition: background-color 0.3s ease, transform 0.2s ease;
   text-align: center;
+  min-width: 10rem;
 }
 
 .btn-agregarCoordinadora {

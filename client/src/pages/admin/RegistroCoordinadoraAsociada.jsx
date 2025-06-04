@@ -26,6 +26,7 @@ export default function RegistroSedes() {
         apellido_paterno: data.apellido_paterno_coordinadora,
         apellido_materno: data.apellido_materno_coordinadora,
         correo: data.correo_coordinadora,
+        estado: "Pendiente", // Estado inicial
       };
 
       await axios.post("/api/coordinadoras_asociadas", sedeData);

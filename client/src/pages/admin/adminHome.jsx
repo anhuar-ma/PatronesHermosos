@@ -100,7 +100,7 @@ const AdminDashboard = () => {
       <h2>Resumen de Actividades</h2>
 
       {rol === 1 && (
-        <div className="adminDashboard__chart-box">
+        <div className="adminDashboard__chart-tabla-box">
           <TablaCoodinadoraAsociada />
         </div>
       )}

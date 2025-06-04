@@ -1,6 +1,6 @@
 // src/components/TablaParticipantesListado.jsx
 import React from "react";
-
+import useCurrentRol from "../hooks/useCurrentRol";
 import { ArrowUpAZ, ArrowDownAZ, ArrowDownUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,8 +9,11 @@ export default function Tabla({
   onSort,
   sortField,
   sortOrder,
+  onStatusChange,
+  statusOptions = [], 
 }) {
   const navigate = useNavigate();
+  const { rol } = useCurrentRol();
 
   const renderSortArrow = (field) => {
     if (sortField !== field) return <ArrowDownUp size={14} />;
@@ -37,7 +40,9 @@ export default function Tabla({
               {renderSortArrow("correo")}
             </div>
           </th>
+          {rol === 0 && (<th>Sede</th>)}
           <th>Ver detalles</th>
+          <th>Estado</th>
         </tr>
       </thead>
 
@@ -46,6 +51,7 @@ export default function Tabla({
           <tr key={mentora.id_mentora}>
             <td>{mentora.nombre_completo_mentora}</td>
             <td>{mentora.correo}</td>
+            {rol === 0 && (<td>{mentora.nombre_sede}</td>)}
             <td>
               <button
                 className="tabla__botonMorado"
@@ -55,6 +61,23 @@ export default function Tabla({
               >
                 Ver detalles
               </button>
+            </td>
+            <td>
+              {rol === 1 ? <span>{mentora.estado}</span>:(
+                <select
+                className={`select-estado select-estado--${mentora.estado.toLowerCase()}`}
+                  value={mentora.estado}
+                  onChange={(e) =>
+                    onStatusChange(mentora.id_mentora, e.target.value)
+                  }
+                >
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              )}
             </td>
           </tr>
         ))}

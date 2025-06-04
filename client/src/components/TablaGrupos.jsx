@@ -5,6 +5,7 @@ import Tabla from "./TablaGruposListado"; // Componente de tabla donde se render
 import LoadingCard from "./LoadingCard"; // Componente de carga y errores
 import FiltroTabla from "./FiltroTabla"; // Componente para filtros avanzados
 import { Link } from "react-router-dom";
+import useCurrentRol from "../hooks/useCurrentRol";
 
 /**
  * Componente que muestra un listado de Grupos con:
@@ -45,6 +46,7 @@ export default function TablaGrupos() {
   const [cupoSeleccionados, setCupoSeleccionados] = useState([]);
   const [mentoraSeleccionadas, setMentoraSeleccionadas] = useState([]);
   const [instructoraSeleccionadas, setInstructoraSeleccionadas] = useState([]);
+  const { rol } = useCurrentRol();
 
 
   /**
@@ -268,9 +270,11 @@ export default function TablaGrupos() {
           sortOrder={sortOrder}
         />
       </div>
-       <Link to="/admin/registro-grupos" className="btn-agregar">
-        Agregar grupo
-      </Link>
+      {rol === 1 && (
+        <Link to="/admin/registro-grupos" className="btn-agregar">
+          Agregar grupo
+        </Link>
+      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import Tabla from "./TablaMentorasListado";
 import LoadingCard from "./LoadingCard";
 import FiltroTabla from "./FiltroTabla";
 import useCurrentRol from "../hooks/useCurrentRol";
+import axios from "axios";
 
 
 export default function TablaMentoras() {
@@ -24,7 +25,9 @@ export default function TablaMentoras() {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
-  const currentRol = useCurrentRol();
+  const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
+  // const currentRol = useCurrentRol();
+  const {rol} = useCurrentRol();
 
   const ordenarParticipantes = (data) => {
     if (!sortField) return data;
@@ -38,6 +41,12 @@ export default function TablaMentoras() {
       return 0;
     });
   };
+
+  const statusOptions = useMemo(() => {
+    const estados = mentoras.map((m) => m.estado);
+    return [...new Set(estados)].sort();
+  }, [mentoras]);
+
 
   const mentorasFiltradas = mentoras.filter((m) => {
     const nombreCompleto = `${m.nombre} ${m.apellido_paterno} ${m.apellido_materno || ""}`.toLowerCase();
@@ -59,12 +68,47 @@ export default function TablaMentoras() {
     }
   };  
 
+  const handleStatusChange = async (id_mentora, nuevoEstado) => {
+    try {
+      // Actualiza el estado del colaborador
+      const response = await axios.put(
+        `/api/mentoras/estado/${id_mentora}`,
+        {estado: nuevoEstado,}
+      );
+  
+      if (response.data.success) {
+        // Actualiza el estado localmente
+        setMentoras((prev) =>
+          prev.map((m) =>
+            m.id_mentora === id_mentora
+              ? { ...m, estado: nuevoEstado }
+              : m
+          )
+        );
+      } else {
+        console.error("Error al actualizar el estado");
+      }
+    } catch (error) {
+      // Manejo de errores
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        alert(error.response.data.message);
+      } else {
+        alert("Error al actualizar el estado del participante");
+      }
+      console.error("Error en la solicitud:", error);
+    }
+  };
+
   return (
     <div className="tabla__containerBlancoMentora">
       <div className="tabla__container__tituloBusqueda">
         <h2 className="tabla__titulo">Listado de mentoras</h2>
         <div className="tabla__contenedor_busquedaFiltros">
-           {currentRol === 0 ? <button
+           {rol === 0 ? <button
             className="tabla__botonFiltros"
             onClick={() => setMostrarFiltros(true)}
           >
@@ -106,18 +150,21 @@ export default function TablaMentoras() {
         </div>
       )}
 
-      <div className="table_containerMentora" ref={containerRef}>
+      <div className={rol === 0 ? "table_container" : "table_containerMentora"} ref={containerRef}>
         <Tabla
           mentoras={participantesOrdenados}
           onSort={handleSort}
           sortField={sortField}
           sortOrder={sortOrder}
-
+          statusOptions={estadosFijos}
+          onStatusChange={handleStatusChange}
         />
-      </div>
+</div>
+    { rol === 1 && (
       <Link to="/admin/registro-mentoras" className="btn-agregar">
         Agregar mentora
       </Link>
+    )}
 
     </div>
   );
