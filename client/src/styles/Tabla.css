@@ -513,6 +513,13 @@
     align-items: flex-start;
     gap: 1rem;
   }
+  .tabla__container__tituloBusquedaGrupos {
+   flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    height: auto;
+}
+
   .tabla__contenedor_busquedaFiltros {
     flex-direction: column;
     align-items: flex-start;
@@ -557,6 +564,16 @@
     padding: 0.5rem 2rem;
     font-size: 1.2rem;
   }
+  .info__grupo{
+    margin-top: 1.5rem;
+  flex-direction: column;
+  align-items: start;
+  gap: 1rem;
+  font-size: 1.3rem;
+}
+.table__grupoos{
+  margin-top: 0.5rem;
+}
 }
 
 @media (max-width: 400px) {
@@ -622,6 +639,22 @@
     margin-top: 10.5rem;
     max-height: 65%;
   }
+  .tabla__container__tituloBusquedaGrupos {
+   flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    height: auto;
+}
+.info__grupo{
+    margin-top: 1.5rem;
+  flex-direction: column;
+  align-items: start;
+  gap: 1rem;
+  font-size: 1.3rem;
+}
+.table__grupoos{
+  margin-top: 0.5rem;
+}
 }
 
 

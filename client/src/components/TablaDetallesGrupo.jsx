@@ -297,7 +297,7 @@ export default function TablaDetallesGrupos() {
       )}
 
       {/* Renderizado de la tabla con datos filtrados y ordenados */}
-      <div className="table_containerMentora" ref={containerRef}>
+      <div className="table_containerMentora table__grupoos" ref={containerRef}>
         <Tabla
           grupos={gruposOrdenados}
           onSort={handleSort}
