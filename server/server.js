@@ -45,18 +45,18 @@ const dbConfig = {
   port: "5432",
   ssl: {
     rejectUnauthorized: false,
-  }
+  },
 };
 
 // Connection options
 const localConfig = {
   ...dbConfig,
-  host: "192.168.1.68" // Replace with your local network IP
+  host: "192.168.1.68", // Replace with your local network IP
 };
 
 const publicConfig = {
   ...dbConfig,
-  host: "187.212.43.196" // Your public IP
+  host: "187.212.7.116", // Your public IP
 };
 
 // Function to check if we can reach the local server
@@ -70,7 +70,7 @@ const isLocalServerReachable = async () => {
       connectionTimeoutMillis: 1000, // 1 second timeout
     });
 
-    await testPool.query('SELECT 1');
+    await testPool.query("SELECT 1");
     await testPool.end();
     return true;
   } catch (error) {
@@ -84,7 +84,9 @@ export const createDbPool = async () => {
   const isLocalReachable = await isLocalServerReachable();
   const config = isLocalReachable ? localConfig : publicConfig;
 
-  console.log(`Using ${isLocalReachable ? 'local' : 'public'} database connection`);
+  console.log(
+    `Using ${isLocalReachable ? "local" : "public"} database connection`,
+  );
   return new Pool(config);
 };
 
