@@ -67,13 +67,13 @@ router.get("/", authenticateToken, checkSedeAccess, async (req, res) => {
     if (req.user.rol === 0) {
       result = await pool.query(
         `
-    SELECT
-      c.*,
-        CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_completo,
-        s.nombre AS nombre_sede
-      FROM
-        coordinadora_asociada c
-      JOIN sede s ON c.id_sede = s.id_sede;
+        SELECT
+            c.*,
+            CONCAT(c.nombre, ' ', c.apellido_paterno, ' ', c.apellido_materno) AS nombre_completo,
+            s.nombre AS nombre_sede
+        FROM
+            coordinadora_asociada c
+        JOIN sede s ON c.id_sede = s.id_sede;
       `,
       );
     } else if (req.user.rol === 1) {
@@ -197,4 +197,3 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
 });
 
 export default router;
-
