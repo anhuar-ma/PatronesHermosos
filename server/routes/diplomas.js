@@ -33,29 +33,66 @@ async function generateDiploma(templatePath, outputPath, recipientName, sedeName
     const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
     const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-    // Calculate text position (centered horizontally, positioned vertically)
-    const textWidth = font.widthOfTextAtSize(recipientName, 24);
     const pageWidth = page.getWidth();
     const pageHeight = page.getHeight();
 
-    // Position text at center of page, adjust Y position as needed for your diploma template
-    let x = (pageWidth - textWidth) / 2;
-    let y = pageHeight / 2; // Adjust this based on where names should appear
+    // Handle long names (>50 chars) or very long names (>100 chars)
+    let fontSize = 24; // Default font size
+    let lines = [];
 
-    // Add recipient name to the page
-    page.drawText(recipientName, {
-      x,
-      y,
-      size: 24,
-      font,
-      color: rgb(0, 0, 0), // Black text
+    if (recipientName.length > 100) {
+      // For very long names, reduce font size
+      fontSize = Math.max(14, Math.floor(24 * (100 / recipientName.length)));
+
+      // Split into multiple lines if still needed
+      if (recipientName.length > 120) {
+        const midPoint = findSplitPosition(recipientName, Math.floor(recipientName.length / 2));
+        lines = [
+          recipientName.substring(0, midPoint),
+          recipientName.substring(midPoint).trim()
+        ];
+      } else {
+        lines = [recipientName];
+      }
+    } else if (recipientName.length > 50) {
+      // For long names, split into two lines at a space
+      const midPoint = findSplitPosition(recipientName, Math.floor(recipientName.length / 2));
+      lines = [
+        recipientName.substring(0, midPoint),
+        recipientName.substring(midPoint).trim()
+      ];
+    } else {
+      // Normal length name
+      lines = [recipientName];
+    }
+
+    // Calculate position and draw name (one or multiple lines)
+    let y = pageHeight / 2;
+
+    // Adjust y position if multiple lines
+    if (lines.length > 1) {
+      y += (fontSize / 2) * (lines.length - 1);
+    }
+
+    // Draw each line, centered
+    lines.forEach((line, index) => {
+      const textWidth = font.widthOfTextAtSize(line, fontSize);
+      const x = (pageWidth - textWidth) / 2;
+      const lineY = y - index * (fontSize * 1.5); // Add spacing between lines
+
+      page.drawText(line, {
+        x,
+        y: lineY,
+        size: fontSize,
+        font,
+        color: rgb(0, 0, 0),
+      });
     });
 
     // Add sede name and date below the recipient name
     if (sedeName) {
-
-      x = 195;
-      y = 222;
+      let x = 195;
+      let y = 222;
 
       if (templatePath.includes('coordinadora_asociada')) {
         x = 187;
@@ -72,12 +109,11 @@ async function generateDiploma(templatePath, outputPath, recipientName, sedeName
     }
 
     if (fecha) {
-      x = 130;
-      y = 205;
+      let x = 130;
+      let y = 205;
       if (templatePath.includes('coordinadora_asociada')) {
         x = 123;
         y = 214;
-
       }
 
       page.drawText(fecha, {
@@ -99,6 +135,23 @@ async function generateDiploma(templatePath, outputPath, recipientName, sedeName
     console.error("Error generating diploma:", error);
     throw error;
   }
+}
+
+// Helper function to find a good position to split text (after a space)
+function findSplitPosition(text, targetIndex) {
+  // Look for the nearest space before or after the target index
+  let spaceAfter = text.indexOf(' ', targetIndex);
+  let spaceBefore = text.lastIndexOf(' ', targetIndex);
+
+  // If no space after, use space before
+  if (spaceAfter === -1) return spaceBefore;
+
+  // If no space before, use space after
+  if (spaceBefore === -1) return spaceAfter;
+
+  // Use whichever space is closest to the target index
+  return (targetIndex - spaceBefore < spaceAfter - targetIndex) ?
+    spaceBefore : spaceAfter;
 }
 
 // Helper function to create a ZIP archive
@@ -168,7 +221,7 @@ router.get(
         for (const sede of sedesResult.rows) {
           const sedeDir = path.join(
             tempDir,
-            `sede_${sede.id_sede}_${sede.nombre}`,
+            `sede_${sede.nombre}`,
           );
           await fs.ensureDir(sedeDir);
 
@@ -204,7 +257,7 @@ router.get(
           for (const coord of coordResult.rows) {
             const diplomaPath = path.join(
               sedeDir,
-              `coordinadora_${coord.id_coordinadora}.pdf`,
+              `coordinadora_${coord.nombre_completo}.pdf`,
             );
             await generateDiploma(
               path.join(process.cwd(), "/diplomas/coordinadora.pdf"),
@@ -219,7 +272,7 @@ router.get(
           for (const coordAsoc of coordAsocResult.rows) {
             const diplomaPath = path.join(
               sedeDir,
-              `coordinadora_asociada_${coordAsoc.id_coordinadora_asociada}.pdf`,
+              `coordinadora_asociada_${coordAsoc.nombre_completo}.pdf`,
             );
             await generateDiploma(
               path.join(process.cwd(), "/diplomas/coordinadora_asociada.pdf"),
@@ -241,7 +294,7 @@ router.get(
           for (const mentora of mentoraResult.rows) {
             const diplomaPath = path.join(
               sedeDir,
-              `mentora_${mentora.id_mentora}.pdf`,
+              `mentora_${mentora.nombre_completo}.pdf`,
             );
             await generateDiploma(
               path.join(process.cwd(), "/diplomas/mentora.pdf"),
@@ -349,7 +402,7 @@ router.get(
         for (const participante of participantesResult.rows) {
           const diplomaPath = path.join(
             participantesDir,
-            `participante_${participante.id_participante}.pdf`,
+            `participante_${participante.nombre_completo}.pdf`,
           );
           await generateDiploma(
             path.join(process.cwd(), "/diplomas/participante.pdf"),
@@ -380,7 +433,7 @@ router.get(
 
           const diplomaPath = path.join(
             outputDir,
-            `${colaborador.rol.toLowerCase()}_${colaborador.id_colaborador}.pdf`,
+            `${colaborador.rol.toLowerCase()}_${colaborador.nombre_completo}.pdf`,
           );
           await generateDiploma(
             path.join(process.cwd(), `/diplomas/${templateFile}`),
