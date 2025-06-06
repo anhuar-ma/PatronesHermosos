@@ -81,7 +81,7 @@ export default function RegistroColaboradores() {
                 Llenar con datos como aparecen en un documento oficial.
               </p>
               <label>
-                Nombre(s) del colaborador <span className="registro__obligatorio">*</span>
+                Nombre(s) del colaborador
                 <br />
                 <input
                   className={`registro__input ${
@@ -99,7 +99,6 @@ export default function RegistroColaboradores() {
 
               <label>
                 Apellido paterno del colaborador
-                <span className="registro__obligatorio">*</span>
                 <br />
                 <input
                   className={`registro__input ${
@@ -118,7 +117,8 @@ export default function RegistroColaboradores() {
               </label>
 
               <label>
-                Apellido materno del colaborador
+                Apellido materno del colaborador   
+                <span className="optional">(opcional)</span>
                 <br />
                 <input
                   className={`registro__input ${
@@ -137,7 +137,7 @@ export default function RegistroColaboradores() {
               </label>
 
               <label>
-                Correo <span className="registro__obligatorio">*</span>
+                Correo
                 <br />
                 <input
                   className={`registro__input ${
@@ -158,7 +158,7 @@ export default function RegistroColaboradores() {
               </label>
 
               <label>
-                Universidad <span className="registro__obligatorio">*</span>
+                Universidad
                 <br />
                 <input
                   className={`registro__input ${
@@ -176,7 +176,6 @@ export default function RegistroColaboradores() {
 
               <label>
                 Sede en la que se desea participar
-                <span className="registro__obligatorio">*</span>
                 <br />
                 <select
                   className={`registro__select ${
@@ -200,7 +199,7 @@ export default function RegistroColaboradores() {
 
               {/* <div className="registro__container__2inputsInRow"> */}
                 <label>
-                  Idioma de preferencia <span className="registro__obligatorio">*</span>
+                  Idioma de preferencia 
                   <br />
                   <select
                     className={`registro__select ${
@@ -220,7 +219,7 @@ export default function RegistroColaboradores() {
                 </label>
 
                 <label>
-                  Nivel del grupo que quieres impartir <span className="registro__obligatorio">*</span>
+                  Nivel del grupo que quieres impartir 
                   <br />
                   <select
                     className={`registro__select ${
@@ -241,7 +240,7 @@ export default function RegistroColaboradores() {
               {/* </div> */}
 
               <label>
-                Carrera <span className="registro__obligatorio">*</span>
+                Carrera 
                 <br />
                 <input
                   className={`registro__input ${
@@ -258,7 +257,7 @@ export default function RegistroColaboradores() {
               </label>
 
               <label>
-                Rol <span className="registro__obligatorio">*</span>
+                Rol 
                 <br />
                 <select
                   className={`registro__select ${

@@ -47,7 +47,7 @@ app.use(bodyParser.json());
 //
 export const pool = new Pool({
   user: "postgres",
-  host: "187.212.43.196",
+  host: "187.212.7.116",
   database: "patroneshermosos",
   password: "/BX]#CN!s^xX+]'~*v>^3_K",
   port: "15432",

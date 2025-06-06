@@ -67,7 +67,7 @@ export default function Tabla({
                 }
                 disabled={loading}
               >
-                {loading ? "Eliminando..." : "Eliminar informante"}
+                {loading ? "Eliminando..." : "Eliminar contacto"}
               </button>
             </td>
             {/* <td>

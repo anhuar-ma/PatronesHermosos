@@ -194,6 +194,14 @@ body {
   display: block;
 }
 
+.optional {
+  font-size: 0.85rem;
+  color: #6c757d; /* Gris tenue */
+  font-style: italic;
+  margin-left: 14px;
+}
+
+
 /* Laptop */
 @media (min-width: 1025px) {
   .registro_containerForm {
