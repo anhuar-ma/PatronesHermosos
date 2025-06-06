@@ -127,13 +127,17 @@
 .adminDashboard__comparisonTable td {
   padding: 0.75rem;
   border-bottom: 1px solid #eee;
-  text-align: center;
+  /* text-align: center; */
   font-size: 0.95rem;
+  text-align: left;
 }
 
 .adminDashboard__comparisonTable th {
   background-color: #f0f0f0;
   font-weight: bold;
+}
+.adminDashboard__comparisonTable td:nth-child(1) {
+  text-align: left;
 }
 
 /* Tabla coordinadora asociación */

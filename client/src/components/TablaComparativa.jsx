@@ -28,7 +28,7 @@ const TablaComparativa = () => {
           <tbody>
             {sedes.map((sede, idx) => (
               <tr key={idx}>
-                <td>{sede.nombre_sede}</td>
+                <td className="nombre_sede">{sede.nombre_sede}</td>
                 <td>{sede.alumnas_aceptadas}</td>
                 <td>{sede.alumnas_rechazadas}</td>
                 <td>{sede.alumnas_pendientes}</td>

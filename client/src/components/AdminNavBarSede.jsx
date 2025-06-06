@@ -78,7 +78,7 @@ export default function AdminNavbar() {
       <div className="AdminNavbar__title">
         <img
           src="../src/assets/logo_patrones.png"
-          alt="hola"
+          alt="logo"
           className="AdminNavbar__imgLogoNav"
         />
         <p>Patrones Hermosos</p>

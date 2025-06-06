@@ -77,12 +77,10 @@ export default function TablaDetallesGrupos() {
   // Control de visibilidad del panel de filtros
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
 
-  // Filtros seleccionados: idiomas, niveles, cupo, mentora, instructora
-  const [idiomasSeleccionados, setIdiomasSeleccionados] = useState([]);
-  const [nivelesSeleccionados, setNivelesSeleccionados] = useState([]);
+  // Filtros seleccionados:  cupo, mentora, instructora
   const [cupoSeleccionados, setCupoSeleccionados] = useState([]);
   const [mentoraSeleccionadas, setMentoraSeleccionadas] = useState([]);
-  const [instructoraSeleccionadas, setInstructoraSeleccionadas] = useState([]);
+  const [rolesSeleccionados, setRolesSeleccionados] = useState([]); // Filtro por rol
   const { eliminarIntegrante, loading: loadingEliminar, error: errorEliminar } = useEliminarIntegrante(); // Usa el hook
 
   // Función para ordenar un array de grupos según el campo y el orden seleccionado
@@ -101,19 +99,15 @@ export default function TablaDetallesGrupos() {
 
   // Filtrado combinado
   const gruposFiltrados = gruposList.filter((grupo) => {
-    const coincideIdioma =
-      idiomasSeleccionados.length === 0 ||
-      idiomasSeleccionados.includes(grupo.idioma);
-    const coincideNivel =
-      nivelesSeleccionados.length === 0 ||
-      nivelesSeleccionados.includes(grupo.nivel);
 
-    const estadoCupo = grupo.cupo > 0 ? "Disponible" : "Lleno";
-    const coincideCupo =
-      cupoSeleccionados.length === 0 ||
-      cupoSeleccionados.includes(estadoCupo);
+     const nombreCompleto = grupo.nombre_completo.toLowerCase();
+    const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
 
-    return coincideIdioma && coincideNivel && coincideCupo;
+    const coincideRol =
+      rolesSeleccionados.length === 0 ||
+      rolesSeleccionados.includes(grupo.rol);
+
+    return coincideRol && coincideBusqueda;
   });
 
   // Aplica ordenamiento sobre los filtrados
@@ -255,26 +249,10 @@ export default function TablaDetallesGrupos() {
 
             {/* Filtro por idioma */}
             <FiltroTabla
-              titulo="Idioma de grupo"
-              opciones={["Inglés", "Español"]}
-              seleccionados={idiomasSeleccionados}
-              setSeleccionados={setIdiomasSeleccionados}
-            />
-
-            {/* Filtro por nivel */}
-            <FiltroTabla
-              titulo="Nivel de grupo"
-              opciones={["Básico", "Avanzado"]}
-              seleccionados={nivelesSeleccionados}
-              setSeleccionados={setNivelesSeleccionados}
-            />
-
-            {/* Filtro por estado de cupo */}
-            <FiltroTabla
-              titulo="Estado de cupo"
-              opciones={["Disponible", "Lleno"]}
-              seleccionados={cupoSeleccionados}
-              setSeleccionados={setCupoSeleccionados}
+              titulo="Rol"
+              opciones={["Staff", "Instructora", "Facilitadora","Participante"]}
+              seleccionados={rolesSeleccionados}
+              setSeleccionados={setRolesSeleccionados}
             />
 
             {/* Botón para limpiar todos los filtros */}
@@ -282,11 +260,7 @@ export default function TablaDetallesGrupos() {
               className="tabla_boton-limpiar-filtros"
               onClick={() => {
                 setBusqueda("");
-                setIdiomasSeleccionados([]);
-                setNivelesSeleccionados([]);
-                setCupoSeleccionados([]);
-                setMentoraSeleccionadas([]);
-                setInstructoraSeleccionadas([]);
+                setRolesSeleccionados([]);
                 setMostrarFiltros(false);
               }}
             >
@@ -339,6 +313,16 @@ export default function TablaDetallesGrupos() {
             colaboradoresError={colaboradoresError}
           />
         )}
+        <button
+          className="btn-agregarPersonaGrupo"
+          onClick={() => {
+            fetchParticipantes();
+            setIsParticipantePopupOpen(true);
+          }}
+          disabled={participantesLoading}
+        >
+          {participantesLoading ? "Cargando participantes..." : "Agregar participante"}
+        </button>
         
         <button
           className={mentora.length > 0 ? "btn-eliminarMentora" : "btn-agregarPersonaGrupo"}
@@ -374,16 +358,7 @@ export default function TablaDetallesGrupos() {
           />
         )}
 
-        <button
-          className="btn-agregarPersonaGrupo"
-          onClick={() => {
-            fetchParticipantes();
-            setIsParticipantePopupOpen(true);
-          }}
-          disabled={participantesLoading}
-        >
-          {participantesLoading ? "Cargando participantes..." : "Agregar participante"}
-        </button>
+        
 
         {/* Pop-up de selección de participante */}
       {isParticipantePopupOpen && (

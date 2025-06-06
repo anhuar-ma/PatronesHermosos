@@ -297,7 +297,7 @@
   background-color: #9e629a;
 }
 .table__botonEliminarContacto{
-  background-color: #d32f2f;
+  background-color: var(--color-rojo);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -305,7 +305,7 @@
   cursor: pointer;
 }
 .table__botonEliminarContacto:hover {
-  background-color: darkred; 
+  background-color: var(--color-rojo_hover);
   transform: scale(1.05); 
 }
 
@@ -477,7 +477,7 @@
   transform: scale(1.05); /* pequeño “zoom” */
 }
 .btn-eliminarMentora {
-  background-color: #d32f2f;
+  background-color: #e75f50;
   color: white;
   border: none;
   padding: 0.9rem 1.6rem;
@@ -492,7 +492,7 @@
   font-weight: 800;
 }
 .btn-eliminarMentora:hover {
-  background-color: darkred; /* tono más oscuro */
+  background-color: #df0404; /* tono más oscuro */
   transform: scale(1.05); /* pequeño “zoom” */
 }
 

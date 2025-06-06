@@ -26,16 +26,13 @@ export default function RegistroParticipantes() {
     setValue, // Asegúrate de incluir setValue si lo usas
   } = useForm();
 
-  useEffect(() => {
+useEffect(() => {
   register("telefono_tutor", {
     required: "Este campo es obligatorio.",
     validate: (value) => {
       const digitsOnly = value.replace(/\D/g, ""); // Elimina cualquier cosa que no sea número
-      const digitsWithoutCountryCode = digitsOnly.replace(/^52/, ""); // Elimina lada mexicana (52)
-      return (
-        digitsWithoutCountryCode.length === 10 ||
-        "El número debe tener 10 dígitos (sin contar la lada)"
-      );
+      const match = digitsOnly.match(/^(\d{1,4})(\d{10})$/); // Lada de 1 a 4 dígitos y 10 dígitos restantes
+      return match ? true : "El número debe incluir una lada válida y 10 dígitos adicionales.";
     },
   });
 }, [register]);

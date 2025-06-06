@@ -22,7 +22,7 @@ const AgregarParticipantes = ({ onClose, onConfirm, participantes, participantes
             <tr>
               <th></th>
               <th>Nombre</th>
-              <th>Rol</th>
+              <th>Escolaridad</th>
               <th>Idioma</th>
             </tr>
           </thead>
