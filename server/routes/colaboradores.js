@@ -322,6 +322,116 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   }
 });
 
-router.post("/email/:id", authenticateToken, async (req, res) => {});
+router.post("/email/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { estado, razon } = req.body; // Recibe el estado desde el cuerpo de la solicitud
+
+  try {
+    // Obtén los datos del colaborador, la sede y la coordinadora desde la base de datos
+    const result = await pool.query(
+      `SELECT 
+        c.nombre AS nombre_colaborador, 
+        c.correo AS correo_colaborador, 
+        s.nombre AS nombre_sede,
+
+        CONCAT(i.nombre, ' ', i.apellido_paterno) AS nombre_completo_informante,
+        i.correo AS correo_informante,
+
+        CONCAT(coo.nombre, ' ', coo.apellido_paterno) AS nombre_completo_coordinadora,
+        coo.correo AS correo_coordinadora
+
+      FROM colaborador c
+      JOIN sede s 
+        ON c.id_sede = s.id_sede
+      LEFT JOIN LATERAL (
+        SELECT *
+        FROM informante inf
+        WHERE inf.id_sede = s.id_sede
+        ORDER BY random()
+        LIMIT 1
+      ) i ON true
+      JOIN coordinadora coo
+        ON s.id_coordinadora = coo.id_coordinadora
+      WHERE c.id_colaborador = $1;`,
+      [id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Colaborador no encontrado" });
+    }
+
+    const colaborador = result.rows[0];
+
+    const contactoNombre = colaborador.nombre_completo_informante?.trim()
+    ? colaborador.nombre_completo_informante
+    : colaborador.nombre_completo_coordinadora;
+
+    // Configura el contenido del correo según el estado
+    let subject;
+    let html;
+
+    if (estado === "Aceptado") {
+      subject = "¡Felicidades! Has sido aceptada en Patrones Hermosos";
+      html = `
+        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+          <h2 style="color: #D6336C;">¡Felicidades, ${colaborador.nombre_colaborador}!</h2>
+          <p>Te escribimos para informarte que has sido <strong>seleccionada</strong> para participar en el campamento <strong>Patrones Hermosos</strong>.</p>
+          <p>Has sido asignada a la sede: <strong style="color: #1D3557;">${colaborador.nombre_sede || "Sin sede asignada"}</strong></p>
+          <p>Si tienes alguna duda, te invitamos a ponerte en contacto con un miembro de nuestro equipo:</p>
+
+          <div style="background-color: #f9f9f9; padding: 10px 15px; border-left: 4px solid #D6336C; margin: 20px 0;">
+            <p style="margin: 0;"><strong>Nombre:</strong> ${contactoNombre}</p>
+            <p style="margin: 0;"><strong>Correo:</strong> ${colaborador.correo_informante || colaborador.correo_coordinadora}</p>
+          </div>
+
+          <p style="margin-top: 30px;">Atentamente,</p>
+          <p><strong>Equipo de Patrones Hermosos</strong></p>
+        </div>
+      `;
+    } else if (estado === "Rechazado") {
+      subject = "Notificación sobre tu solicitud en Patrones Hermosos";
+      html = `
+        <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+          <h2 style="color: #D6336C;">Gracias por tu interés, ${colaborador.nombre_colaborador}</h2>
+      
+          <p>Queremos agradecerte sinceramente por haberte postulado al campamento <strong>Patrones Hermosos</strong>.</p>
+      
+          <p>Después de revisar cuidadosamente todas las solicitudes, lamentamos informarte que en esta ocasión <strong>no fuiste seleccionada</strong> para participar.</p>
+
+          ${razon
+          ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
+          : ""
+        }
+      
+          <p>Sabemos que tienes mucho potencial, y esperamos que sigas desarrollando tus talentos. Nos encantaría volver a recibir tu solicitud en futuras ediciones del campamento.</p>
+      
+          <p>Si tienes alguna duda o comentario, no dudes en ponerte en contacto con nuestro equipo.</p>
+      
+          <p style="margin-top: 30px;">Con aprecio,</p>
+          <p><strong>Equipo de Patrones Hermosos</strong></p>
+        </div>
+      `;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Estado no válido. Debe ser 'Aceptado' o 'Rechazado'.",
+      });
+    }
+
+    // Envía el correo
+    await sendEmail(colaborador.correo_colaborador, subject, html);
+
+    res.json({
+      success: true,
+      message: `Correo enviado a ${colaborador.correo_colaborador}`,
+    });
+  } catch (error) {
+    console.error("Error al enviar el correo:", error);
+    res.status(500).json({
+      message: "Error al enviar el correo",
+      error: error.message,
+    });
+  }
+});
 
 export default router;
