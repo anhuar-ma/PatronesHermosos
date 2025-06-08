@@ -42,7 +42,7 @@ const dbConfig = {
   user: "postgres",
   database: "patroneshermosos",
   password: "/BX]#CN!s^xX+]'~*v>^3_K",
-  port: "15432",
+  port: "5432",
   ssl: {
     rejectUnauthorized: false,
   },
