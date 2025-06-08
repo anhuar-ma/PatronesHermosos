@@ -25,7 +25,7 @@ router.delete(
 
         -- Truncate all tables with CASCADE to handle dependencies
         TRUNCATE TABLE participante, colaborador, coordinadora, coordinadora_asociada, mentora,
-                    mentora_grupo, padre_o_tutor, grupo, sede CASCADE;
+                    mentora_grupo, padre_o_tutor, grupo, sede, informante CASCADE;
 
         -- Re-enable constraints
         EXECUTE 'SET CONSTRAINTS ALL IMMEDIATE';
