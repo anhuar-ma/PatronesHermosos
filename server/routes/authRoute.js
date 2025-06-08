@@ -93,7 +93,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Get current user
+// Get the rol of the current user 
 router.get("/me", async (req, res) => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
