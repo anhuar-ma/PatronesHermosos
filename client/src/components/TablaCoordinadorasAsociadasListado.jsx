@@ -39,8 +39,13 @@ export default function Tabla({
               <span>Email</span>
               {renderSortArrow("correo")}
             </div>
-          </th>  
-          <th>Sede</th>
+          </th>
+          <th onClick={() => onSort("nombre_sede")}>
+            <div className="tablas__thContainer">
+              <span>Sede</span>
+              {renderSortArrow("nombre_sede")}
+            </div>
+          </th>
           <th>Estado</th>
         </tr>
       </thead>

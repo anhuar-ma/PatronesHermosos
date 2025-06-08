@@ -5,8 +5,10 @@ import Tabla from "./TablaParticipantesListado";
 import LoadingCard from "./LoadingCard";
 import FiltroTabla from "./FiltroTabla";
 import axios from "axios";
+import useCurrentRol from "../hooks/useCurrentRol";
 
 export default function TablaParticipantes() {
+   const {rol} = useCurrentRol();
   const {
     participantes: participantesOriginales,
     loading,
@@ -26,13 +28,14 @@ export default function TablaParticipantes() {
   const [grupoAsignadoSeleccionado, setGrupoAsignadoSeleccionado] = useState(
     []
   );
+  const [sedeSeleccionada, setSedeSeleccionada] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
   const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
 
   // ✅ useMemo deben estar antes de cualquier return
-  const gruposDisponibles = useMemo(() => {
-    const grupos = participantes.map((p) => p.id_grupo);
-    return [...new Set(grupos)].sort();
+  const sedesDisponibles = useMemo(() => {
+    const sedes = participantes.map((p) => p.nombre_sede);
+    return [...new Set(sedes)].sort();
   }, [participantes]);
 
   const statusOptions = useMemo(() => {
@@ -64,11 +67,15 @@ export default function TablaParticipantes() {
     const coincideGrupoAsignado =
       grupoAsignadoSeleccionado.length === 0 ||
       grupoAsignadoSeleccionado.includes(estadoGrupo);
+    const coincideSede =
+      sedeSeleccionada.length === 0 ||
+      sedeSeleccionada.includes(p.nombre_sede);
 
     return (
       coincideBusqueda &&
       coincideEstado &&
-      coincideGrupoAsignado
+      coincideGrupoAsignado &&
+      coincideSede
     );
   });
 
@@ -191,6 +198,14 @@ export default function TablaParticipantes() {
               seleccionados={grupoAsignadoSeleccionado}
               setSeleccionados={setGrupoAsignadoSeleccionado}
             />
+            {rol === 0 && (
+              <FiltroTabla
+                titulo="Sede"
+                opciones={sedesDisponibles}
+                seleccionados={sedeSeleccionada}
+                setSeleccionados={setSedeSeleccionada}
+              />
+            )}
 
             <button
               className="tabla_boton-limpiar-filtros"

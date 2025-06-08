@@ -15,6 +15,15 @@ export default function Tabla({
   const navigate = useNavigate();
   const {rol} = useCurrentRol();
 
+  const formatPhoneNumber = (phone) => {
+  if (!phone) return "Sin número"; // Manejo de números vacíos
+  const cleaned = phone.replace(/\D/g, ""); // Elimina caracteres no numéricos
+
+  // Divide el número en partes: lada, resto del número
+   const match = cleaned.match(/^(\d{1,3})(\d{3})(\d{3})(\d{4})$/);
+  return match ? `+${match[1]} ${match[2]} ${match[3]} ${match[4]}` : phone;
+};
+
   const renderSortArrow = (field) => {
     if (sortField !== field) return <ArrowDownUp size={14} />;
     return sortOrder === "asc" ? (
@@ -55,7 +64,7 @@ export default function Tabla({
           <tr key={participante.id_participante}>
             <td>{participante.nombre_completo_participante}</td>
             <td>{participante.nombre_completo_tutor}</td>
-            <td>{participante.telefono_tutor}</td>
+            <td>{formatPhoneNumber(participante.telefono_tutor)}</td>
             {rol === 0 ? (
               <td>{participante.nombre_sede || "Sin asignar" }</td>
             ) : (

@@ -56,6 +56,14 @@ const KPICards = () => {
           value: stats.participantes_aceptadas_nacional || 0,
         },
         { label: "Mentoras a nivel nacional", value: stats.mentoras_nacional || 0 },
+             { label: "Sedes aceptadas", value: stats.sedes_aceptadas || 0 },
+        // { label: "Sedes activas", value: stats.sedes_activas || 0 }, 
+        {
+          label: "Colaboradores aceptados a nivel nacional",
+          value: stats.colaboradores_aceptados_nacional || 0,
+        },
+        { label: "Texto intermedio", value: "Distribución de colaboradores" }, // Texto intermedio
+
         {
           label: "Staff aceptado a nivel nacional",
           value: stats.staff_aceptados_nacional || 0,
@@ -68,22 +76,20 @@ const KPICards = () => {
           label: "Facilitadoras aceptadas a nivel nacional",
           value: stats.facilitadoras_aceptadas_nacional || 0,
         },
-        {
-          label: "Colaboradores aceptados a nivel nacional",
-          value: stats.colaboradores_aceptados_nacional || 0,
-        },
-        { label: "Sedes aceptadas", value: stats.sedes_aceptadas || 0 },
-        { label: "Sedes activas", value: stats.sedes_activas || 0 },
+       
+   
       ];
     } else if (rol === 1) {
       // Sede view - local statistics
       return [
         { label: "Alumnas aceptadas", value: stats.participantes_aceptadas || 0 },
         { label: "Mentoras", value: stats.mentoras || 0 },
+        { label: "Colaboradores aceptados", value: stats.colaboradores_aceptados || 0 },
+        { label: "Texto intermedio", value: "Distribución de colaboradores" }, // Texto intermedio
         { label: "Staff aceptado", value: stats.staff_aceptados || 0 },
         { label: "Instructoras aceptadas", value: stats.instructoras_aceptadas || 0 },
         { label: "Facilitadoras aceptadas", value: stats.facilitadoras_aceptadas || 0 },
-        { label: "Colaboradores aceptados", value: stats.colaboradores_aceptados || 0 },
+
       ];
     } else {
       // Default case when role is null or unknown
@@ -96,10 +102,20 @@ const KPICards = () => {
   return (
     <div className="adminDashboard__cards">
       {getKPIs().map((kpi, index) => (
-        <div key={index} className="adminDashboard__card">
-          <h3>{kpi.label}</h3>
-          <p>{kpi.value}</p>
-        </div>
+        kpi.label === "Texto intermedio" ? (
+          <div key={index} className="intermediate-text">
+            <p>{kpi.value}</p>
+          </div>
+        ) : (
+          <div 
+            key={index} 
+            className="adminDashboard__card" 
+            id={kpi.label === "Colaboradores aceptados" ? "colaboradores-aceptados" : undefined}
+          >
+            <h3>{kpi.label}</h3>
+            <p>{kpi.value}</p>
+          </div>
+        )
       ))}
     </div>
   );

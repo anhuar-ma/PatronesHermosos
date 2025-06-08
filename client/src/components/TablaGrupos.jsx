@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import {useMemo, useState, useRef, useEffect } from "react";
 import useGrupos from "../hooks/useGrupos"; // Hook personalizado para obtener datos de grupos
 import { SlidersHorizontal } from "lucide-react"; // Ícono para el botón de filtros
 import Tabla from "./TablaGruposListado"; // Componente de tabla donde se renderizan los grupos
@@ -46,7 +46,13 @@ export default function TablaGrupos() {
   const [cupoSeleccionados, setCupoSeleccionados] = useState([]);
   const [mentoraSeleccionadas, setMentoraSeleccionadas] = useState([]);
   const [instructoraSeleccionadas, setInstructoraSeleccionadas] = useState([]);
+  const [sedeSeleccionada, setSedeSeleccionada] = useState([]);
   const { rol } = useCurrentRol();
+
+    const sedesDisponibles = useMemo(() => {
+      const sedes = grupos.map((p) => p.nombre_sede);
+      return [...new Set(sedes)].sort();
+    }, [grupos]);
 
 
   /**
@@ -103,6 +109,9 @@ export default function TablaGrupos() {
     mentoraSeleccionadas.length === 0 ||
     mentoraSeleccionadas.includes(estadoMentora);
 
+  
+
+
   // Filtro de instructora
   const estadoInstructora =
     grupo.nombre_instructora && grupo.nombre_instructora.trim() !== ""
@@ -111,6 +120,10 @@ export default function TablaGrupos() {
   const coincideInstructora =
     instructoraSeleccionadas.length === 0 ||
     instructoraSeleccionadas.includes(estadoInstructora);
+
+    const coincideSede =
+      sedeSeleccionada.length === 0 ||
+      sedeSeleccionada.includes(grupo.nombre_sede);
 
 //       const estadoMentora =
 //     grupo.mentora.nombre === "***no asignada***"
@@ -135,7 +148,8 @@ export default function TablaGrupos() {
     coincideNivel &&
     coincideCupo &&
     coincideMentora &&
-    coincideInstructora
+    coincideInstructora &&
+    coincideSede
     //   &&
     //   coincideMentora &&
     //   coincideInstructora
@@ -241,6 +255,15 @@ export default function TablaGrupos() {
               seleccionados={instructoraSeleccionadas}
               setSeleccionados={setInstructoraSeleccionadas}
             />
+
+            {rol === 0 && (
+                          <FiltroTabla
+                            titulo="Sede"
+                            opciones={sedesDisponibles}
+                            seleccionados={sedeSeleccionada}
+                            setSeleccionados={setSedeSeleccionada}
+                          />
+                        )}
 
             {/* Botón para limpiar todos los filtros */}
             <button

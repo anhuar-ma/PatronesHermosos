@@ -8,6 +8,10 @@ export default function RegistroSedes() {
   const [fileName, setFileName] = useState("");
   const [fileError, setFileError] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [correoError, setCorreoError] = useState("");
+
+
   const [submitResult, setSubmitResult] = useState(null);
   const navigate = useNavigate();
 
@@ -19,8 +23,10 @@ export default function RegistroSedes() {
   } = useForm();
 
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     if (!fileName) {
       setFileError("No hay archivo seleccionado");
+      setIsSubmitting(false);
       return;
     }
 
@@ -67,30 +73,35 @@ export default function RegistroSedes() {
       setFileError("");
       navigate("/envioExitoso");
     } catch (error) {
-      window.alert("Error en el registro");
       console.error("Error submitting form:", error);
+
+      if (
+        error.response &&
+        error.response.data?.message === "Este correo ya esta registrado"
+      ) {
+        setCorreoError("Este correo ya está registrado");
+        return; // Evita que continue y muestre mensajes genéricos
+      }
+      
+      // Otros errores generales
       let errorMessage = "Error desconocido durante el registro.";
       if (error.response) {
         console.error("Server response data:", error.response.data);
-        console.error("Server response status:", error.response.status);
-        errorMessage = `Error del servidor: ${
-          error.response.data.message ||
-          error.response.statusText ||
-          "Error desconocido"
-        }`;
+        errorMessage = error.response.data.message || error.response.statusText;
       } else if (error.request) {
-        console.error("No response received:", error.request);
         errorMessage =
           "No se recibió respuesta del servidor. Verifique su conexión.";
       } else {
-        console.error("Error setting up request:", error.message);
         errorMessage = `Error al enviar la solicitud: ${error.message}`;
       }
+      
       setSubmitResult({
         success: false,
         message: errorMessage,
       });
       // Do not clear errors or show general success alert here
+    } finally {
+      setIsSubmitting(false);
     }
     // Removed general success alert and error clearing from here
   };
@@ -123,7 +134,6 @@ export default function RegistroSedes() {
             </p>
             <label>
               Nombre(s) de la coordinadora
-              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -139,7 +149,6 @@ export default function RegistroSedes() {
 
             <label>
               Apellido paterno de la coordinadora{" "}
-              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -159,6 +168,7 @@ export default function RegistroSedes() {
 
             <label>
               Apellido materno de la coordinadora
+              <span className="optional">(opcional)</span>
               <br />
               <input
                 className="registro__input"
@@ -168,23 +178,33 @@ export default function RegistroSedes() {
             </label>
 
             <label>
-              Correo <span className="registro__obligatorio">*</span>
+              Correo
               <br />
               <input
                 className={`registro__input ${
                   errors.correo_coordinadora ? "registro__input-error" : ""
                 }`}
-                {...register("correo_coordinadora", { required: true })}
+                {...register("correo_coordinadora", {
+                  required: "Este campo es obligatorio",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Correo electrónico inválido",
+                  },
+                })}
                 type="email"
               />
               {errors.correo_coordinadora && (
-                <p className="registro__error">Correo inválido o vacío</p>
+                <p className="registro__error">{errors.correo_coordinadora.message}</p>
               )}
+
+              {correoError && (
+                  <p className="registro__error">{correoError}</p>
+                )}
             </label>
 
             <div className="input-row">
               <label>
-                Contraseña <span className="registro__obligatorio">*</span>
+                Contraseña
                 <br />
                 <input
                   className="registro__input"
@@ -198,7 +218,6 @@ export default function RegistroSedes() {
               </label>
               <label>
                 Verificar contraseña{" "}
-                <span className="registro__obligatorio">*</span>
                 <br />
                 <input
                   className="registro__input"
@@ -228,7 +247,6 @@ export default function RegistroSedes() {
 
             <label>
               Nombre de Sede (Con este nombre los alumnos seleccionarán la sede){" "}
-              <span className="registro__obligatorio">*</span>
               <input
                 id="nombre_sede"
                 className={`registro__input ${
@@ -244,7 +262,6 @@ export default function RegistroSedes() {
 
             <label>
               Convocatoria de la sede{" "}
-              <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -277,7 +294,7 @@ export default function RegistroSedes() {
               </div>
             )}
             <label>
-              Fecha de inicio <span className="registro__obligatorio">*</span>
+              Fecha de inicio
               <br />
               <select
                 className={`registro__select ${
@@ -298,11 +315,13 @@ export default function RegistroSedes() {
             </label>
 
             <div className="registro__contenedor__botonSubmit">
-              <input
+              <button
                 type="submit"
                 className="registro__botonMorado"
-                value="Enviar Registro"
-              />
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Enviando..." : "Enviar Registro"}
+              </button>
             </div>
           </form>
         </div>
