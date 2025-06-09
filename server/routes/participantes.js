@@ -610,7 +610,7 @@ router.post("/email/:id", authenticateToken, checkSedeAccess, async (req, res) =
           : ""
         }
       
-          <p>Sabemos que tienes mucho potencial, y esperamos que sigas desarrollando tus talentos. Nos encantaría volver a recibir tu solicitud en futuras ediciones del campamento.</p>
+          <p>Por favor <strong>vuelve a llenar el formulario</strong> para actualizar tu información y ser considerada en la siguiente revisión.</p>
       
           <p>Si tienes alguna duda o comentario, no dudes en ponerte en contacto con nuestro equipo.</p>
       
