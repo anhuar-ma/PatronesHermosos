@@ -70,7 +70,7 @@ const AdminDashboard = () => {
   const handleDeleteDatabase = async () => {
     // Confirm deletion with a warning message
     const confirmed = window.confirm(
-      "¡ADVERTENCIA! Esta acción eliminará TODOS los datos de la base de datos y no se puede deshacer. ¿Estás seguro que deseas continuar?"
+      "¡ADVERTENCIA! Esta acción eliminará TODOS los datos de la base de datos y no se puede deshacer. ¿Has descargado los documentos (permisos y convocatorias)? ¿Estás seguro que deseas continuar?"
     );
 
     if (!confirmed) return;
