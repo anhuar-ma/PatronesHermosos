@@ -422,7 +422,7 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
   try {
     // First get the coordinadora ID associated with this sede
     const sedeResult = await pool.query(
-      "SELECT id_coordinadora FROM sede WHERE id_sede = $1",
+      "SELECT id_coordinadora,convocatoria FROM sede WHERE id_sede = $1",
       [id],
     );
 

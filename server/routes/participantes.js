@@ -472,7 +472,7 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
   try {
     // First get the tutor ID associated with this participant
     const participanteResult = await pool.query(
-      "SELECT id_padre_o_tutor FROM participante WHERE id_participante = $1",
+      "SELECT id_padre_o_tutor, permiso_padre_tutor FROM participante WHERE id_participante = $1",
       [id],
     );
 
@@ -507,10 +507,6 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
       tutorId,
     ]);
 
-    //  delete the tutor
-    await pool.query("DELETE FROM padre_o_tutor WHERE id_padre_o_tutor = $1", [
-      tutorId,
-    ]);
 
     // Commit transaction
     await pool.query("COMMIT");
