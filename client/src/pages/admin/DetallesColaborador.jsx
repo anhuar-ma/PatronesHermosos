@@ -222,6 +222,22 @@ export default function DetalleColaborador() {
             ) : (
               <p className="info__colaborator">{colaborador.universidad}</p>
             )}
+
+          <h5 className="label__colaborator">Rol:</h5>
+            {editMode ? (
+              <select
+                className="registroEdicion__input"
+                value={editableData.rol || ""}
+                onChange={(e) => handleChange("rol", e.target.value)}
+              >
+                <option value="Instructora">Instructora</option>
+                <option value="Facilitadora">Facilitadora</option>
+                <option value="Staff">Staff</option>
+
+              </select>
+            ) : (
+              <p className="info__colaborator">{colaborador.rol}</p>
+            )}
           </div>
         </div>
 
