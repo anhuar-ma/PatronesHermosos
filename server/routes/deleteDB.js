@@ -18,6 +18,47 @@ router.delete(
   requireAdmin,
   async (req, res) => {
     try {
+      // Delete all files but keep directories
+      const uploadsDir = path.join(process.cwd(), 'uploads');
+      const convocatoriasDir = path.join(uploadsDir, 'convocatorias');
+      const participantesDir = path.join(uploadsDir, 'participantes');
+
+      // Function to delete all files in a directory
+      const deleteFilesInDirectory = (dir) => {
+        if (fs.existsSync(dir)) {
+          const files = fs.readdirSync(dir);
+          for (const file of files) {
+            const filePath = path.join(dir, file);
+            const stat = fs.statSync(filePath);
+            if (stat.isFile()) {
+              fs.unlinkSync(filePath);
+              // console.log(`Deleted file: ${filePath}`);
+            }
+          }
+        }
+      };
+
+      // Delete files in uploads/convocatorias
+      deleteFilesInDirectory(convocatoriasDir);
+
+      // Delete files in uploads/participantes
+      deleteFilesInDirectory(participantesDir);
+
+      // Delete files directly in uploads (but not directories)
+      if (fs.existsSync(uploadsDir)) {
+        const files = fs.readdirSync(uploadsDir);
+        for (const file of files) {
+          const filePath = path.join(uploadsDir, file);
+          const stat = fs.statSync(filePath);
+          if (stat.isFile()) {
+            fs.unlinkSync(filePath);
+            // console.log(`Deleted file: ${filePath}`);
+          }
+        }
+      }
+
+      // Truncate database tables
+
       const query = `
       DO $$
       BEGIN
