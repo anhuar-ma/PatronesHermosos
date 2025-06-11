@@ -194,6 +194,33 @@ function createZipArchive(outputDir, zipPath, res) {
   });
 }
 
+// Helper function to format a date range (starting date + 4 days)
+function formatDateRange(startDateStr) {
+  if (!startDateStr) return "";
+
+  // Create date objects for start and end dates
+  const startDate = new Date(startDateStr);
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 4); // Add 4 days
+
+  // Format start date
+  const startFormatted = startDate.toLocaleDateString('es-MX', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  // Format end date
+  const endFormatted = endDate.toLocaleDateString('es-MX', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  // Return the date range string
+  return `${startFormatted} al ${endFormatted}`;
+}
+
 // Unified diploma generation endpoint - automatically handles both roles
 router.get(
   "/generate",
@@ -245,12 +272,7 @@ router.get(
           let formattedDate = "";
           if (sede.fecha_inicio) {
             // Convert to a nice readable format
-            const date = new Date(sede.fecha_inicio);
-            formattedDate = date.toLocaleDateString('es-MX', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            });
+            formattedDate = formatDateRange(sede.fecha_inicio);
           }
 
           // Generate diplomas for coordinadoras
@@ -366,12 +388,7 @@ router.get(
         // Format the fecha_inicio
         let formattedDate = "";
         if (sedeResult.rows[0]?.fecha_inicio) {
-          const date = new Date(sedeResult.rows[0].fecha_inicio);
-          formattedDate = date.toLocaleDateString('es-MX', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
+          formattedDate = formatDateRange(sedeResult.rows[0].fecha_inicio);
         }
 
         // Get participantes for this sede with accepted status

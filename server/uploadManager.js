@@ -37,7 +37,7 @@ export const storage = multer.diskStorage({
     if (file.fieldname === "convocatoria") {
       cb(null, convocatoriasDir);
     } else if (file.fieldname === "archivo_tutor") {
-      // Assuming 'foto_identificacion' is for participantes
+      // Assuming is for participantes
       cb(null, participantesDir);
     } else {
       // Default or error handling if fieldname is unexpected
