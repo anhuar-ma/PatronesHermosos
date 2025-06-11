@@ -105,7 +105,7 @@ export default function RegistroMentoras() {
             </label>
 
             <label>
-              Apellido materno de la mentora
+              Apellido materno de la mentora <span className="optional">(opcional)</span>
               <br />
               <input
                 className="registro__input"

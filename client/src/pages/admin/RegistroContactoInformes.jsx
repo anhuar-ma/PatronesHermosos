@@ -104,7 +104,7 @@ export default function RegistroContactoInformes() {
             </label>
 
             <label>
-              Apellido materno del contacto
+              Apellido materno del contacto <span className="optional">(opcional)</span>
               <br />
               <input
                 className="registro__input"

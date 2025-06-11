@@ -99,7 +99,7 @@ export default function RegistroSedes() {
             </label>
 
             <label>
-              Apellido materno de la coordinadora asociada
+              Apellido materno de la coordinadora asociada <span className="optional">(opcional)</span>
               <br />
               <input
                 className="registro__input"

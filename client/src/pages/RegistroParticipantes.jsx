@@ -137,7 +137,7 @@ useEffect(() => {
               Llenar con datos como aparecen en un documento oficial.
             </p>
             <label>
-              Nombre(s) de la alumna{" "}
+              Nombre(s) de la alumna{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -152,7 +152,7 @@ useEffect(() => {
               )}
             </label>
             <label>
-              Apellido paterno de la alumna{" "}
+              Apellido paterno de la alumna{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -181,7 +181,7 @@ useEffect(() => {
               )}
             </label>
             <label>
-              Correo
+              Correo <span className="registro__obligatorio">*</span>
               <br />
               {/* <input type="email" {...register("correo_alumna", { required: true })} />
                             {errors.correo_alumna && <p className="error">Este campo es obligatorio</p>} */}
@@ -205,7 +205,7 @@ useEffect(() => {
               )}
             </label>
             <label>
-              Edad
+              Edad <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -227,7 +227,7 @@ useEffect(() => {
               )}
             </label>
             <label>
-              Escuela
+              Escuela <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -242,7 +242,7 @@ useEffect(() => {
               )}
             </label>
             <label>
-              Sede deseada para registro
+              Sede deseada para registro <span className="registro__obligatorio">*</span>
               <br />
               <select
                 className={`registro__select${
@@ -265,7 +265,7 @@ useEffect(() => {
             </label>
             <div className="registro__container__2inputsInRow">
               <label>
-                Escolaridad
+                Escolaridad <span className="registro__obligatorio">*</span>
                 <br />
                 <select
                   className={`registro__select ${
@@ -285,7 +285,7 @@ useEffect(() => {
               </label>
 
               <label>
-                Idioma de preferencia{" "}
+                Idioma de preferencia{" "} <span className="registro__obligatorio">*</span>
                 <br />
                 <select
                   className={`registro__select ${
@@ -311,7 +311,7 @@ useEffect(() => {
             </p>
 
             <label>
-              Nombre(s) del tutor{" "}
+              Nombre(s) del tutor{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -326,7 +326,7 @@ useEffect(() => {
               )}
             </label>
             <label>
-              Apellido paterno del tutor{" "}
+              Apellido paterno del tutor{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -357,7 +357,7 @@ useEffect(() => {
               )}
             </label>
             <label>
-              Correo del tutor
+              Correo del tutor <span className="registro__obligatorio">*</span>
               <br />
               {/* <input type="email" {...register("correo_tutor", { required: true })} />
                             {errors.correo_tutor && <p className="error">Este campo es obligatorio</p>} */}
@@ -379,7 +379,7 @@ useEffect(() => {
               )}
             </label>
             <label>
-              Teléfono del tutor{" "}
+              Teléfono del tutor{" "} <span className="registro__obligatorio">*</span>
               <br />
              <PhoneInput
                 country={"mx"}
@@ -394,7 +394,7 @@ useEffect(() => {
               )}
             </label>
             <label>
-              Permiso Firmado
+              Permiso Firmado <span className="registro__obligatorio">*</span>
               <br />
               <input
                 type="file"

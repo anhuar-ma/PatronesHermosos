@@ -133,7 +133,7 @@ export default function RegistroSedes() {
               Llenar con datos como aparecen en un documento oficial.
             </p>
             <label>
-              Nombre(s) de la coordinadora
+              Nombre(s) de la coordinadora <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -148,7 +148,7 @@ export default function RegistroSedes() {
             </label>
 
             <label>
-              Apellido paterno de la coordinadora{" "}
+              Apellido paterno de la coordinadora{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -178,7 +178,7 @@ export default function RegistroSedes() {
             </label>
 
             <label>
-              Correo
+              Correo <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -204,7 +204,7 @@ export default function RegistroSedes() {
 
             <div className="input-row">
               <label>
-                Contraseña
+                Contraseña <span className="registro__obligatorio">*</span>
                 <br />
                 <input
                   className="registro__input"
@@ -217,7 +217,7 @@ export default function RegistroSedes() {
                 )}
               </label>
               <label>
-                Verificar contraseña{" "}
+                Verificar contraseña{" "} <span className="registro__obligatorio">*</span>
                 <br />
                 <input
                   className="registro__input"
@@ -246,7 +246,7 @@ export default function RegistroSedes() {
             </p>
 
             <label>
-              Nombre de Sede (Con este nombre los alumnos seleccionarán la sede){" "}
+              Nombre de Sede (Con este nombre los alumnos seleccionarán la sede){" "} <span className="registro__obligatorio">*</span>
               <input
                 id="nombre_sede"
                 className={`registro__input ${
@@ -261,7 +261,7 @@ export default function RegistroSedes() {
             </label>
 
             <label>
-              Convocatoria de la sede{" "}
+              Convocatoria de la sede{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
                 className={`registro__input ${
@@ -294,7 +294,7 @@ export default function RegistroSedes() {
               </div>
             )}
             <label>
-              Fecha de inicio
+              Fecha de inicio <span className="registro__obligatorio">*</span>
               <br />
               <select
                 className={`registro__select ${
