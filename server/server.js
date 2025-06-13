@@ -56,7 +56,7 @@ const localConfig = {
 
 const publicConfig = {
   ...dbConfig,
-  host: "187.212.7.116", // Your public IP
+  host: "189.190.0.55", // Your public IP
 };
 
 // Function to check if we can reach the local server

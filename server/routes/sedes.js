@@ -76,9 +76,9 @@ router.post("/", upload.single("convocatoria"), async (req, res) => {
       data: result.rows[0],
       file: req.file
         ? {
-          filename: req.file.filename,
-          path: convocatoria,
-        }
+            filename: req.file.filename,
+            path: convocatoria,
+          }
         : null,
     });
   } catch (error) {
@@ -101,15 +101,17 @@ router.post("/", upload.single("convocatoria"), async (req, res) => {
 });
 
 // Get sedes and their respective coordinadoras
-router.get("/", authenticateToken, checkSedeAccess, requireAdmin, async (req, res) => {
-  try {
-
-
-
-    //cambiar a simplemente coreo
-    if (req.user.rol === 0) {
-      const result = await pool.query(
-        `SELECT
+router.get(
+  "/",
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      //cambiar a simplemente coreo
+      if (req.user.rol === 0) {
+        const result = await pool.query(
+          `SELECT
           CONCAT(coordinadora.nombre, ' ', coordinadora.apellido_paterno, ' ', coordinadora.apellido_materno) AS nombre_completo_coordinadora,
           coordinadora.correo,
           sede.id_sede,
@@ -124,42 +126,44 @@ router.get("/", authenticateToken, checkSedeAccess, requireAdmin, async (req, re
       ON
           coordinadora.id_coordinadora = sede.id_coordinadora AND coordinadora.rol = 1;
       `,
-      );
+        );
 
-      res.status(200).json({
-        success: true,
-        data: result.rows,
-        message: "Mostrado Sedes y coordinadoras correcto",
-      });
-    } else {
-      return res.status(403).json({
+        res.status(200).json({
+          success: true,
+          data: result.rows,
+          message: "Mostrado Sedes y coordinadoras correcto",
+        });
+      } else {
+        return res.status(403).json({
+          success: false,
+          message: "Insufficient permissions",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching colaboradores:", error);
+
+      // Check if error is from JWT verification
+      if (error.name === "JsonWebTokenError") {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid token",
+        });
+      }
+
+      res.status(500).json({
         success: false,
-        message: "Insufficient permissions",
+        message: "Error al obtener los datos",
+        error: error.message,
       });
     }
-  } catch (error) {
-    console.error("Error fetching colaboradores:", error);
-
-    // Check if error is from JWT verification
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
-    }
-
-    res.status(500).json({
-      success: false,
-      message: "Error al obtener los datos",
-      error: error.message,
-    });
-  }
-});
+  },
+);
 
 router.get(
   "/download/:id",
   authenticateToken,
-  checkSedeAccess, requireAdmin,
+  checkSedeAccess,
+  requireAdmin,
   async (req, res) => {
     try {
       const { id } = req.params;
@@ -218,14 +222,12 @@ router.get(
       //   }
       // });
 
-      // Use sendFile 
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'inline; filename=permiso.pdf');
+      // Use sendFile
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", "inline; filename=permiso.pdf");
 
       // Send the file for viewing
       res.sendFile(filePath);
-
-
     } catch (error) {
       console.error("Error downloading file:", error);
       res.status(500).json({
@@ -258,14 +260,19 @@ router.get("/nombres", async (req, res) => {
 });
 
 // vista detallada sede y coordinadora
-router.get("/:id", authenticateToken, checkSedeAccess, requireAdmin, async (req, res) => {
-  const { id } = req.params;
-  try {
-    // Verify and decode the token
-    //cambiar a simplemente coreo
-    if (req.user.rol === 0) {
-      const result = await pool.query(
-        `
+router.get(
+  "/:id",
+  authenticateToken,
+  checkSedeAccess,
+  requireAdmin,
+  async (req, res) => {
+    const { id } = req.params;
+    try {
+      // Verify and decode the token
+      //cambiar a simplemente coreo
+      if (req.user.rol === 0) {
+        const result = await pool.query(
+          `
 SELECT coordinadora.id_coordinadora,
        coordinadora.nombre,
        coordinadora.apellido_paterno,
@@ -284,38 +291,39 @@ FROM coordinadora
 WHERE coordinadora.rol = 1
   AND sede.id_sede = $1
       `,
-        [id],
-      );
+          [id],
+        );
 
-      res.status(200).json({
-        success: true,
-        data: result.rows,
-        message: "Mostrado Sedes y coordinadoras correcto",
-      });
-    } else {
-      return res.status(403).json({
+        res.status(200).json({
+          success: true,
+          data: result.rows,
+          message: "Mostrado Sedes y coordinadoras correcto",
+        });
+      } else {
+        return res.status(403).json({
+          success: false,
+          message: "Insufficient permissions",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching colaboradores:", error);
+
+      // Check if error is from JWT verification
+      if (error.name === "JsonWebTokenError") {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid token",
+        });
+      }
+
+      res.status(500).json({
         success: false,
-        message: "Insufficient permissions",
+        message: "Error al obtener los datos",
+        error: error.message,
       });
     }
-  } catch (error) {
-    console.error("Error fetching colaboradores:", error);
-
-    // Check if error is from JWT verification
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
-    }
-
-    res.status(500).json({
-      success: false,
-      message: "Error al obtener los datos",
-      error: error.message,
-    });
-  }
-});
+  },
+);
 
 router.put(
   "/:id",
@@ -447,22 +455,6 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
     // Begin transaction
     await pool.query("BEGIN");
 
-    // Delete mentoras
-    await pool.query("DELETE FROM mentora WHERE id_sede = $1", [id]);
-
-    // Delete colaboradores
-    await pool.query("DELETE FROM colaborador WHERE id_sede = $1", [id]);
-
-    //Remove group assignments first - mentora_grupo relationships
-    await pool.query(
-      `DELETE FROM mentora_grupo
-       WHERE id_grupo IN (SELECT id_grupo FROM grupo WHERE id_sede = $1)`,
-      [id],
-    );
-
-    //Delete grupos from this sede
-    await pool.query("DELETE FROM grupo WHERE id_sede = $1", [id]);
-
     //Delete participantes and their tutors
     // First get all tutor IDs
     const tutoresResult = await pool.query(
@@ -481,6 +473,25 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
         [tutorIds],
       );
     }
+
+    //Remove group assignments first - mentora_grupo relationships
+    await pool.query(
+      `DELETE FROM mentora_grupo
+       WHERE id_grupo IN (SELECT id_grupo FROM grupo WHERE id_sede = $1)`,
+      [id],
+    );
+
+    // Delete mentoras
+    await pool.query("DELETE FROM mentora WHERE id_sede = $1", [id]);
+
+    // Delete colaboradores
+    await pool.query("DELETE FROM colaborador WHERE id_sede = $1", [id]);
+
+    //Delete grupos from this sede
+    await pool.query("DELETE FROM grupo WHERE id_sede = $1", [id]);
+
+    //Delete informantes from this sede
+    await pool.query("DELETE FROM informante WHERE id_sede = $1", [id]);
 
     //Delete coordinadoras_asociadas
     await pool.query("DELETE FROM coordinadora_asociada WHERE id_sede = $1", [
@@ -573,10 +584,7 @@ router.post("/email/:id", authenticateToken, requireAdmin, async (req, res) => {
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2c2c2c; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #ddd; border-radius: 12px; background-color: #fafafa; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
           <h2 style="color: #D6336C;">Estimada, ${sede.nombre_completo_coordinadora}</h2>
           <p>Te informamos que la sede <strong>${sede.nombre_sede}</strong> fue rechazada.</p>
-          ${razon
-          ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>`
-          : ""
-        }
+          ${razon ? `<p><strong>Motivo del rechazo:</strong> ${razon}</p>` : ""}
           <p>Por favor verifica la información del formulario y vuelve a intentarlo</p>
           <p>Saludos,</p>
           <p>Equipo de Patrones Hermosos</p>
