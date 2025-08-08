@@ -1,4 +1,5 @@
 # Patrones Hermosos - Administrative Platform
+<img width="1887" height="939" alt="image" src="https://github.com/user-attachments/assets/3e2ef8e8-e061-4d61-b168-67a45209d78a" />
 
 A comprehensive web application for managing the Patrones Hermosos educational program, providing tools for coordinators to manage participants, mentors, collaborators, and program logistics.
 
