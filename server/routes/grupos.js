@@ -5,9 +5,6 @@ import {
   requireAdmin,
   checkSedeAccess,
 } from "../middleware/auth.js";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/jwtConfig.js";
-import { MethodNotImplementedError } from "pdf-lib";
 
 const router = express.Router();
 
@@ -380,8 +377,6 @@ router.put(
         "SELECT id_sede FROM grupo WHERE id_grupo = $1",
         [id],
       );
-
-      console.log("ROOOL", rol);
 
       if (groupCheck.rows.length === 0) {
         return res.status(404).json({

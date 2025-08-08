@@ -44,8 +44,6 @@ const KPICards = () => {
   if (error) return <div className="error">{error}</div>;
   if (!stats) return <div className="no-data">No hay datos disponibles</div>;
 
-  console.log("Current Rol", rol);
-
   // Define KPIs based on role and map to API response
   const getKPIs = () => {
     if (rol === 0) {
@@ -56,7 +54,7 @@ const KPICards = () => {
           value: stats.participantes_aceptadas_nacional || 0,
         },
         { label: "Mentoras a nivel nacional", value: stats.mentoras_nacional || 0 },
-             { label: "Sedes aceptadas", value: stats.sedes_aceptadas || 0 },
+        { label: "Sedes aceptadas", value: stats.sedes_aceptadas || 0 },
         // { label: "Sedes activas", value: stats.sedes_activas || 0 }, 
         {
           label: "Colaboradores aceptados a nivel nacional",
@@ -76,8 +74,8 @@ const KPICards = () => {
           label: "Facilitadoras aceptadas a nivel nacional",
           value: stats.facilitadoras_aceptadas_nacional || 0,
         },
-       
-   
+
+
       ];
     } else if (rol === 1) {
       // Sede view - local statistics
@@ -107,9 +105,9 @@ const KPICards = () => {
             <p>{kpi.value}</p>
           </div>
         ) : (
-          <div 
-            key={index} 
-            className="adminDashboard__card" 
+          <div
+            key={index}
+            className="adminDashboard__card"
             id={kpi.label === "Colaboradores aceptados" ? "colaboradores-aceptados" : undefined}
           >
             <h3>{kpi.label}</h3>

@@ -65,8 +65,6 @@ export default function RegistroSedes() {
         message: "¡Registro exitoso! La sede ha sido registrada correctamente.",
       });
       // alert("Formulario enviado correctamente ✅"); // Moved success alert here
-      console.log("Server success response:", response.data);
-      console.log("Submitted data:", data); // Log data from react-hook-form
 
       // Clear errors only on success
       setError("");
@@ -82,7 +80,7 @@ export default function RegistroSedes() {
         setCorreoError("Este correo ya está registrado");
         return; // Evita que continue y muestre mensajes genéricos
       }
-      
+
       // Otros errores generales
       let errorMessage = "Error desconocido durante el registro.";
       if (error.response) {
@@ -94,7 +92,7 @@ export default function RegistroSedes() {
       } else {
         errorMessage = `Error al enviar la solicitud: ${error.message}`;
       }
-      
+
       setSubmitResult({
         success: false,
         message: errorMessage,
@@ -136,9 +134,8 @@ export default function RegistroSedes() {
               Nombre(s) de la coordinadora <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.nombre_coordinadora ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.nombre_coordinadora ? "registro__input-error" : ""
+                  }`}
                 {...register("nombre_coordinadora", { required: true })}
                 type="text"
               />
@@ -151,11 +148,10 @@ export default function RegistroSedes() {
               Apellido paterno de la coordinadora{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.apellido_paterno_coordinadora
+                className={`registro__input ${errors.apellido_paterno_coordinadora
                     ? "registro__input-error"
                     : ""
-                }`}
+                  }`}
                 {...register("apellido_paterno_coordinadora", {
                   required: true,
                 })}
@@ -181,9 +177,8 @@ export default function RegistroSedes() {
               Correo <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.correo_coordinadora ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.correo_coordinadora ? "registro__input-error" : ""
+                  }`}
                 {...register("correo_coordinadora", {
                   required: "Este campo es obligatorio",
                   pattern: {
@@ -198,8 +193,8 @@ export default function RegistroSedes() {
               )}
 
               {correoError && (
-                  <p className="registro__error">{correoError}</p>
-                )}
+                <p className="registro__error">{correoError}</p>
+              )}
             </label>
 
             <div className="input-row">
@@ -249,9 +244,8 @@ export default function RegistroSedes() {
               Nombre de Sede (Con este nombre los alumnos seleccionarán la sede){" "} <span className="registro__obligatorio">*</span>
               <input
                 id="nombre_sede"
-                className={`registro__input ${
-                  errors.nombre_sede ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.nombre_sede ? "registro__input-error" : ""
+                  }`}
                 {...register("nombre_sede", { required: true })}
                 type="text"
               />
@@ -264,9 +258,8 @@ export default function RegistroSedes() {
               Convocatoria de la sede{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.correo_coordinadora ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.correo_coordinadora ? "registro__input-error" : ""
+                  }`}
                 type="file"
                 name="convocatoria"
                 id="convocatoria"
@@ -297,9 +290,8 @@ export default function RegistroSedes() {
               Fecha de inicio <span className="registro__obligatorio">*</span>
               <br />
               <select
-                className={`registro__select ${
-                  errors.escolaridad ? "registro__select-error" : ""
-                }`}
+                className={`registro__select ${errors.escolaridad ? "registro__select-error" : ""
+                  }`}
                 {...register("fecha_inicio", { required: true })}
               >
                 <option value="">Seleccione una fecha</option>

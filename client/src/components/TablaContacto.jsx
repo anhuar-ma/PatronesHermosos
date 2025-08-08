@@ -9,13 +9,13 @@ import useCurrentRol from "../hooks/useCurrentRol";
 
 
 export default function TablaInformantes() {
-    const { informantes: informantesOriginales, loading, error } = useInformantes();
-    // console.log(informantesOriginales);
-    const [informantes, setInformantes] = useState([]);
-  
-    useEffect(() => {
-      setInformantes(informantesOriginales);
-    }, [informantesOriginales]);
+  const { informantes: informantesOriginales, loading, error } = useInformantes();
+  // console.log(informantesOriginales);
+  const [informantes, setInformantes] = useState([]);
+
+  useEffect(() => {
+    setInformantes(informantesOriginales);
+  }, [informantesOriginales]);
 
   const [busqueda, setBusqueda] = useState("");
   const containerRef = useRef(null);
@@ -24,7 +24,7 @@ export default function TablaInformantes() {
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [gruposSeleccionados, setGruposSeleccionados] = useState([]);
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
-  const {rol} = useCurrentRol();
+  const { rol } = useCurrentRol();
 
   const ordenarParticipantes = (data) => {
     if (!sortField) return data;
@@ -45,7 +45,6 @@ export default function TablaInformantes() {
   });
 
   const participantesOrdenados = ordenarParticipantes(informantesFiltradas);
-  console.log(participantesOrdenados);
 
   if (loading) return <LoadingCard mensaje="Cargando contactos..." />;
   if (error) return <LoadingCard mensaje={error} />;
@@ -57,19 +56,19 @@ export default function TablaInformantes() {
       setSortField(field);
       setSortOrder("asc");
     }
-  };  
+  };
 
   return (
     <div className="tabla__containerBlancoMentora">
       <div className="tabla__container__tituloBusqueda">
         <h2 className="tabla__titulo">Listado de contactos para informes</h2>
         <div className="tabla__contenedor_busquedaFiltros">
-           {rol === 0 ? <button
+          {rol === 0 ? <button
             className="tabla__botonFiltros"
             onClick={() => setMostrarFiltros(true)}
           >
             Filtrar <SlidersHorizontal size={16} />
-          </button> : null} 
+          </button> : null}
           <input
             type="text"
             placeholder="Buscar por nombre..."

@@ -1,39 +1,23 @@
 import express from "express";
 import { pool } from "../server.js";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/jwtConfig.js";
 import { sendEmail } from "../routes/emailservices.js";
 import {
   authenticateToken,
   requireAdmin,
   checkSedeAccess,
 } from "../middleware/auth.js";
-import multer from "multer";
 import path from "path";
 import fs from "fs";
 import {
-  uploadsDir,
-  participantesDir,
-  storage,
   upload,
 } from "../uploadManager.js";
 
 const router = express.Router();
 
-// // Import multer configuration from server.js or redefine it here
-// // For simplicity, I'll define a simple version here
-// const upload = multer({
-//   dest: path.join(process.cwd(), 'uploads/participantes'),
-//   fileFilter: (req, file, cb) => {
-//     if (file.mimetype !== 'application/pdf') {
-//       return cb(new Error('Solo se permiten archivos PDF'));
-//     }
-//     cb(null, true);
-//   },
-//   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
-// });
-
-// Handle participant registration
+/**
+ * Register a new participant with their tutor information
+ * @route POST /api/participantes
+ */
 router.post("/", upload.single("archivo_tutor"), async (req, res) => {
   try {
     const {
@@ -60,8 +44,6 @@ router.post("/", upload.single("archivo_tutor"), async (req, res) => {
       ? `/uploads/participantes/${req.file.filename}`
       : null;
 
-    console.log("ESTA ES LA SEDE:", sede_deseada);
-    console.log(req.body);
     const result = await pool.query(
       `CALL registro_participante_con_tutor(
        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
@@ -114,24 +96,12 @@ router.post("/", upload.single("archivo_tutor"), async (req, res) => {
 });
 
 // Get all participantes
-// router.get("/", async (req, res) => {
-//   try {
-//     const result = await pool.query("SELECT * FROM participante");
-//     res.status(200).json({
-//       success: true,
-//       data: result.rows,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching colaboradores:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Error al obtener los datos",
-//       error: error.message,
-//     });
-//   }
-// });
+// Currently commented out for security reasons - use specific endpoints instead
 
-// Add a route to download files
+/**
+ * Download a participant's permission file
+ * @route GET /api/participantes/download/:id
+ */
 router.get(
   "/download/:id",
   authenticateToken,
@@ -158,8 +128,6 @@ router.get(
           });
         }
       }
-
-      console.log(result);
 
       if (result.rows.length === 0 || !result.rows[0].permiso_padre_tutor) {
         return res.status(404).json({
@@ -312,8 +280,6 @@ router.get(
         [id],
       );
 
-      // console.log(result);
-
       if (result.rows.length === 0) {
         return res.status(404).json({ message: "Participante no encontrado" });
       }
@@ -427,7 +393,6 @@ router.put(
     const { id } = req.params;
     const { estado } = req.body;
 
-    console.log("aorestnaeirsteiarsei arosnteiarnsei");
     try {
       if (estado == "Aceptado") {
         const capacityResult = await pool.query(
@@ -435,7 +400,6 @@ router.put(
           [id],
         );
         const hasCapacity = capacityResult.rows[0];
-        console.log(hasCapacity.check_sede_capacity);
         if (hasCapacity === "false") {
           return res.status(400).json({
             success: false,
@@ -506,7 +470,6 @@ router.delete("/:id", authenticateToken, checkSedeAccess, async (req, res) => {
     await pool.query("DELETE FROM padre_o_tutor WHERE id_padre_o_tutor = $1", [
       tutorId,
     ]);
-
 
     // Commit transaction
     await pool.query("COMMIT");

@@ -11,7 +11,6 @@ const router = express.Router();
 router.post("/login", async (req, res) => {
   try {
     const { correo, contraseña } = req.body;
-    console.log(req.body);
 
     // Check if user exists
     const userResult = await pool.query(
@@ -20,8 +19,6 @@ router.post("/login", async (req, res) => {
     );
 
     const user = userResult.rows[0];
-    console.log(user);
-    console.log(correo);
 
     if (!user) {
       return res.status(401).json({
@@ -47,9 +44,6 @@ router.post("/login", async (req, res) => {
 
     const id_sede =
       sedeResult.rows.length > 0 ? sedeResult.rows[0].id_sede : null;
-
-    console.log("SEDE ", sedeResult.rows[0]);
-    console.log("ID SEDE", id_sede);
 
     if (
       sedeResult.rows.length > 0 &&

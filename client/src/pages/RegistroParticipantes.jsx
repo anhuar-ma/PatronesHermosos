@@ -16,7 +16,6 @@ export default function RegistroParticipantes() {
   const [submitResult, setSubmitResult] = useState(null);
   const { sedes, loading: sedesLoading, error: sedesError } = useSedesNames();
   const navigate = useNavigate();
-  console.log(sedes);
 
   const {
     register,
@@ -26,16 +25,16 @@ export default function RegistroParticipantes() {
     setValue, // Asegúrate de incluir setValue si lo usas
   } = useForm();
 
-useEffect(() => {
-  register("telefono_tutor", {
-    required: "Este campo es obligatorio.",
-    validate: (value) => {
-      const digitsOnly = value.replace(/\D/g, ""); // Elimina cualquier cosa que no sea número
-      const match = digitsOnly.match(/^(\d{1,4})(\d{10})$/); // Lada de 1 a 4 dígitos y 10 dígitos restantes
-      return match ? true : "El número debe incluir una lada válida y 10 dígitos adicionales.";
-    },
-  });
-}, [register]);
+  useEffect(() => {
+    register("telefono_tutor", {
+      required: "Este campo es obligatorio.",
+      validate: (value) => {
+        const digitsOnly = value.replace(/\D/g, ""); // Elimina cualquier cosa que no sea número
+        const match = digitsOnly.match(/^(\d{1,4})(\d{10})$/); // Lada de 1 a 4 dígitos y 10 dígitos restantes
+        return match ? true : "El número debe incluir una lada válida y 10 dígitos adicionales.";
+      },
+    });
+  }, [register]);
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -97,16 +96,14 @@ useEffect(() => {
       console.error("Error:", error);
       setSubmitResult({
         success: false,
-        message: `Error en el registro: ${
-          error.response?.data?.message || "No se pudo completar el registro"
-        }`,
+        message: `Error en el registro: ${error.response?.data?.message || "No se pudo completar el registro"
+          }`,
       });
     } finally {
       setIsSubmitting(false);
     }
 
     // alert("Formulario enviado correctamente ✅");
-    console.log(data);
   };
 
   const handleFileChange = (e) => {
@@ -140,9 +137,8 @@ useEffect(() => {
               Nombre(s) de la alumna{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.nombre_alumna ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.nombre_alumna ? "registro__input-error" : ""
+                  }`}
                 {...register("nombre_alumna", {
                   required: true,
                 })}
@@ -155,9 +151,8 @@ useEffect(() => {
               Apellido paterno de la alumna{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.apellido_paterno_alumna ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.apellido_paterno_alumna ? "registro__input-error" : ""
+                  }`}
                 {...register("apellido_paterno_alumna", {
                   required: true,
                 })}
@@ -186,9 +181,8 @@ useEffect(() => {
               {/* <input type="email" {...register("correo_alumna", { required: true })} />
                             {errors.correo_alumna && <p className="error">Este campo es obligatorio</p>} */}
               <input
-                className={`registro__input ${
-                  errors.correo_alumna ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.correo_alumna ? "registro__input-error" : ""
+                  }`}
                 type="email"
                 {...register("correo_alumna", {
                   required: "Este campo es obligatorio.",
@@ -208,9 +202,8 @@ useEffect(() => {
               Edad <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.edad_alumna ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.edad_alumna ? "registro__input-error" : ""
+                  }`}
                 type="number"
                 {...register("edad_alumna", {
                   required: "Este campo es obligatorio.",
@@ -230,9 +223,8 @@ useEffect(() => {
               Escuela <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.escuela ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.escuela ? "registro__input-error" : ""
+                  }`}
                 {...register("escuela", {
                   required: true,
                 })}
@@ -245,9 +237,8 @@ useEffect(() => {
               Sede deseada para registro <span className="registro__obligatorio">*</span>
               <br />
               <select
-                className={`registro__select${
-                  errors.sede_deseada ? " select-error" : ""
-                }`}
+                className={`registro__select${errors.sede_deseada ? " select-error" : ""
+                  }`}
                 {...register("sede_deseada", {
                   required: true,
                 })}
@@ -268,9 +259,8 @@ useEffect(() => {
                 Escolaridad <span className="registro__obligatorio">*</span>
                 <br />
                 <select
-                  className={`registro__select ${
-                    errors.escolaridad ? "select-error" : ""
-                  }`}
+                  className={`registro__select ${errors.escolaridad ? "select-error" : ""
+                    }`}
                   {...register("escolaridad", {
                     required: true,
                   })}
@@ -288,9 +278,8 @@ useEffect(() => {
                 Idioma de preferencia{" "} <span className="registro__obligatorio">*</span>
                 <br />
                 <select
-                  className={`registro__select ${
-                    errors.idioma ? "select-error" : ""
-                  }`}
+                  className={`registro__select ${errors.idioma ? "select-error" : ""
+                    }`}
                   {...register("idioma", {
                     required: true,
                   })}
@@ -314,9 +303,8 @@ useEffect(() => {
               Nombre(s) del tutor{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.nombre_tutor ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.nombre_tutor ? "registro__input-error" : ""
+                  }`}
                 {...register("nombre_tutor", {
                   required: true,
                 })}
@@ -329,9 +317,8 @@ useEffect(() => {
               Apellido paterno del tutor{" "} <span className="registro__obligatorio">*</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.apellido_paterno_tutor ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.apellido_paterno_tutor ? "registro__input-error" : ""
+                  }`}
                 {...register("apellido_paterno_tutor", {
                   required: true,
                 })}
@@ -345,9 +332,8 @@ useEffect(() => {
               <span className="optional">(opcional)</span>
               <br />
               <input
-                className={`registro__input ${
-                  errors.apellido_materno_tutor ? "registro__input-error" : ""
-                }`}
+                className={`registro__input ${errors.apellido_materno_tutor ? "registro__input-error" : ""
+                  }`}
                 {...register("apellido_materno_tutor", {
                   required: false,
                 })}
@@ -362,9 +348,8 @@ useEffect(() => {
               {/* <input type="email" {...register("correo_tutor", { required: true })} />
                             {errors.correo_tutor && <p className="error">Este campo es obligatorio</p>} */}
               <input
-                className={`registro__input ${
-                  errors.correo_tutor ? "input-error" : ""
-                }`}
+                className={`registro__input ${errors.correo_tutor ? "input-error" : ""
+                  }`}
                 type="email"
                 {...register("correo_tutor", {
                   required: "Este campo es obligatorio.",
@@ -381,7 +366,7 @@ useEffect(() => {
             <label>
               Teléfono del tutor{" "} <span className="registro__obligatorio">*</span>
               <br />
-             <PhoneInput
+              <PhoneInput
                 country={"mx"}
                 value={watch("telefono_tutor")}
                 onChange={(value) => setValue("telefono_tutor", value, { shouldValidate: true })}

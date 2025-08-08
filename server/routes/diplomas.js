@@ -19,9 +19,6 @@ async function generateDiploma(templatePath, outputPath, recipientName, sedeName
   try {
     // Read the template PDF
     const templateBytes = await fs.readFile(templatePath);
-    console.log("templateBytes", templateBytes);
-    console.log("templatePath", templatePath);
-
 
     // Load the PDF document
     const pdfDoc = await PDFDocument.load(templateBytes);
@@ -165,7 +162,6 @@ function createZipArchive(outputDir, zipPath, res) {
 
     // Listen for all archive data to be written
     output.on("close", () => {
-      console.log(`Archive created: ${archive.pointer()} total bytes`);
       resolve(zipPath);
     });
 

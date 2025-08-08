@@ -10,13 +10,13 @@ import axios from "axios";
 
 
 export default function TablaMentoras() {
-    const { mentoras: mentorasOriginales, loading, error } = useMentoras();
-    // console.log(mentorasOriginales);
-    const [mentoras, setMentoras] = useState([]);
-  
-    useEffect(() => {
-      setMentoras(mentorasOriginales);
-    }, [mentorasOriginales]);
+  const { mentoras: mentorasOriginales, loading, error } = useMentoras();
+  // console.log(mentorasOriginales);
+  const [mentoras, setMentoras] = useState([]);
+
+  useEffect(() => {
+    setMentoras(mentorasOriginales);
+  }, [mentorasOriginales]);
 
   const [busqueda, setBusqueda] = useState("");
   const containerRef = useRef(null);
@@ -27,12 +27,12 @@ export default function TablaMentoras() {
   const [estadosSeleccionados, setEstadosSeleccionados] = useState([]);
   const [sedeSeleccionada, setSedeSeleccionada] = useState([]);
   const estadosFijos = ["Pendiente", "Aceptado", "Rechazado"];
-    const sedesDisponibles = useMemo(() => {
+  const sedesDisponibles = useMemo(() => {
     const sedes = mentoras.map((m) => m.nombre_sede);
     return [...new Set(sedes)].sort();
   }, [mentoras]);
   // const currentRol = useCurrentRol();
-  const {rol} = useCurrentRol();
+  const { rol } = useCurrentRol();
 
   const ordenarParticipantes = (data) => {
     if (!sortField) return data;
@@ -56,14 +56,13 @@ export default function TablaMentoras() {
   const mentorasFiltradas = mentoras.filter((m) => {
     const nombreCompleto = `${m.nombre} ${m.apellido_paterno} ${m.apellido_materno || ""}`.toLowerCase();
     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
-     const coincideSede =
+    const coincideSede =
       sedeSeleccionada.length === 0 ||
       sedeSeleccionada.includes(m.nombre_sede);
     return coincideBusqueda && coincideSede;
   });
 
   const participantesOrdenados = ordenarParticipantes(mentorasFiltradas);
-  console.log(participantesOrdenados);
 
   if (loading) return <LoadingCard mensaje="Cargando mentoras..." />;
   if (error) return <LoadingCard mensaje={error} />;
@@ -75,16 +74,16 @@ export default function TablaMentoras() {
       setSortField(field);
       setSortOrder("asc");
     }
-  };  
+  };
 
   const handleStatusChange = async (id_mentora, nuevoEstado) => {
     try {
       // Actualiza el estado del colaborador
       const response = await axios.put(
         `/api/mentoras/estado/${id_mentora}`,
-        {estado: nuevoEstado,}
+        { estado: nuevoEstado, }
       );
-  
+
       if (response.data.success) {
         // Actualiza el estado localmente
         setMentoras((prev) =>
@@ -117,12 +116,12 @@ export default function TablaMentoras() {
       <div className="tabla__container__tituloBusqueda">
         <h2 className="tabla__titulo">Listado de mentoras</h2>
         <div className="tabla__contenedor_busquedaFiltros">
-           {rol === 0 ? <button
+          {rol === 0 ? <button
             className="tabla__botonFiltros"
             onClick={() => setMostrarFiltros(true)}
           >
             Filtrar <SlidersHorizontal size={16} />
-          </button> : null} 
+          </button> : null}
           <input
             type="text"
             placeholder="Buscar por nombre..."
@@ -143,11 +142,11 @@ export default function TablaMentoras() {
 
 
             <FiltroTabla
-                          titulo="Sede"
-                          opciones={sedesDisponibles}
-                          seleccionados={sedeSeleccionada}
-                          setSeleccionados={setSedeSeleccionada}
-                        />
+              titulo="Sede"
+              opciones={sedesDisponibles}
+              seleccionados={sedeSeleccionada}
+              setSeleccionados={setSedeSeleccionada}
+            />
 
 
             <button
@@ -174,12 +173,12 @@ export default function TablaMentoras() {
           statusOptions={estadosFijos}
           onStatusChange={handleStatusChange}
         />
-</div>
-    { rol === 1 && (
-      <Link to="/admin/registro-mentoras" className="btn-agregar">
-        Agregar mentora
-      </Link>
-    )}
+      </div>
+      {rol === 1 && (
+        <Link to="/admin/registro-mentoras" className="btn-agregar">
+          Agregar mentora
+        </Link>
+      )}
 
     </div>
   );

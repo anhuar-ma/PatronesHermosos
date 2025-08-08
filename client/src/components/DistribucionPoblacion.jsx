@@ -41,7 +41,6 @@ const DistribucionPoblacion = () => {
         });
 
         const data = response.data.data[0];
-        console.log("Data received:", data); // Debug log
 
         // Set data based on user role
         if (rol === 0) {
@@ -90,7 +89,7 @@ const DistribucionPoblacion = () => {
   if (rol === null || loading) {
     return <div className="loading">Cargando gráficos...</div>;
   }
-  
+
   if (error) return <div className="error">{error}</div>;
 
   // Only filter data after we've confirmed data has been fetched

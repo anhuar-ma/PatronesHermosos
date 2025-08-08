@@ -1,2 +1,26 @@
-.DS_Store
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables
 .env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+temp_*/
+diplomas_*.zip
+permisos_*.zip
+
+# Uploads directory but keep the directory itself
+uploads/*
+!uploads/.gitkeep
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-*

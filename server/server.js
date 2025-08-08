@@ -19,84 +19,48 @@ import dotenv from "dotenv";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import dns from "dns";
-import { promisify } from "util";
 
-dotenv.config({ path: "./config/.env" });
+dotenv.config();
 
 const app = express();
-const port = 8000;
+const PORT = process.env.PORT || 8000;
 
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://10.50.126.14:5173"],
+    origin: process.env.NODE_ENV === 'production'
+      ? ["https://your-production-domain.com"]
+      : ["http://localhost:5173", "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
 app.use(bodyParser.json());
 
-// Configuration for both connection options
+// Database configuration using environment variables
 const dbConfig = {
-  user: "postgres",
-  database: "patroneshermosos",
-  password: "/BX]#CN!s^xX+]'~*v>^3_K",
-  port: "5432",
-  ssl: {
+  user: process.env.DB_USER || "postgres",
+  host: process.env.DB_HOST || "localhost",
+  database: process.env.DB_NAME || "patroneshermosos",
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT || 5432,
+  ssl: process.env.NODE_ENV === 'production' ? {
     rejectUnauthorized: false,
-  },
+  } : false,
 };
 
-// Connection options
-const localConfig = {
-  ...dbConfig,
-  host: "192.168.1.68", // Replace with your local network IP
-};
+// Create database pool
+export const pool = new Pool(dbConfig);
 
-const publicConfig = {
-  ...dbConfig,
-  host: "189.190.0.55", // Your public IP
-};
-
-// Function to check if we can reach the local server
-const isLocalServerReachable = async () => {
-  const lookup = promisify(dns.lookup);
-
-  try {
-    // Try to establish a quick connection to test reachability
-    const testPool = new Pool({
-      ...localConfig,
-      connectionTimeoutMillis: 1000, // 1 second timeout
-    });
-
-    await testPool.query("SELECT 1");
-    await testPool.end();
-    return true;
-  } catch (error) {
-    console.log("Local server not reachable, using public IP");
-    return false;
+// Test database connection
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error('Error connecting to the database:', err.stack);
+  } else {
+    console.log('Connected to database successfully');
+    release();
   }
-};
-
-// Create and export the pool with dynamic configuration
-export const createDbPool = async () => {
-  const isLocalReachable = await isLocalServerReachable();
-  const config = isLocalReachable ? localConfig : publicConfig;
-
-  console.log(
-    `Using ${isLocalReachable ? "local" : "public"} database connection`,
-  );
-  return new Pool(config);
-};
-
-// Use an IIFE to initialize the pool
-let pool;
-(async () => {
-  pool = await createDbPool();
-})();
-
-export { pool };
+});
 
 // Add to server.js
 app.get("/test", (req, res) => {
@@ -122,6 +86,6 @@ app.use("/api/estadisticas", estadisticas);
 app.use("/api/deleteDB", deleteDB);
 
 // Listen on all interfaces
-app.listen(process.env.PORT || 8000, "0.0.0.0", () => {
-  console.log(`Server running on port ${process.env.PORT || 8000}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });

@@ -60,7 +60,7 @@ export default function TablaDetallesGrupos() {
   }, [grupos]);
 
   // Extrae los detalles del grupo
-  const { idioma = "N/A", nivel = "N/A"} = detalles || {};
+  const { idioma = "N/A", nivel = "N/A" } = detalles || {};
   //Extrae la mentora
   const nombreMentora = mentora ? mentora.nombre_completo : "Sin mentora asignada";
 
@@ -100,7 +100,7 @@ export default function TablaDetallesGrupos() {
   // Filtrado combinado
   const gruposFiltrados = gruposList.filter((grupo) => {
 
-     const nombreCompleto = grupo.nombre_completo.toLowerCase();
+    const nombreCompleto = grupo.nombre_completo.toLowerCase();
     const coincideBusqueda = nombreCompleto.includes(busqueda.toLowerCase());
 
     const coincideRol =
@@ -130,18 +130,18 @@ export default function TablaDetallesGrupos() {
   };
 
   //Manejo de eliminaciones en vista detallada
-    const handleDelete = async (idIntegrante, rol) => {
-      const result = await eliminarIntegrante(id, idIntegrante, rol);
-      if (result.success) {
-        // Actualizar la lista local después de eliminar
-        setGruposList((prev) => prev.filter((grupo) => grupo.id_integrante !== idIntegrante));
-        alert(result.message);
-      } else {
-        alert(result.message);
-      }
-    };
+  const handleDelete = async (idIntegrante, rol) => {
+    const result = await eliminarIntegrante(id, idIntegrante, rol);
+    if (result.success) {
+      // Actualizar la lista local después de eliminar
+      setGruposList((prev) => prev.filter((grupo) => grupo.id_integrante !== idIntegrante));
+      alert(result.message);
+    } else {
+      alert(result.message);
+    }
+  };
 
-      // Función para refrescar la tabla de grupos
+  // Función para refrescar la tabla de grupos
   const fetchGrupos = async () => {
     try {
       const response = await axios.get(`/api/grupos/${id}/listado`);
@@ -152,7 +152,7 @@ export default function TablaDetallesGrupos() {
   };
 
 
-      // Función para refrescar la informacion de las mentoras
+  // Función para refrescar la informacion de las mentoras
   const actualizacionMentoras = async () => {
     try {
       const response = await axios.get(`/api/grupos/${id}/mentoras`);
@@ -167,7 +167,7 @@ export default function TablaDetallesGrupos() {
       alert("No se pudo obtener el ID de la mentora.");
       return;
     }
-  
+
     try {
       const response = await axios.delete(`/api/grupos/${id}/mentoras/${idMentora}`);
       if (response.data.success) {
@@ -223,18 +223,18 @@ export default function TablaDetallesGrupos() {
           />
         </div>
       </div>
-       <div className="info__grupo">
-          <p className="info__grupo__item"><span className="info__grupo__label">Idioma: </span>{idioma}</p>
-          <p className="info__grupo__item"><span className="info__grupo__label">Nivel: </span>{nivel}</p>
-          <p className="info__grupo__item">
-            <span className="info__grupo__label">Mentora: </span>
-            {mentora && mentora.length > 0
-              ? mentora.map((m) => m.nombre_completo).join(", ")
-              : "Sin mentoras asignadas"}
-          </p>
-        </div>
+      <div className="info__grupo">
+        <p className="info__grupo__item"><span className="info__grupo__label">Idioma: </span>{idioma}</p>
+        <p className="info__grupo__item"><span className="info__grupo__label">Nivel: </span>{nivel}</p>
+        <p className="info__grupo__item">
+          <span className="info__grupo__label">Mentora: </span>
+          {mentora && mentora.length > 0
+            ? mentora.map((m) => m.nombre_completo).join(", ")
+            : "Sin mentoras asignadas"}
+        </p>
+      </div>
 
-      
+
       {/* Panel de filtros avanzados (modal) */}
       {mostrarFiltros && (
         <div
@@ -250,7 +250,7 @@ export default function TablaDetallesGrupos() {
             {/* Filtro por idioma */}
             <FiltroTabla
               titulo="Rol"
-              opciones={["Staff", "Instructora", "Facilitadora","Participante"]}
+              opciones={["Staff", "Instructora", "Facilitadora", "Participante"]}
               seleccionados={rolesSeleccionados}
               setSeleccionados={setRolesSeleccionados}
             />
@@ -280,8 +280,8 @@ export default function TablaDetallesGrupos() {
           onDelete={handleDelete}
         />
       </div>
-       <div className="tabla__container__botones">
-       <button
+      <div className="tabla__container__botones">
+        <button
           className="btn-agregarPersonaGrupo"
           onClick={() => {
             fetchColaboradores(); // Cargar colaboradores disponibles
@@ -303,8 +303,8 @@ export default function TablaDetallesGrupos() {
             colaboradores={
               gruposList.some((grupo) => grupo.rol === "Instructora")
                 ? colaboradores.filter((colaborador) =>
-                    ["Facilitadora", "Staff"].includes(colaborador.rol)
-                  )
+                  ["Facilitadora", "Staff"].includes(colaborador.rol)
+                )
                 : colaboradores.filter((colaborador) =>
                   ["Instructora", "Facilitadora", "Staff"].includes(colaborador.rol)
                 )
@@ -323,7 +323,7 @@ export default function TablaDetallesGrupos() {
         >
           {participantesLoading ? "Cargando participantes..." : "Agregar participante"}
         </button>
-        
+
         <button
           className={mentora.length > 0 ? "btn-eliminarMentora" : "btn-agregarPersonaGrupo"}
           onClick={async () => {
@@ -332,22 +332,22 @@ export default function TablaDetallesGrupos() {
                 "¿Estás seguro de que deseas eliminar a la mentora?"
               );
               if (confirmacion) {
-                console.log("Eliminando mentora con ID:", mentora[0]?.id_mentora);
                 await handleDeleteMentora(mentora[0]?.id_mentora); // Accede al primer elemento del arreglo
               }
             } else {
               fetchMentoras(); // Cargar mentoras disponibles
               setIsMentoraPopupOpen(true); // Abrir el pop-up de mentoras
-            }}
-        }
+            }
+          }
+          }
         >
-            {mentorasLoading ? "Cargando mentoras" : mentora.length > 0? "Eliminar mentora": "Asignar mentora"}
+          {mentorasLoading ? "Cargando mentoras" : mentora.length > 0 ? "Eliminar mentora" : "Asignar mentora"}
         </button>
         {/* Pop-up de selección de mentora */}
         {isMentoraPopupOpen && (
           <AgregarMentoras
             onClose={() => setIsMentoraPopupOpen(false)} // Cerrar el pop-up
-            onConfirm={async(idMentora) => {
+            onConfirm={async (idMentora) => {
               await assignMentora(idMentora, actualizacionMentoras); // Asignar mentora y refrescar la tabla
               setIsMentoraPopupOpen(false); // Cerrar el pop-up
               window.location.reload(); // Recargar toda la página
@@ -358,21 +358,21 @@ export default function TablaDetallesGrupos() {
           />
         )}
 
-        
+
 
         {/* Pop-up de selección de participante */}
-      {isParticipantePopupOpen && (
-        <AgregarParticipantes
-          onClose={() => setIsParticipantePopupOpen(false)} // Cerrar el pop-up
-          onConfirm={(id_participante) => {
-            assignParticipante(id_participante, fetchGrupos); // Asignar colaborador y refrescar grupos
-            setIsParticipantePopupOpen(false); // Cerrar el pop-up
-          }}
-          participantes={participantes}
-          participantesLoading={participantesLoading}
-          participantesError={participantesError}
-        />
-      )}
+        {isParticipantePopupOpen && (
+          <AgregarParticipantes
+            onClose={() => setIsParticipantePopupOpen(false)} // Cerrar el pop-up
+            onConfirm={(id_participante) => {
+              assignParticipante(id_participante, fetchGrupos); // Asignar colaborador y refrescar grupos
+              setIsParticipantePopupOpen(false); // Cerrar el pop-up
+            }}
+            participantes={participantes}
+            participantesLoading={participantesLoading}
+            participantesError={participantesError}
+          />
+        )}
 
         <button
           className="btn-eliminarMentora"

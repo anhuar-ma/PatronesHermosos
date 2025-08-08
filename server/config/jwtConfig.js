@@ -1,13 +1,12 @@
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
 
-// Get directory name in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Load environment variables
+dotenv.config();
 
-// Configure dotenv with the correct path
-dotenv.config({ path: path.join(__dirname, '.env') });
+export const JWT_SECRET = process.env.JWT_SECRET || "development-secret-please-change-in-production";
+export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
 
-export const JWT_SECRET = process.env.JWT_SECRET;
-export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN;
+// Validate required environment variables in production
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is required in production');
+}

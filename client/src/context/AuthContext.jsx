@@ -33,9 +33,7 @@ export function AuthProvider({ children }) {
 
     const remainingTime = getTokenRemainingTime();
     if (remainingTime > 0) {
-      console.log(`Token will expire in ${remainingTime / 1000} seconds`);
       tokenExpirationTimer.current = setTimeout(() => {
-        console.log("Token expired, logging out");
         handleLogout();
       }, remainingTime);
     }
@@ -103,7 +101,6 @@ export function AuthProvider({ children }) {
       });
 
       const { token, user } = response.data;
-      console.log("Login response:", response.data);
 
       // Save token to localStorage
       localStorage.setItem("token", token);
@@ -113,7 +110,6 @@ export function AuthProvider({ children }) {
 
       // Decode the token to ensure we get all user data
       const decoded = jwtDecode(token);
-      console.log("Decoded token:", decoded);
 
       // Update user state with consistent structure
       setUser({
@@ -139,8 +135,6 @@ export function AuthProvider({ children }) {
   // Check if user has a specific role
   const hasRole = (requiredRoles) => {
     if (!user) return false;
-    console.log(requiredRoles);
-    console.log(user.rol);
     return requiredRoles.includes(user.rol);
   };
 
