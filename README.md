@@ -16,6 +16,7 @@ A comprehensive web application for managing the Patrones Hermosos educational p
 ## 🚀 Tech Stack
 
 ### Frontend
+
 - **React 18** with Vite
 - **React Router** for navigation
 - **React Hook Form** for form management
@@ -24,6 +25,7 @@ A comprehensive web application for managing the Patrones Hermosos educational p
 - **JWT** for authentication
 
 ### Backend
+
 - **Node.js** with Express.js
 - **PostgreSQL** database
 - **JWT** authentication
@@ -40,6 +42,7 @@ A comprehensive web application for managing the Patrones Hermosos educational p
 ## ⚙️ Installation & Setup
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/yourusername/patronesHermososWebsite.git
 cd patronesHermososWebsite
@@ -75,7 +78,7 @@ EMAIL_PASS=your-email-password
 ### 3. Database Setup
 
 1. Create a PostgreSQL database named `patroneshermosos`
-2. Run the database schema and seed files (included in the `server/database.txt`)
+2. Run the database schema(included in the `schema.sql`)
 
 ### 4. Backend Setup
 
@@ -122,12 +125,14 @@ patronesHermososWebsite/
 ## 🔐 User Roles
 
 ### Admin (Role 0)
+
 - National-level coordinator
 - Can view all sedes and manage the entire system
 - Access to comprehensive analytics and reports
 - Can generate diplomas for all sedes
 
 ### Sede Coordinator (Role 1)
+
 - Regional coordinator for a specific sede
 - Manages participants, mentors, and collaborators for their sede
 - Can generate diplomas for their sede participants
@@ -136,24 +141,28 @@ patronesHermososWebsite/
 ## 📊 Key Features Explained
 
 ### Participant Management
+
 - Online registration with file upload for parental permissions
 - Status tracking (Pending, Accepted, Rejected)
 - Email notifications for status changes
 - Group assignment and management
 
 ### Group Management
+
 - Create groups by language (Spanish/English) and skill level
 - Assign instructors, facilitators, and mentors
 - Capacity management and waiting lists
 - Real-time participant tracking
 
 ### Diploma Generation
+
 - Automated PDF generation using custom templates
 - Batch processing for multiple participants
 - Customized with participant names, sede information, and dates
 - ZIP file downloads for easy distribution
 
 ### Analytics Dashboard
+
 - Interactive charts showing program statistics
 - Role-based data filtering
 - Export capabilities for reporting
@@ -162,22 +171,26 @@ patronesHermososWebsite/
 ## 🛠️ API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/login` - User login
 - `GET /api/auth/me` - Get current user info
 
 ### Participants
+
 - `GET /api/participantes/parents` - Get participants with guardian info
 - `POST /api/participantes` - Register new participant
 - `PUT /api/participantes/:id` - Update participant
 - `DELETE /api/participantes/:id` - Delete participant
 
 ### Groups
+
 - `GET /api/grupos` - Get all groups
 - `POST /api/grupos` - Create new group
 - `GET /api/grupos/:id/listado` - Get group members
 - `POST /api/grupos/:id/participantes` - Add participant to group
 
 ### Diplomas
+
 - `GET /api/diplomas/generate` - Generate diplomas (role-based)
 
 ## 🔒 Security Features
@@ -213,24 +226,3 @@ cd server
 npm start
 ```
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-For support and questions, please contact the development team or create an issue in the repository.
-
-## 🙏 Acknowledgments
-
-- Patrones Hermosos organization for their educational mission
-- All contributors who helped develop this platform
-- Open source libraries that made this project possible
